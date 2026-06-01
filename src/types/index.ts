@@ -1,0 +1,94 @@
+// ═══════════════════════════════════════
+// 支教记忆胶囊 — 完整类型定义 v3
+// ═══════════════════════════════════════
+
+// ── 用户与队伍 ──
+export type UserRole = 'teacher' | 'captain' | 'vice_captain' | 'advisor' | 'local_contact' | 'alumni'
+export const ROLE_LABELS: Record<UserRole, string> = {
+  teacher: '支教老师', captain: '队长', vice_captain: '副队长', advisor: '指导老师', local_contact: '当地负责人', alumni: '往届成员',
+}
+export interface User {
+  id: string; name: string; email: string; avatar: string; roles: UserRole[]; teamId: string; createdAt: string
+}
+export interface Team { id: string; name: string; slug: string; description: string; logo: string; color: string; createdAt: string }
+export interface Semester { id: string; teamId: string; name: string; startDate: string; endDate: string; location: string; isActive: boolean }
+
+// ── 学生 ──
+export interface Student {
+  id: string; name: string; nickname: string; age: number; grade: string; avatar: string; photo: string; tags: string[]; personality: string; strengths: string; notes: string; createdAt: string; teamId: string
+}
+export interface GrowthRecord {
+  id: string; studentId: string; date: string; type: 'photo' | 'note' | 'achievement' | 'milestone'; title: string; content: string; image?: string; tags: string[]; mood?: 'happy' | 'normal' | 'sad'
+}
+export interface Photo { id: string; studentId: string; url: string; description: string; date: string; tags: string[] }
+
+// ── 临别信 ──
+export type LetterTone = 'poetic' | 'friendly' | 'strict' | 'energetic' | 'playful'
+export const TONE_LABELS: Record<LetterTone, string> = { poetic: '温柔诗意', friendly: '老友絮语', strict: '严师慈言', energetic: '燃系励志', playful: '童趣轻松' }
+export const TONE_EMOJIS: Record<LetterTone, string> = { poetic: '🌸', friendly: '🤝', strict: '📚', energetic: '🔥', playful: '🎈' }
+export const TONE_DESCRIPTIONS: Record<LetterTone, string> = { poetic: '如春风拂面，温柔而深情', friendly: '像老友聊天，亲切而自然', strict: '严中有爱，语重心长', energetic: '热血激昂，鼓舞人心', playful: '活泼可爱，童真满满' }
+export interface Letter {
+  id: string; studentId: string; studentName: string; tone: LetterTone; content: string; title: string; createdAt: string; isRead: boolean; template?: string
+}
+
+// ── 课表 ──
+export interface Schedule { id: string; teamId: string; semesterId: string; theme: string; days: DayColumn[] }
+export interface DayColumn { date: string; dayLabel: string; slots: TimeSlot[] }
+export interface TimeSlot { time: string; className: string; teacher: string; location: string; notes: string }
+
+// ── 课堂 ──
+export interface Classroom {
+  id: string; date: string; dayNum: number; timeSlot: string; courseName: string; courseEmoji: string; courseColor: string; teacher: string; location: string;
+  preNotified: boolean; notifiedTeachers: string[];
+  materials: Material[]; moments: ClassroomMoment[]; teachingNotes: TeachingNote[];
+}
+export interface Material { id: string; title: string; type: 'ppt'|'pdf'|'word'|'image'|'video'|'other'; fileSize: string; url: string; uploadedAt: string; uploadedBy: string }
+export interface ClassroomMoment { id: string; type: 'photo'|'video'; url: string; caption: string; createdAt: string; author: string; tags: string[] }
+export interface TeachingNote { id: string; content: string; author: string; mood?: string; createdAt: string; tags?: string[] }
+
+// ── 消息 ──
+export interface Conversation { id: string; participants: string[]; lastMessage: string; lastMessageAt: string; unread: number; type: 'direct' | 'group' | 'penpal' }
+export interface Message { id: string; conversationId: string; senderId: string; senderName: string; content: string; createdAt: string }
+
+// ── 评价/公告/相册/资源 ──
+export interface Review { id: string; targetId: string; targetName: string; reviewerId: string; rating: number; content: string; createdAt: string }
+export interface Announcement { id: string; teamId: string; title: string; content: string; author: string; pinned: boolean; createdAt: string }
+export interface Album { id: string; teamId: string; title: string; cover: string; count: number; createdAt: string }
+export interface Resource { id: string; teamId: string; title: string; type: 'lesson_plan' | 'worksheet' | 'template' | 'other'; url: string; uploadedBy: string; createdAt: string }
+
+// ── 🆕 v3 新增类型 ──
+export interface VideoScript {
+  id: string; studentId: string; title: string; scenes: VideoScene[]; narration: string; backgroundMusic: string; keyWords: string[]; duration: number; status: 'draft' | 'rendering' | 'complete'; createdAt: string
+}
+export interface VideoScene { startSec: number; endSec: number; type: 'title' | 'photo' | 'caption' | 'transition' | 'ending'; text: string; photoIndex?: number; animation: 'fadeIn' | 'slideUp' | 'zoomIn' | 'typewriter' }
+export interface PenpalMatch {
+  id: string; studentAId: string; studentBId: string; studentAName: string; studentBName: string; score: number; reason: string; firstLetterSuggestion: string; status: 'pending' | 'active' | 'inactive'; letters: PenpalLetter[]; createdAt: string
+}
+export interface PenpalLetter { id: string; matchId: string; senderId: string; content: string; aiAssisted: boolean; read: boolean; createdAt: string }
+export interface TreeholeMessage {
+  id: string; teamId: string; senderId?: string; anonymousAlias: string; anonymousAvatar: string; content: string; visibility: 'ai_only' | 'specific_member' | 'whole_team'; targetMemberId?: string; reply?: string; replyType?: 'ai' | 'human'; createdAt: string
+}
+export interface DialectEntry { id: string; teamId: string; mandarin: string; dialect: string; dialectType: string; category: string; usage?: string }
+export interface DialectResult { translated: string; original: string; notes: string[]; confidence: number }
+
+// ── 仪表盘 ──
+export interface DashboardData {
+  studentCount: number; diaryCount: number; photoCount: number; classCount: number; activeTrend: number; recentDiaries: { studentName: string; content: string; timeAgo: string }[]; tagDistribution: { name: string; count: number }[]; upcomingClasses: { time: string; title: string }[]
+}
+
+// ── 皮肤系统 ──
+export interface SkinConfig {
+  id: string; name: string; description: string;
+  colors: { background: string; surface: string; surfaceHover: string; primary: string; primaryHover: string; text: string; textSecondary: string; textMuted: string; border: string; accent1: string; accent2: string }
+  heroImage?: string; fontFamily?: string
+}
+export const PRESET_SKINS: SkinConfig[] = [
+  { id: 'warm-cream', name: '温暖绘本', description: '米白暖调，像翻开一本手绘本', colors: { background: '#fdf8f1', surface: '#fffefb', surfaceHover: '#fffdf9', primary: '#c8862e', primaryHover: '#b07628', text: '#3d3025', textSecondary: '#5c4d3a', textMuted: '#8b7d6b', border: 'rgba(0,0,0,0.06)', accent1: '#d4a853', accent2: '#7a9a5a' } },
+  { id: 'forest-green', name: '森林绿意', description: '清新自然，支教在山野间', colors: { background: '#f4f7f2', surface: '#ffffff', surfaceHover: '#f9fbf8', primary: '#5d8a4e', primaryHover: '#4a703e', text: '#2d3a26', textSecondary: '#4a5c42', textMuted: '#7d8d76', border: 'rgba(90,130,70,0.08)', accent1: '#8ab860', accent2: '#d4a853' } },
+  { id: 'ocean-blue', name: '海洋蓝调', description: '宁静深远，如海般包容', colors: { background: '#f5f7fa', surface: '#ffffff', surfaceHover: '#fafbfd', primary: '#4a7eb5', primaryHover: '#3a6a9a', text: '#263545', textSecondary: '#4a6078', textMuted: '#7a8ea0', border: 'rgba(74,126,181,0.08)', accent1: '#6baed6', accent2: '#e8c878' } },
+  { id: 'sunset-warm', name: '日落余晖', description: '温暖怀旧，回忆的色调', colors: { background: '#fdf6ee', surface: '#fffdf9', surfaceHover: '#fffbf5', primary: '#d4855e', primaryHover: '#c07550', text: '#3d2a1e', textSecondary: '#5c4030', textMuted: '#8b6e5a', border: 'rgba(200,130,90,0.08)', accent1: '#e8b890', accent2: '#7a9a5a' } },
+  { id: 'ink-classic', name: '水墨经典', description: '黑白为主，极简雅致', colors: { background: '#fafaf8', surface: '#ffffff', surfaceHover: '#f8f8f6', primary: '#333333', primaryHover: '#1a1a1a', text: '#1a1a1a', textSecondary: '#4a4a4a', textMuted: '#888888', border: 'rgba(0,0,0,0.08)', accent1: '#666666', accent2: '#c8862e' } },
+]
+
+// ── 通知 ──
+export interface Notification { id: string; type: 'info' | 'warning' | 'success'; title: string; content: string; read: boolean; createdAt: string }

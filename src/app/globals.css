@@ -1,0 +1,380 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* ═══════════════════════════════════════
+   温暖绘本风 · 完整设计系统
+   所有页面统一升级
+   ═══════════════════════════════════════ */
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+  --font-heading: var(--font-serif);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5); --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3); --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring); --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius)*0.6); --radius-md: calc(var(--radius)*0.8);
+  --radius-lg: var(--radius); --radius-xl: calc(var(--radius)*1.4);
+  --radius-2xl: calc(var(--radius)*1.8); --radius-3xl: calc(var(--radius)*2.2);
+  --radius-4xl: calc(var(--radius)*2.6);
+}
+
+/* ═══════════════════════════════════════
+   LAYER 0 — CSS 变量 / Design Tokens
+   ═══════════════════════════════════════ */
+:root {
+  /* 皮肤变量（会被 JS 覆盖） */
+  --bg: #fdf7ef;
+  --surface: #fefcf7;
+  --surface-hover: #fffdf9;
+  --primary-skin: #c8862e;
+  --primary-hover-skin: #b07628;
+  --text-skin: #3d3124;
+  --text-secondary-skin: #5c4d3a;
+  --text-muted-skin: #8b7d6b;
+  --border-skin: rgba(180,160,130,0.25);
+
+  /* 绘本色板 */
+  --blush: #e8cec4; --rose: #d4a99a; --honey: #f2dfb8;
+  --sage: #c8d6c0; --moss: #a8b898; --sky: #d0dce8;
+  --lake: #b0c8d8; --lavender: #d8d0e0;
+  --faded: #b8a899;
+  --warm-white: #fffdf9;
+  --cream: #fdf7ef;
+  --ink: #3d3124; --ink-soft: #5c4d3a; --ink-faint: #8b7d6b;
+
+  /* 胶带色 */
+  --tape-pink: rgba(228,180,165,0.5); --tape-blue: rgba(175,198,218,0.45);
+  --tape-yellow: rgba(235,215,160,0.5); --tape-mint: rgba(185,210,190,0.45);
+  --tape-lavender: rgba(205,195,215,0.42); --tape-beige: rgba(220,195,160,0.55);
+
+  /* 阴影层级 — 暖色调 */
+  --shadow-xs: 0 1px 2px rgba(80,50,30,0.04);
+  --shadow-sm: 0 2px 8px rgba(80,45,25,0.05), 0 4px 16px rgba(80,45,25,0.025);
+  --shadow-md: 0 3px 12px rgba(70,40,20,0.07), 0 8px 32px rgba(70,40,20,0.035);
+  --shadow-lg: 0 4px 20px rgba(60,35,20,0.09), 0 12px 48px rgba(60,35,20,0.04);
+  --shadow-card: 0 2px 8px rgba(70,40,25,0.05), 0 6px 24px rgba(70,40,25,0.03);
+
+  /* 映射到 shadcn 变量 */
+  --background: var(--bg);
+  --foreground: var(--text-skin);
+  --card: var(--surface);
+  --card-foreground: var(--text-skin);
+  --popover: var(--surface);
+  --popover-foreground: var(--text-skin);
+  --primary: var(--primary-skin);
+  --primary-foreground: #ffffff;
+  --secondary: var(--surface-hover);
+  --secondary-foreground: var(--text-skin);
+  --muted: var(--bg);
+  --muted-foreground: var(--text-muted-skin);
+  --accent: var(--surface-hover);
+  --accent-foreground: var(--text-skin);
+  --border: var(--border-skin);
+  --input: var(--border-skin);
+  --ring: var(--primary-skin);
+  --radius: 0.625rem;
+  --sidebar: var(--surface);
+  --sidebar-foreground: var(--text-skin);
+  --sidebar-primary: var(--primary-skin);
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: var(--surface-hover);
+  --sidebar-accent-foreground: var(--text-skin);
+  --sidebar-border: var(--border-skin);
+  --sidebar-ring: var(--primary-skin);
+}
+
+/* ═══════════════════════════════════════
+   LAYER 1 — 全局底层：纸纹理 + 暖光
+   ═══════════════════════════════════════ */
+html {
+  background: var(--cream);
+  /* 确保首页上滑时露出的底色匹配内页 */
+  background-color: #fdf7ef;
+  background-image:
+    radial-gradient(ellipse 600px 400px at 15% 8%, rgba(220,180,150,0.14) 0%, transparent 65%),
+    radial-gradient(ellipse 500px 350px at 85% 92%, rgba(190,200,175,0.10) 0%, transparent 60%),
+    radial-gradient(ellipse 400px 300px at 50% 45%, rgba(235,210,170,0.06) 0%, transparent 70%),
+    url("data:image/svg+xml,%3Csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.018'/%3E%3C/svg%3E");
+  background-attachment: fixed;
+  min-height: 100vh;
+}
+
+/* 点阵网格 — 像绘图纸 */
+html::before {
+  content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background-image: radial-gradient(circle, rgba(180,160,140,0.08) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* 更粗噪点叠加 */
+html::after {
+  content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background-image: url("data:image/svg+xml,%3Csvg width='120' height='120' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n2'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.5' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n2)' opacity='0.025'/%3E%3C/svg%3E");
+  opacity: 0.5;
+}
+
+@layer base {
+  * { @apply border-border outline-ring/50; }
+  body {
+    background: transparent;
+    color: var(--text-skin);
+    min-height: 100vh;
+    position: relative;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-family: 'Noto Serif SC', var(--font-serif), Georgia, serif;
+  }
+}
+
+/* ═══════════════════════════════════════
+   LAYER 2 — 书签缎带
+   ═══════════════════════════════════════ */
+.bookmark-ribbon {
+  position: fixed; right: 28px; top: 0; width: 28px; height: 110px;
+  background: linear-gradient(180deg, #c8a888 0%, #b89878 40%, #c8a888 100%);
+  z-index: 50; pointer-events: none;
+  margin-right: 0;
+  border-radius: 0 0 6px 6px;
+  box-shadow: 0 2px 8px rgba(80,40,20,0.12);
+}
+.bookmark-ribbon::after {
+  content: ''; position: absolute; bottom: -4px; left: 4px; right: 4px; height: 8px;
+  background: linear-gradient(180deg, rgba(200,168,136,0.6), transparent);
+  border-radius: 0 0 3px 3px;
+}
+
+/* ═══════════════════════════════════════
+   全局组件样式 — 绘本卡
+   ═══════════════════════════════════════ */
+
+/* 绘本卡 — 微微旋转，像贴上去的 */
+.picture-book-card {
+  background: var(--warm-white);
+  border: 1.5px solid rgba(200,180,160,0.28);
+  border-radius: 8px;
+  box-shadow: var(--shadow-card);
+  position: relative;
+  transition: all 0.3s cubic-bezier(0.25,0.8,0.25,1);
+}
+.picture-book-card:hover {
+  transform: translateY(-3px) rotate(0deg);
+  box-shadow: var(--shadow-lg);
+  z-index: 5;
+}
+
+/* 胶带装饰 — 给卡片顶部贴胶带 */
+.tape-top::before {
+  content: ''; position: absolute; top: -12px; width: 52px; height: 20px;
+  border-radius: 1px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  z-index: 2;
+}
+.tape-pink::before  { left: 44px; transform: rotate(-2.5deg); background: var(--tape-pink); }
+.tape-blue::before  { right: 52px; transform: rotate(1.8deg); background: var(--tape-blue); }
+.tape-yellow::before { left: 60px; transform: rotate(-1.2deg); background: var(--tape-yellow); }
+.tape-mint::before  { right: 38px; transform: rotate(2.2deg); background: var(--tape-mint); }
+.tape-beige::before { left: 50px; transform: rotate(-1.8deg); background: var(--tape-beige); }
+
+/* 标签 — 手撕便签条 */
+.picture-book-tag {
+  padding: 5px 12px; font-size: 11px; color: #5a3e2b; border-radius: 2px;
+  position: relative; font-weight: 500;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+  transition: all 0.25s;
+  display: inline-flex; align-items: center; gap: 4px;
+}
+.picture-book-tag:hover { transform: scale(1.08); z-index: 3; box-shadow: var(--shadow-sm); }
+
+/* 分割线 — 渐变细线 */
+.picture-book-divider {
+  width: 60px; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(180,160,130,0.35), transparent);
+  margin: 14px auto;
+}
+
+/* 手写字体类 */
+.handwriting { font-family: 'Ma Shan Zheng', cursive; }
+.cursive { font-family: 'Liu Jian Mao Cao', cursive; }
+.playful { font-family: 'ZCOOL KuaiLe', cursive; }
+
+/* 手绘虚线时间线 */
+.hand-drawn-timeline::before {
+  content: ''; position: absolute; left: 7px; top: 12px; bottom: 12px;
+  width: 2px;
+  background: repeating-linear-gradient(
+    180deg,
+    rgba(180,160,130,0.4) 0px,
+    rgba(180,160,130,0.4) 4px,
+    transparent 4px,
+    transparent 10px
+  );
+  border-radius: 1px;
+}
+
+/* 时间线节点 */
+.timeline-dot {
+  width: 16px; height: 16px; border-radius: 50%;
+  background: linear-gradient(135deg, #e8ddd0, #d4c4a8);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06), inset 0 1px 1px rgba(255,255,255,0.6);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.timeline-dot::after {
+  content: ''; width: 6px; height: 6px; border-radius: 50%;
+  background: rgba(120,90,60,0.25);
+}
+
+/* 按钮 — 绘本风格 */
+.picture-book-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 10px 20px; border-radius: 24px;
+  border: 1.5px solid rgba(200,180,160,0.35);
+  background: var(--warm-white);
+  font-family: inherit; font-size: 13px; color: var(--ink-soft);
+  cursor: pointer; transition: all 0.3s; font-weight: 500;
+  box-shadow: var(--shadow-xs);
+  text-decoration: none;
+}
+.picture-book-btn:hover {
+  background: linear-gradient(135deg, #fffdf9, #faf4e8);
+  border-color: rgba(180,150,120,0.5); color: var(--ink);
+  box-shadow: var(--shadow-sm); transform: translateY(-1px);
+}
+.picture-book-btn.primary {
+  background: linear-gradient(135deg, #faf4e8, #f5ead8);
+  border-color: rgba(200,160,110,0.4); color: #6b4a2a; font-weight: 600;
+}
+.picture-book-btn.primary:hover {
+  box-shadow: 0 4px 20px rgba(139,105,20,0.13); transform: translateY(-2px);
+}
+
+/* 虚线添加按钮 */
+.add-new-btn {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 16px; margin-top: 20px;
+  border: 2px dashed rgba(200,180,160,0.35); border-radius: 8px;
+  color: var(--ink-soft); font-family: inherit; font-size: 13px;
+  cursor: pointer; transition: all 0.3s; background: transparent;
+  letter-spacing: 0.03em; width: 100%;
+}
+.add-new-btn:hover {
+  border-color: rgba(160,140,110,0.5); color: var(--ink);
+  background: rgba(255,255,255,0.35);
+}
+
+/* AI 输出区 */
+.ai-output-card {
+  background: linear-gradient(135deg, #faf6ee, #fefaf4);
+  border: 2px dashed rgba(200,180,150,0.25);
+  border-radius: 8px; padding: 24px 28px;
+  position: relative;
+  box-shadow: 0 2px 12px rgba(80,50,30,0.03);
+}
+
+/* 回形针装饰 */
+.paperclip-top::after {
+  content: ''; position: absolute; top: -8px; right: 36px; width: 22px; height: 9px;
+  border: 1.5px solid rgba(150,130,110,0.4);
+  border-radius: 3px; border-bottom: none;
+  border-left-color: transparent; border-right-color: transparent;
+}
+
+/* 贴纸 — 圆形 */
+.sticker-circle {
+  width: 36px; height: 36px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center; font-size: 16px;
+  box-shadow: var(--shadow-xs);
+  transition: transform 0.3s;
+}
+.sticker-circle:hover { transform: scale(1.15); }
+
+/* 文本高亮 — 暖黄色下划线 */
+.text-warm-highlight {
+  font-style: normal; color: #5a3e2b; font-weight: 500;
+  background: linear-gradient(180deg, transparent 55%, rgba(210,185,150,0.25) 55%);
+  padding: 0 3px;
+}
+
+/* 页面转场 */
+.page-enter {
+  animation: pageIn 0.4s cubic-bezier(0.16,1,0.3,1);
+}
+@keyframes pageIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideInLeft {
+  from { transform: translateX(-100%); }
+  to   { transform: translateX(0); }
+}
+
+/* ═══════════════════════════════════════
+   全站卡片入场 keyframes — JS 直接注入 inline animation
+   ═══════════════════════════════════════ */
+/* 卡片初始透明—等JS注入animation后自然过渡 */
+main.page-enter .picture-book-card { opacity: 0; }
+
+@keyframes cardScaleStretchIn {
+  from { opacity: 0; transform: scale(0.85); }
+  to   { opacity: 1; transform: scale(1); }
+}
+@keyframes cardElasticPop {
+  0%   { opacity: 0; transform: scale(0.92); }
+  60%  { opacity: 1; transform: scale(1.03); }
+  80%  { opacity: 1; transform: scale(0.98); }
+  100% { opacity: 1; transform: scale(1); }
+}
+@keyframes cardSlideLeft {
+  from { opacity: 0; transform: translateX(-40px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes cardSlideRight {
+  from { opacity: 0; transform: translateX(40px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes cardBlurFadeIn {
+  from { opacity: 0; filter: blur(8px); }
+  to   { opacity: 1; filter: blur(0); }
+}
+
+/* 滚动条 */
+/* 锁死滚动条避免缎带水平跳动 */
+html { overflow-y: scroll; }
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(180,160,140,0.35); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(160,140,120,0.5); }
+::selection { background: rgba(200,160,110,0.25); color: var(--ink); }
+
+@media (max-width: 768px) {
+  .bookmark-ribbon { display: none; }
+}

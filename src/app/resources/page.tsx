@@ -1,0 +1,87 @@
+'use client'
+import InnerLayout from '@/components/layout/InnerLayout'
+import { MOCK_RESOURCES } from '@/lib/mock-data'
+import { useState } from 'react'
+import { Download, FileText, Search, Plus, Filter } from 'lucide-react'
+
+const TYPE_INFO:Record<string,{emoji:string;color:string}> = {
+  lesson_plan:{emoji:'📖',color:'#d4855e'},
+  worksheet:{emoji:'📝',color:'#7a9a5a'},
+  template:{emoji:'📋',color:'#6baed6'},
+  other:{emoji:'📎',color:'#a78bfa'},
+}
+const TYPE_NAMES:Record<string,string>={lesson_plan:'教案',worksheet:'练习',template:'模板',other:'其他'}
+
+export default function ResourcesPage() {
+  const [filter,setFilter]=useState<string>('all')
+  const items=filter==='all'?MOCK_RESOURCES:MOCK_RESOURCES.filter(r=>r.type===filter)
+  return (<InnerLayout>
+    <header className="flex items-center justify-between pb-[22px] mb-5 flex-wrap gap-3 relative" style={{borderBottom:'1.5px solid rgba(180,160,130,0.25)'}}>
+      <div>
+        <h1 className="text-[19px] font-semibold tracking-[0.03em] text-[var(--ink)]" style={{fontFamily:'var(--font-serif)'}}>
+          📚 资源库
+        </h1>
+        <p className="text-[11px] mt-0.5 tracking-[0.06em]" style={{color:'var(--faded)'}}>
+          教案模板 · 课件共享 · 往届经验 · {MOCK_RESOURCES.length}份资源
+        </p>
+      </div>
+      <div className="flex gap-2 items-center">
+        <button className="picture-book-btn" style={{fontSize:11}}><Search size={14}/> 搜索</button>
+        <button className="picture-book-btn primary" style={{fontSize:11}}><Plus size={14}/> 上传资源</button>
+      </div>
+      <div className="absolute -bottom-[7px] left-1/2 -translate-x-1/2 text-[7px] tracking-[7px] whitespace-nowrap" style={{color:'rgba(180,160,130,0.5)'}}>· · · · · · · · · · · ·</div>
+    </header>
+
+    {/* Filter tabs */}
+    <div className="flex gap-2 mb-5 flex-wrap">
+      {[{k:'all',l:'全部',e:'📁'},{k:'lesson_plan',l:'教案',e:'📖'},{k:'worksheet',l:'练习',e:'📝'},{k:'template',l:'模板',e:'📋'},{k:'other',l:'其他',e:'📎'}].map(f=>(<button key={f.k} onClick={()=>setFilter(f.k)} className={`picture-book-tag cursor-pointer text-[11px] px-3 py-1.5 ${filter===f.k?'primary':''}`} style={filter===f.k?{background:'linear-gradient(135deg,rgba(200,160,120,0.15),rgba(180,140,100,0.08))',border:'1px solid rgba(200,160,120,0.3)'}:{}}>{f.e} {f.l}</button>))}
+    </div>
+
+    {/* Resource cards */}
+    {items.length===0?(
+      <div className="picture-book-card p-12 text-center">
+        <p className="text-4xl mb-3">📭</p>
+        <p className="handwriting text-[15px] tracking-[0.06em]" style={{color:'var(--faded)'}}>该分类暂无资源</p>
+      </div>
+    ):(
+      <div className="grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-4">
+        {items.map((r,i)=>{
+          const ti=TYPE_INFO[r.type]
+          return(<div key={r.id} className="picture-book-card tape-top p-5 cursor-pointer hover:-translate-y-1 hover:shadow-md transition-all duration-300 group" style={{transform:`rotate(${i%2===0?'-0.2deg':'0.15deg'})`}}>
+            <div className="flex items-start gap-4 mb-3">
+              {/* Type icon with color */}
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl flex-shrink-0" style={{background:`${ti.color}12`,border:`1.5px solid ${ti.color}25`}}>
+                {ti.emoji}
+              </div>
+              <div className="min-w-0">
+                <h3 className="text-[14px] font-semibold tracking-[0.04em] text-[var(--ink)] leading-tight mb-1" style={{fontFamily:'var(--font-serif)'}}>{r.title}</h3>
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] px-2 py-0 rounded-full" style={{background:`${ti.color}10`,color:ti.color,border:`1px solid ${ti.color}20`}}>{TYPE_NAMES[r.type]}</span>
+                  <span className="text-[10px]" style={{color:'var(--faded)'}}>{r.uploadedBy}</span>
+                </div>
+              </div>
+            </div>
+            {/* Info bar */}
+            <div className="flex items-center justify-between mt-2 pt-3" style={{borderTop:'1px solid rgba(200,180,160,0.12)'}}>
+              <span className="text-[9px] tracking-[0.06em]" style={{color:'var(--faded)'}}>📅 {r.createdAt}</span>
+              <button className="picture-book-btn primary group-hover:scale-105 transition-transform" style={{fontSize:10,padding:'4px 12px'}}><Download size={12}/>下载</button>
+            </div>
+            {/* Hover overlay arrow */}
+            <div className="absolute right-3 top-3 opacity-0 group-hover:opacity-100 transition-opacity">
+              <span className="text-sm" style={{color:ti.color}}>→</span>
+            </div>
+          </div>)
+        })}
+      </div>
+    )}
+
+    {/* Stats bar */}
+    <div className="mt-8 picture-book-card p-5 flex items-center justify-center gap-8 flex-wrap">
+      {[{n:MOCK_RESOURCES.length,l:'总资源',e:'📁'},{n:MOCK_RESOURCES.filter(r=>r.type==='lesson_plan').length,l:'教案',e:'📖'},{n:MOCK_RESOURCES.filter(r=>r.type==='template').length,l:'模板',e:'📋'},{n:1,l:'贡献者',e:'👤'}].map(s=>(<div key={s.l} className="text-center">
+        <p className="text-[22px] font-bold text-[var(--primary-skin)]" style={{fontFamily:'var(--font-serif)'}}>{s.n}</p>
+        <p className="text-[10px] tracking-[0.08em]" style={{color:'var(--faded)'}}>{s.e} {s.l}</p>
+      </div>))}
+    </div>
+    <button className="add-new-btn mt-4">＋ 上传新资源（PPT/PDF/Word/图片）</button>
+  </InnerLayout>)
+}
