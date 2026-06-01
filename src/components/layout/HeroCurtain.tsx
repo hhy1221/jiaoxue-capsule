@@ -1,11 +1,8 @@
 'use client'
 
-import { useState, useEffect, useLayoutEffect, useCallback, useRef } from 'react'
+import { useState, useLayoutEffect, useCallback, useRef } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import WeChatLogin from '@/components/auth/WeChatLogin'
-
-// SSR 安全：服务端降级为 useEffect（不执行），客户端用 useLayoutEffect（绘制前同步执行）
-const useIsoLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect
 
 export default function HeroCurtain() {
   const pathname = usePathname()
@@ -14,18 +11,17 @@ export default function HeroCurtain() {
 
   const [showLogin, setShowLogin] = useState(false)
 
-  // ═══ Refs — 绕过 React 渲染时序，直接操控 DOM ═══
   const curtainRef = useRef<HTMLDivElement>(null)
   const ribbonRef = useRef<HTMLDivElement>(null)
-  const busyRef = useRef(false)       // 防 StrictMode 双重触发
-  const prevPathname = useRef(pathname) // 区分「初始加载」和「路由跳转」
+  const busyRef = useRef(false)
+  const prevPathname = useRef(pathname)
 
-  // ═══ 过渡控制器 — 每次 pathname 变化时同步执行（在浏览器绘制之前）═══
-  useIsoLayoutEffect(() => {
+  useLayoutEffect(() => {
     const curtain = curtainRef.current
     const ribbon = ribbonRef.current
     if (!curtain) return
 
+    const curtailVal = typeof sessionStorage !== 'undefined' ? sessionStorage.getItem('curtain') : null
     const isNavigation = prevPathname.current !== pathname
     prevPathname.current = pathname
 
@@ -38,15 +34,12 @@ export default function HeroCurtain() {
         curtain.style.display = 'block'
         curtain.style.transition = 'none'
         curtain.style.transform = 'translateY(-105vh)'
-        // 强制浏览器认下起始位置
         void curtain.offsetHeight
-        // 启动入场动画
         requestAnimationFrame(() => {
           if (!curtain) return
           curtain.style.transition = 'transform 0.5s cubic-bezier(0.34,1.56,0.64,1)'
           curtain.style.transform = 'translateY(0)'
         })
-        // 缎带回弹
         if (ribbon) {
           ribbon.style.transition = 'none'
           ribbon.style.height = '70vh'
@@ -58,7 +51,7 @@ export default function HeroCurtain() {
           })
         }
       } else {
-        // 初始加载首页 → 直接显示
+        // 初始加载首页
         curtain.style.display = 'block'
         curtain.style.transform = 'translateY(0)'
         if (ribbon) {
@@ -70,13 +63,12 @@ export default function HeroCurtain() {
     }
 
     /* ─────────── 离开首页 → 内页 ─────────── */
-    const wantExit = sessionStorage.getItem('curtain') === '1'
+    const wantExit = curtailVal === '1'
 
     if (wantExit && !busyRef.current) {
       busyRef.current = true
       sessionStorage.removeItem('curtain')
 
-      // 确保幕布可见，从原位开始
       curtain.style.display = 'block'
       curtain.style.transition = 'none'
       curtain.style.transform = 'translateY(0)'
@@ -113,7 +105,7 @@ export default function HeroCurtain() {
       }
     }
 
-    /* ─────────── 非首页（直接访问 或 StrictMode 二次触发）─────────── */
+    /* ─────────── 直接访问内页 → 隐藏幕布 ─────────── */
     if (!busyRef.current) {
       curtain.style.display = 'none'
       if (ribbon) {
@@ -123,7 +115,6 @@ export default function HeroCurtain() {
     }
   }, [pathname, isHome])
 
-  // ═══ 导航链接点击 → 设标志键 + 立即跳转 ═══
   const handleNav = useCallback((e: React.MouseEvent, path: string) => {
     e.preventDefault()
     sessionStorage.setItem('from-home', '1')
@@ -135,7 +126,6 @@ export default function HeroCurtain() {
     handleNav(e, '/dashboard')
   }, [handleNav])
 
-  // ═══ 幕布始终以 display:block 渲染（由 useLayoutEffect 管理实际可见性）═══
   return (
     <div
       ref={curtainRef}
@@ -145,7 +135,7 @@ export default function HeroCurtain() {
         transform: 'translateY(0)',
         pointerEvents: isHome ? 'auto' : 'none',
       }}>
-      {/* ═══ 缎带 ═══ */}
+      {/* 缎带 */}
       <div ref={ribbonRef} style={{
         position: 'fixed', right: 28, top: 0, zIndex: 1000, width: 28,
         height: '110px',
@@ -159,13 +149,13 @@ export default function HeroCurtain() {
         }} />
       </div>
 
-      {/* 🌄 全屏大图背景 */}
+      {/* 全屏大图背景 */}
       <div className="fixed inset-0 z-0" style={{ background: "url('/images/bg-hero.webp') center/cover no-repeat" }} />
 
-      {/* 🌫️ 遮罩 */}
+      {/* 遮罩 */}
       <div className="fixed inset-0 z-0 pointer-events-none" style={{ background: 'linear-gradient(180deg,rgba(0,0,0,0.22) 0%,transparent 14%),linear-gradient(0deg,rgba(0,0,0,0.20) 0%,transparent 10%)' }} />
 
-      {/* 🧭 顶部导航 */}
+      {/* 顶部导航 */}
       <nav className="fixed top-0 left-0 right-0 z-50 px-10 py-5 flex items-center justify-between max-sm:px-5 max-sm:py-3">
         <div className="flex items-center gap-2 text-white text-[17px] tracking-wider no-underline" style={{ fontFamily: "var(--font-serif)", textShadow: "0 1px 3px rgba(0,0,0,0.2)" }}>
           <span className="w-[6px] h-[6px] rounded-full bg-[#f0c060] shadow-[0_0_6px_rgba(240,192,96,0.5)]" />
@@ -180,12 +170,12 @@ export default function HeroCurtain() {
         </div>
       </nav>
 
-      {/* 🎯 右上角年份 */}
+      {/* 右上角年份 */}
       <div className="fixed top-[100px] right-10 z-20 pointer-events-none max-sm:top-[70px] max-sm:right-4">
         <span className="text-[48px] font-extralight text-white/10 leading-none max-sm:text-[32px]" style={{ fontFamily: "var(--font-serif)" }}>2026</span>
       </div>
 
-      {/* 📊 左下角统计 */}
+      {/* 左下角统计 */}
       <div className="fixed bottom-8 left-10 z-20 flex gap-6 max-sm:left-4 max-sm:bottom-5 max-sm:gap-4">
         {[{ num: '13', lbl: '天夏令营' }, { num: '60+', lbl: '位学生' }, { num: '5', lbl: '种语气' }].map(s => (
           <div key={s.lbl} className="flex flex-col">
@@ -195,7 +185,7 @@ export default function HeroCurtain() {
         ))}
       </div>
 
-      {/* 💎 居中玻璃卡 */}
+      {/* 居中玻璃卡 */}
       <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30">
         <div className="text-center px-[72px] py-[52px] rounded-[28px] max-sm:px-6 max-sm:py-8 max-sm:rounded-[22px] relative"
           style={{
