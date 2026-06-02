@@ -119,12 +119,14 @@ html {
   background: #fdf7ef;
   background-color: #fdf7ef;
   background-image:
-    /* ─ 水彩晕染：暖琥珀（左上，最明显） ─ */
-    radial-gradient(ellipse 60% 50% at 10% 5%,  rgba(200,160,110,0.30) 0%, rgba(210,175,130,0.12) 35%, transparent 65%),
+    /* ─ 水彩晕染：暖琥珀（左上） ─ */
+    radial-gradient(ellipse 60% 50% at 10% 5%,  rgba(200,160,110,0.18) 0%, rgba(210,175,130,0.07) 35%, transparent 65%),
     /* ─ 水彩晕染：蜜色（右上） ─ */
     radial-gradient(ellipse 45% 40% at 90% 6%,  rgba(225,190,130,0.25) 0%, transparent 55%),
     /* ─ 水彩晕染：赭石（左中，大块） ─ */
     radial-gradient(ellipse 55% 50% at 5% 50%,  rgba(195,155,125,0.22) 0%, transparent 55%),
+    /* ─ 水彩晕染：赭石（左下） ─ */
+    radial-gradient(ellipse 45% 45% at 6% 88%,  rgba(195,150,125,0.28) 0%, transparent 55%),
     /* ─ 水彩晕染：绿灰（右下） ─ */
     radial-gradient(ellipse 40% 40% at 92% 90%, rgba(180,195,170,0.20) 0%, transparent 55%),
     /* ─ 水彩晕染：中心暖光 ─ */
