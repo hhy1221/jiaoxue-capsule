@@ -158,7 +158,6 @@ export default function Sidebar() {
   /* ── 初始化 + pathname 变化时重置到激活项 ── */
   useEffect(() => {
     const href = findActiveHref()
-    activeHrefRef.current = href
     if (href) {
       requestAnimationFrame(() => {
         const pos = getPosInAside(href)
