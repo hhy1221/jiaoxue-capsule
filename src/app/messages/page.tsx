@@ -2,22 +2,32 @@
 import InnerLayout from '@/components/layout/InnerLayout'
 import { MOCK_CONVERSATIONS, MOCK_MESSAGES, MOCK_MEMBERS } from '@/lib/mock-data'
 import { useState } from 'react'
-import { Send } from 'lucide-react'
+import { Send, Undo2 } from 'lucide-react'
+import { useToast } from '@/components/animations/Toast'
 
 export default function MessagesPage() {
   const [activeConv, setActiveConv] = useState(MOCK_CONVERSATIONS[0].id)
   const [newMsg, setNewMsg] = useState('')
   const [msgs, setMsgs] = useState(MOCK_MESSAGES)
+  const [recalled, setRecalled] = useState<Set<string>>(new Set())
+  const [hoveredMsg, setHoveredMsg] = useState<string | null>(null)
+  const { toast } = useToast()
   const conv = MOCK_CONVERSATIONS.find(c=>c.id===activeConv)!
   const messages = msgs[activeConv] || []
 
   const sendMsg = () => {
     if(!newMsg.trim()) return
+    const id = 'msg'+Date.now()
     setMsgs(prev=>({...prev,[activeConv]:[...(prev[activeConv]||[]),{
-      id:'msg'+Date.now(),conversationId:activeConv,senderId:'u1',
-      senderName:'黄寒阳',content:newMsg,createdAt:new Date().toLocaleTimeString()
+      id, conversationId:activeConv, senderId:'u1',
+      senderName:'黄寒阳', content:newMsg, createdAt:new Date().toLocaleTimeString()
     }]}))
     setNewMsg('')
+  }
+
+  const recallMsg = (msgId: string) => {
+    setRecalled(prev => new Set(prev).add(msgId))
+    toast('消息已撤回', 'info')
   }
 
   return (<InnerLayout>
@@ -82,27 +92,52 @@ export default function MessagesPage() {
           </p>
         </div>
         <div className="flex-1 overflow-y-auto p-4 space-y-3">
-          {messages.map(m=>(
-            <div key={m.id} className={`flex ${m.senderId==='u1'?'justify-end':'justify-start'}`}>
-              <div className={`max-w-[70%] p-3 rounded-2xl ${
-                m.senderId==='u1'
-                  ? 'text-white rounded-br-md'
-                  : 'rounded-bl-md'
-              }`}
-              style={m.senderId==='u1'
-                ? {background:'linear-gradient(135deg,#b07040,#8b5a30)'}
-                : {background:'rgba(245,240,230,0.5)',border:'1px solid rgba(200,180,160,0.15)',color:'var(--ink-soft)'}
-              }>
-                <p className="text-[13px] leading-relaxed">{m.content}</p>
-                <p className="text-[9px] opacity-60 mt-1 text-right">{m.createdAt}</p>
+          {messages.map(m=>{
+            const isMine = m.senderId==='u1'
+            const isRecalled = recalled.has(m.id)
+            return (
+            <div key={m.id} className={`flex ${isMine?'justify-end':'justify-start'}`}
+              onMouseEnter={() => setHoveredMsg(m.id)}
+              onMouseLeave={() => setHoveredMsg(null)}>
+              <div className="group relative max-w-[70%]">
+                <div
+                  className={`p-3 rounded-2xl ${isMine ? 'text-white rounded-br-md' : 'rounded-bl-md'}`}
+                  style={isMine
+                    ? { background: 'linear-gradient(135deg,#b07040,#8b5a30)' }
+                    : { background: 'rgba(245,240,230,0.5)', border: '1px solid rgba(200,180,160,0.15)', color: 'var(--ink-soft)' }
+                  }>
+                  {isRecalled
+                    ? <p className="text-[12px] italic opacity-60">该消息已被撤回</p>
+                    : <p className="text-[13px] leading-relaxed">{m.content}</p>
+                  }
+                  <p className="text-[9px] opacity-60 mt-1 text-right">
+                    {isRecalled ? <span className="mr-1">已撤回</span> : null}{m.createdAt}
+                  </p>
+                </div>
+
+                {/* 撤回按钮 — 我方消息 hover 时显示 */}
+                {isMine && !isRecalled && hoveredMsg === m.id && (
+                  <button
+                    onClick={() => recallMsg(m.id)}
+                    className="absolute -top-2 right-2 px-2 py-0.5 rounded-full text-[10px] flex items-center gap-1 border-none cursor-pointer"
+                    style={{
+                      background: 'rgba(255,255,255,0.95)',
+                      color: 'var(--ink-soft)',
+                      border: '1px solid rgba(200,180,160,0.3)',
+                      boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
+                      fontFamily: 'inherit',
+                    }}>
+                    <Undo2 size={9}/> 撤回
+                  </button>
+                )}
               </div>
             </div>
-          ))}
+          )})}
         </div>
         <div className="p-4 flex gap-2" style={{borderTop:'1px solid rgba(200,180,160,0.2)'}}>
           <input value={newMsg} onChange={e=>setNewMsg(e.target.value)} onKeyDown={e=>e.key==='Enter'&&sendMsg()}
             placeholder="输入消息..."
-            className="flex-1 px-4 py-2.5 rounded-full text-[13px] outline-none transition-colors"
+            className="flex-1 px-4 py-2.5 rounded-full text-[13px] outline-none"
             style={{
               border:'1.5px solid rgba(200,180,160,0.3)',background:'rgba(245,240,230,0.3)',
               color:'var(--ink)',
