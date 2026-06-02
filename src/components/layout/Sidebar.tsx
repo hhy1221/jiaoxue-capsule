@@ -64,7 +64,7 @@ export default function Sidebar() {
 
   const glowRaf = useRef<number>()
   const ribbonRaf = useRef<number>()
-  const activeHrefRef = useRef('')
+  const restoreTimer = useRef<ReturnType<typeof setTimeout>>()
 
   const isActive = (href: string, exact?: boolean) =>
     exact ? pathname === href : pathname.startsWith(href)
@@ -181,11 +181,20 @@ export default function Sidebar() {
   /* ── hover 变化 → 光斑+缎带追踪 ── */
   useEffect(() => {
     if (hoveredHref) {
+      // 有新的 hover → 取消任何待执行的"回归"定时器
+      if (restoreTimer.current) { clearTimeout(restoreTimer.current); restoreTimer.current = undefined }
       animateGlowTo(hoveredHref)
       animateRibbonTo(hoveredHref, true)
     } else {
+      // 光标离开了某项 → 延迟 180ms 再回归激活项
+      // 如果 180ms 内又 hover 了别的东西，这个定时器会被上面的 clearTimeout 取消
       const href = findActiveHref()
-      if (href) { animateGlowTo(href); animateRibbonTo(href) }
+      if (href) {
+        restoreTimer.current = setTimeout(() => {
+          animateGlowTo(href)
+          animateRibbonTo(href)
+        }, 180)
+      }
     }
   }, [hoveredHref])
 
@@ -193,6 +202,7 @@ export default function Sidebar() {
   useEffect(() => () => {
     if (glowRaf.current) cancelAnimationFrame(glowRaf.current)
     if (ribbonRaf.current) cancelAnimationFrame(ribbonRaf.current)
+    if (restoreTimer.current) clearTimeout(restoreTimer.current)
   }, [])
 
   return (
