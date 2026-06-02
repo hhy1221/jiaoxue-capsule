@@ -57,8 +57,9 @@ export default function InnerLayout({ children }: { children: React.ReactNode })
         <Sidebar />
       </div>
 
-      {/* 内容区 */}
-      <main className="ml-[220px] min-h-screen relative z-10 page-enter">
+      {/* 内容区 — 左边距跟随侧边栏宽度 */}
+      <main className="min-h-screen relative z-10 page-enter"
+        style={{ marginLeft: 'var(--sidebar-width, 220px)' }}>
         <div className="p-8 max-w-[1200px] mx-auto max-sm:p-4">
           {children}
         </div>

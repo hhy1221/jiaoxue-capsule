@@ -57,14 +57,55 @@ export default function Sidebar() {
   const [hoveredHref, setHoveredHref] = useState<string | null>(null)
   const [pressingHref, setPressingHref] = useState<string | null>(null)
   const [asideExited, setAsideExited] = useState(0)
+  const [width, setWidth] = useState(220)
 
   const asideRef = useRef<HTMLElement>(null)
   const navRef = useRef<HTMLElement>(null)
   const glowRef = useRef<HTMLDivElement>(null)
   const ribbonRef = useRef<HTMLDivElement>(null)
+  const dragging = useRef(false)
 
   const glowRaf = useRef<number>(undefined)
   const ribbonRaf = useRef<number>(undefined)
+
+  // 同步宽度到 CSS 变量 + 持久化
+  useEffect(() => {
+    document.documentElement.style.setProperty('--sidebar-width', `${width}px`)
+    try { localStorage.setItem('sidebar-width', String(width)) } catch {}
+  }, [width])
+
+  // 恢复保存的宽度
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('sidebar-width')
+      if (saved) setWidth(Math.max(170, Math.min(400, Number(saved))))
+    } catch {}
+  }, [])
+
+  // ═══ 拖拽调整宽度 ═══
+  const handleResizeStart = useCallback((e: React.MouseEvent) => {
+    e.preventDefault()
+    dragging.current = true
+    const startX = e.clientX
+    const startW = width
+
+    const onMove = (ev: MouseEvent) => {
+      if (!dragging.current) return
+      const newWidth = Math.max(170, Math.min(400, startW + ev.clientX - startX))
+      setWidth(newWidth)
+    }
+    const onUp = () => {
+      dragging.current = false
+      document.removeEventListener('mousemove', onMove)
+      document.removeEventListener('mouseup', onUp)
+      document.body.style.cursor = ''
+      document.body.style.userSelect = ''
+    }
+    document.body.style.cursor = 'col-resize'
+    document.body.style.userSelect = 'none'
+    document.addEventListener('mousemove', onMove)
+    document.addEventListener('mouseup', onUp)
+  }, [width])
 
   const isActive = (href: string, exact?: boolean) =>
     exact ? pathname === href : pathname.startsWith(href)
@@ -205,13 +246,24 @@ export default function Sidebar() {
   return (
     <>
       <aside ref={asideRef}
-        className="fixed left-0 top-0 h-full z-40 w-[220px] flex flex-col"
+        className="fixed left-0 top-0 h-full z-40 flex flex-col"
         style={{
+          width,
           background: 'linear-gradient(175deg,#fefcf8 0%,#fdf9f2 20%,#fcf6ec 50%,#fdf9f3 80%,#fefcf8 100%)',
           borderRight: '1.5px solid rgba(200,180,160,0.22)',
           boxShadow: '3px 0 20px rgba(80,40,20,0.04)',
         }}
         onMouseLeave={() => { setAsideExited(c => c + 1) }}>
+
+        {/* ═══ 拖拽手柄 — 右侧边界 ═══ */}
+        <div
+          onMouseDown={handleResizeStart}
+          className="absolute top-0 right-0 h-full z-50 cursor-col-resize group"
+          style={{ width: 6, transform: 'translateX(50%)' }}>
+          {/* 中间竖线 — hover 时显示 */}
+          <div className="absolute top-[20%] bottom-[20%] left-1/2 w-[2px] rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+            style={{ background: 'rgba(180,150,120,0.5)', transform: 'translateX(-50%)' }} />
+        </div>
 
         {/* Logo */}
         <div className="px-5 pt-7 pb-4">
