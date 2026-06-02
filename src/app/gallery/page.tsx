@@ -1,8 +1,9 @@
 'use client'
 import InnerLayout from '@/components/layout/InnerLayout'
 import { MOCK_ALBUMS } from '@/lib/mock-data'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Camera, Image, Plus, Search, Grid3X3 } from 'lucide-react'
+import Confetti from '@/components/animations/Confetti'
 
 const COVERS=['🎉','🔬','🏃','🎨','🌟','📖','🎵','✂️','🌍','💌']
 const COVER_GRADIENTS=[
@@ -15,7 +16,9 @@ const ACCENTS=['#d4855e','#6baed6','#7a9a5a','#a78bfa','#f0a060','#e06080','#60b
 
 export default function GalleryPage() {
   const [view,setView]=useState<'grid'|'list'>('grid')
+  const [confetti, setConfetti] = useState(0)
   const total=MOCK_ALBUMS.reduce((a,b)=>a+b.count,0)
+  useEffect(() => { setConfetti(1) }, [])
   return (<InnerLayout>
     <header className="flex items-center justify-between pb-[22px] mb-5 flex-wrap gap-3 relative" style={{borderBottom:'1.5px solid rgba(180,160,130,0.25)'}}>
       <div>
@@ -108,5 +111,6 @@ export default function GalleryPage() {
         每堂课上传的照片会自动创建同名相册——去课堂模块看看吧
       </p>
     </div>
+    <Confetti trigger={confetti} />
   </InnerLayout>)
 }
