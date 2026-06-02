@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 
 /**
  * 绘本纸屑雨 — 碎纸片+小星星+干花瓣
@@ -45,21 +45,23 @@ function genParticles(): Particle[] {
 }
 
 interface Props {
-  active: boolean
+  trigger: number  // 每次+1触发一次
 }
 
-export default function Confetti({ active }: Props) {
+export default function Confetti({ trigger }: Props) {
   const [particles, setParticles] = useState<Particle[]>([])
   const [visible, setVisible] = useState(false)
+  const lastTrigger = useRef(0)
 
   useEffect(() => {
-    if (active && !visible) {
+    if (trigger > lastTrigger.current) {
+      lastTrigger.current = trigger
       setParticles(genParticles())
       setVisible(true)
       const t = setTimeout(() => setVisible(false), 4500)
       return () => clearTimeout(t)
     }
-  }, [active])
+  }, [trigger])
 
   if (!visible) return null
 

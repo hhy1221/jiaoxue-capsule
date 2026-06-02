@@ -2,6 +2,7 @@
 import InnerLayout from '@/components/layout/InnerLayout'
 import { MOCK_LETTERS, MOCK_STUDENTS } from '@/lib/mock-data'
 import { TONE_LABELS, TONE_EMOJIS, LetterTone } from '@/types'
+import { useToast } from '@/components/animations/Toast'
 import { useState, useMemo } from 'react'
 
 const SEARCHABLE_TONES: Record<LetterTone, string> = {
@@ -18,6 +19,7 @@ const TONE_COLORS: Record<LetterTone, { dot: string; text: string; border: strin
 export default function LettersPage() {
   const [search, setSearch] = useState('')
   const [selectedId, setSelectedId] = useState(MOCK_LETTERS[0]?.id || null)
+  const { toast } = useToast()
 
   // 实时筛选
   const filtered = useMemo(() => {
@@ -68,7 +70,7 @@ export default function LettersPage() {
         </p>
       </div>
       <div className="flex gap-2 flex-wrap">
-        <button className="picture-book-btn" style={{ fontSize: 12 }}>📥 导出 PDF</button>
+        <button className="picture-book-btn" style={{ fontSize: 12 }} onClick={() => toast('导出功能即将上线', 'info')}>📥 导出 PDF</button>
         <button className="picture-book-btn primary" style={{ fontSize: 12 }}>✨ 批量生成</button>
       </div>
       <div className="absolute -bottom-[7px] left-1/2 -translate-x-1/2 text-[7px] tracking-[7px]"

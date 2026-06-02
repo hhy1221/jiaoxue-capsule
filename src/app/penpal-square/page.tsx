@@ -11,7 +11,7 @@ const MATCH_CARD_COLORS=['linear-gradient(135deg,rgba(216,110,88,0.06),rgba(240,
 const MATCH_ACCENTS=['#d4855e','#6baed6','#a78bfa']
 
 export default function PenpalSquarePage() {
-  const [celebrate, setCelebrate] = useState(false)
+  const [celebrate, setCelebrate] = useState(0)
   const { toast } = useToast()
   return(<InnerLayout>
     <header className="flex items-center justify-between pb-[22px] mb-5 flex-wrap gap-3 relative" style={{borderBottom:'1.5px solid rgba(180,160,130,0.25)'}}>
@@ -19,8 +19,8 @@ export default function PenpalSquarePage() {
         <h1 className="text-[19px] font-semibold tracking-[0.03em] text-[var(--ink)]" style={{fontFamily:'var(--font-serif)'}}>💌 笔友广场</h1>
         <p className="text-[11px] mt-0.5 tracking-[0.06em]" style={{color:'var(--faded)'}}>AI匹配 · 跨届通信 · 支教结束后关系不断</p>
       </div>
-      <button className="picture-book-btn primary" style={{fontSize:11}} onClick={() => { setCelebrate(true); toast('笔友匹配成功！', 'success') }}><Sparkles size={14}/> AI匹配新笔友</button>
-      <Confetti active={celebrate} />
+      <button className="picture-book-btn primary" style={{fontSize:11}} onClick={() => { setCelebrate(c => c + 1); toast('笔友匹配成功！', 'success') }}><Sparkles size={14}/> AI匹配新笔友</button>
+      <Confetti trigger={celebrate} />
       <div className="absolute -bottom-[7px] left-1/2 -translate-x-1/2 text-[7px] tracking-[7px] whitespace-nowrap" style={{color:'rgba(180,160,130,0.5)'}}>· · · · · · · · · · · ·</div>
     </header>
 

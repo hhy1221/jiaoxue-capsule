@@ -71,21 +71,12 @@ export default function DashboardPage() {
               <div
                 ref={el => { barRefs.current[i] = el }}
                 data-width={`${(t.count/maxTag)*100}%`}
-                className="h-full rounded-full group-hover:brightness-110 relative"
+                className="h-full rounded-full group-hover:brightness-110"
                 style={{
                   background: `linear-gradient(90deg,rgba(200,140,80,${0.25+i*0.06}),rgba(200,140,80,${0.5+i*0.08}))`,
-                  width: `${(t.count/maxTag)*100}%`, // fallback
-                }}>
-                {/* 藤蔓末端的叶子 — 生长完成后显示 */}
-                <span className="absolute -right-1 top-1/2 -translate-y-1/2 block rounded-full"
-                  style={{
-                    width: 8, height: 6,
-                    background: `rgba(140,180,100,${0.3 + i * 0.1})`,
-                    opacity: 0,
-                    animation: `vineLeafAppear 0.3s ease-out ${0.9 + i * 0.12}s both`,
-                  }}
-                />
-              </div>
+                  width: `${(t.count/maxTag)*100}%`,
+                }}
+              />
               {/* Label on bar */}
               <span className="absolute left-2 top-1/2 -translate-y-1/2 text-[9px] font-semibold text-[var(--ink)] whitespace-nowrap">{t.count}人</span>
             </div>
