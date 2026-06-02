@@ -246,13 +246,13 @@ export default function Sidebar() {
   return (
     <>
       <aside ref={asideRef}
+        data-sidebar
         className="fixed left-0 top-0 h-full z-40 flex flex-col"
         style={{
           width,
           background: 'linear-gradient(175deg,#fefcf8 0%,#fdf9f2 20%,#fcf6ec 50%,#fdf9f3 80%,#fefcf8 100%)',
           borderRight: '1.5px solid rgba(200,180,160,0.22)',
           boxShadow: '3px 0 20px rgba(80,40,20,0.04)',
-          animation: 'var(--sidebar-anim)',
         }}
         onMouseLeave={() => { setAsideExited(c => c + 1) }}>
 
