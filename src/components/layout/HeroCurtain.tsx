@@ -3,6 +3,7 @@
 import { useState, useLayoutEffect, useCallback, useRef } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import WeChatLogin from '@/components/auth/WeChatLogin'
+import MagicDust from '@/components/animations/MagicDust'
 
 export default function HeroCurtain() {
   const pathname = usePathname()
@@ -139,6 +140,9 @@ export default function HeroCurtain() {
           </div>
         ))}
       </div>
+
+      {/* 魔法尘埃 — 玻璃卡周围的浮动微光 */}
+      <MagicDust />
 
       {/* 居中玻璃卡 */}
       <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30">
