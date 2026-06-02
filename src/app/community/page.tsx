@@ -8,11 +8,23 @@ import { Heart, MessageCircle, Eye, MapPin, Clock, ArrowRight, BookOpen, Users, 
 export default function CommunityPage() {
   const [activeTab, setActiveTab] = useState<'all'|'questions'|'stories'|'recruits'>('all')
 
+  const hasImage = (item: typeof QUESTIONS[0] | typeof STORIES[0] | typeof RECRUITS[0]) => {
+    if ('images' in item && Array.isArray(item.images) && item.images.length > 0) {
+      return item.images[0].startsWith('/')
+    }
+    return false
+  }
   const feedItems = useMemo(()=>{
     const qs = QUESTIONS.map(q=>({type:'question' as const,data:q,time:q.createdAt}))
     const ss = STORIES.map(s=>({type:'story' as const,data:s,time:s.createdAt}))
     const rs = RECRUITS.filter(r=>r.status==='active').map(r=>({type:'recruit' as const,data:r,time:r.createdAt}))
-    const all = [...qs,...ss,...rs].sort((a,b)=>b.time.localeCompare(a.time))
+    const all = [...qs,...ss,...rs].sort((a,b)=>{
+      const dc = b.time.localeCompare(a.time)
+      if (dc !== 0) return dc
+      const aImg = hasImage(a.data) ? 1 : 0
+      const bImg = hasImage(b.data) ? 1 : 0
+      return bImg - aImg
+    })
     if (activeTab==='questions') return all.filter(i=>i.type==='question')
     if (activeTab==='stories') return all.filter(i=>i.type==='story')
     if (activeTab==='recruits') return all.filter(i=>i.type==='recruit')
@@ -37,13 +49,13 @@ export default function CommunityPage() {
       <div>
         {/* Tab */}
         <div className="flex items-center gap-1 mb-4 bg-white/50 rounded-full p-1 w-fit" style={{border:'1px solid rgba(200,180,160,0.15)'}}>
-          {[{k:'all',l:'全部动态'},{k:'questions',l:'教学问答'},{k:'stories',l:'支教故事'},{k:'recruits',l:'招募信息'}].map(t=>(
-            <button key={t.k} onClick={()=>setActiveTab(t.k as any)} className="px-4 py-1.5 rounded-full text-[12px] border-none cursor-pointer transition-all"
+          {([{k:'all',l:'全部动态'},{k:'questions',l:'教学问答'},{k:'stories',l:'支教故事'},{k:'recruits',l:'招募信息'}] as const).map(t=>(
+            <button key={t.k} onClick={()=>setActiveTab(t.k)} className="px-4 py-1.5 rounded-full text-[12px] border-none cursor-pointer transition-all"
               style={{background:activeTab===t.k?'linear-gradient(135deg,#9b7a4a,#7a5a3a)':'transparent',color:activeTab===t.k?'#fff':'var(--ink-soft)',fontWeight:activeTab===t.k?600:400,fontFamily:'inherit'}}>{t.l}</button>
           ))}</div>
 
-        {/* 双列信息流 */}
-        <div className="grid grid-cols-2 gap-4 max-md:grid-cols-1">
+        {/* 双列信息流 — 瀑布流：卡片高度由内容决定，自然错落 */}
+        <div className="columns-2 gap-4 max-md:columns-1 [&>*]:break-inside-avoid [&>*]:mb-4">
           {feedItems.map(item=>{
             if (item.type==='story') return <StoryCardMini key={item.data.id} s={item.data}/>
             if (item.type==='question') return <QuestionCardMini key={item.data.id} q={item.data}/>
@@ -82,7 +94,7 @@ export default function CommunityPage() {
 function StoryCardMini({s}:{s:typeof STORIES[0]}) {
   const hasImg = s.images.length>0&&s.images[0].startsWith('/')
   return (<Link href="/community/stories" className="no-underline block group">
-    <div className="picture-book-card overflow-hidden h-full cursor-pointer hover:-translate-y-1 hover:shadow-md transition-all duration-300">
+    <div className="picture-book-card overflow-hidden cursor-pointer hover:-translate-y-1 hover:shadow-md transition-all duration-300">
       <div style={{height:hasImg?150:0,overflow:'hidden',background:hasImg?'transparent':'transparent'}}>
         {hasImg&&<img src={s.images[0]} alt={s.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"/>}
         {!hasImg&&s.images[0]&&<div className="flex items-center justify-center h-full text-[32px] opacity-25" style={{background:'linear-gradient(135deg,rgba(220,200,170,0.15),rgba(200,180,150,0.08))'}}>{s.images[0]}</div>}
@@ -99,7 +111,7 @@ function StoryCardMini({s}:{s:typeof STORIES[0]}) {
 function QuestionCardMini({q}:{q:typeof QUESTIONS[0]}) {
   const aCount=q.answers.length,hasBest=q.answers.some(a=>a.isAccepted)
   return (<Link href="/community/questions" className="no-underline block">
-    <div className="picture-book-card p-4 h-full cursor-pointer hover:-translate-y-1 hover:shadow-md transition-all duration-300" style={{borderLeft:`3px solid ${hasBest?'rgba(122,180,90,0.35)':'rgba(240,180,60,0.25)'}`}}>
+    <div className="picture-book-card p-4 cursor-pointer hover:-translate-y-1 hover:shadow-md transition-all duration-300" style={{borderLeft:`3px solid ${hasBest?'rgba(122,180,90,0.35)':'rgba(240,180,60,0.25)'}`}}>
       <div className="flex items-center gap-2 text-[10px] mb-2"><span className="px-1.5 py-0.5 rounded-full" style={{background:'rgba(200,160,120,0.07)',color:'var(--ink-soft)',border:'1px solid rgba(200,160,120,0.12)'}}>📚 问答</span>{hasBest&&<span className="px-1.5 py-0.5 rounded-full text-[9px]" style={{background:'rgba(122,180,90,0.08)',color:'#5a8a3a',border:'1px solid rgba(122,180,90,0.15)'}}>已解答</span>}</div>
       <h3 className="text-[13px] font-semibold text-[var(--ink)] mb-1.5 leading-snug" style={{fontFamily:'var(--font-serif)'}}>{q.title}</h3>
       <p className="text-[11px] leading-relaxed line-clamp-2 mb-2.5" style={{color:'var(--ink-soft)'}}>{q.content.split('\n')[0]}</p>
@@ -111,7 +123,7 @@ function QuestionCardMini({q}:{q:typeof QUESTIONS[0]}) {
 function RecruitCardMini({r}:{r:typeof RECRUITS[0]}) {
   const e:Record<string,string>={team_recruit:'🌟',volunteer_wanted:'📍',material_request:'📦',self_recommend:'🙋'}
   return (<Link href="/community/recruit" className="no-underline block">
-    <div className="picture-book-card p-4 h-full cursor-pointer hover:-translate-y-1 hover:shadow-md transition-all duration-300">
+    <div className="picture-book-card p-4 cursor-pointer hover:-translate-y-1 hover:shadow-md transition-all duration-300">
       <div className="flex items-center gap-2 text-[10px] mb-2"><span className="px-1.5 py-0.5 rounded-full" style={{background:'rgba(212,133,94,0.07)',color:'#a06030',border:'1px solid rgba(212,133,94,0.12)'}}>{e[r.type]} 招募</span><span className="flex items-center gap-1" style={{color:'var(--faded)'}}><MapPin size={9}/>{r.region}</span></div>
       <h3 className="text-[13px] font-semibold text-[var(--ink)] mb-1.5 leading-snug" style={{fontFamily:'var(--font-serif)'}}>{r.title}</h3>
       <p className="text-[11px] leading-relaxed line-clamp-2 mb-2.5" style={{color:'var(--ink-soft)'}}>{r.content.split('\n')[0]}</p>

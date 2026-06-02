@@ -55,7 +55,7 @@ export const QUESTIONS: CommunityQuestion[] = [
     answers:[
       {id:'a1',content:'试试"数字接龙"游戏！每讲10分钟，停下来玩一轮。规则：老师说一个数字，学生站起来接龙（+3或×2）。错了就坐下，最后站着的得一颗星。\n\n补充几个具体方法：\n1. "站立计算"：全班起立，老师出题，算出答案的坐下，最慢的三个要表演节目（唱歌也行）\n2. "小黑板竞赛"：两人一组共用一块小黑板，老师出题后同时写答案，互相检查\n3. "我是小老师"：请最先算出的同学到黑板前给大家讲解\n\n我教了三年农村小学，这些方法在无多媒体条件下效果最好',author:AUTHORS.li,likes:28,isAccepted:true,createdAt:'2026-07-22'},
       {id:'a2',content:'农村孩子注意力容易分散很正常。建议把40分钟拆成4段：5分钟复习+10分钟新课+5分钟游戏+10分钟新课+5分钟练习+5分钟总结。中间穿插身体律动，像"站起/坐下"指令游戏。\n\n另外可以试试"暗号系统"：当你发现有人走神时，不说名字，而是敲两下黑板，全班一起做一个特定动作（比如拍手两下），这样既不伤自尊又能拉回注意力。',author:AUTHORS.wang,likes:15,isAccepted:false,createdAt:'2026-07-23'},
-    ],views:342,likes:24,createdAt:'2026-07-21',
+    ],views:342,likes:24,createdAt:'2026-08-04',
   },
   {
     id:'q2',title:'语文写作课：怎么引导孩子写出真情实感？',status:'open',
@@ -159,7 +159,7 @@ export const RECRUITS: CommunityRecruit[] = [
     content:'电子科技大学凡星支教队招募2027年暑期支教队员。\n\n【支教地】四川宜宾筠连县，城南社区+玉壶社区\n【时间】2027年7月，13天\n【对象】约60名6-10岁小学生\n【招募人数】15-20人\n【要求】在读本科生/研究生，有责任心，能完成完整周期\n【优先】有教学经验、艺术特长（音乐/美术/舞蹈）、会摄影/视频制作、能带特色课程\n\n我们连续12年深耕筠连，课程涵盖五育并举。欢迎加入，把知识和温暖带到四川大山里！\n\n面试时间：2027年5月\n面试形式：试讲10分钟+问答',
     author:{...AUTHORS.han,role:'official',badge:'凡星支教队·队长'},region:'四川宜宾筠连县',
     tags:['暑期支教','大学生','13天','筠连','五育并举'],deadline:'2027-06-15',
-    contact:'微信: fanxing_team / 邮箱: fanxing@uestc.edu.cn / 公众号: 凡星支教',views:1203,createdAt:'2026-07-25',
+    contact:'微信: fanxing_team / 邮箱: fanxing@uestc.edu.cn / 公众号: 凡星支教',views:1203,createdAt:'2026-08-03',
   },
   {
     id:'r2',type:'volunteer_wanted',status:'active',
@@ -230,7 +230,7 @@ export const STORIES: CommunityStory[] = [
       {id:'sc1',content:'这就是支教的意义所在！每一个孩子都是未被发现的宝藏。',author:AUTHORS.li,createdAt:'2026-07-23'},
       {id:'sc2',content:'纸箱做恐龙也太有创意了吧！这个孩子以后可以当设计师！🦕',author:AUTHORS.wu,createdAt:'2026-07-23'},
       {id:'sc3',content:'看到最后一句泪目了。他们只是想告诉外面的世界"我也会做很厉害的东西"',author:AUTHORS.zhao,createdAt:'2026-07-24'},
-    ],createdAt:'2026-07-22',
+    ],createdAt:'2026-08-02',
   },
   {
     id:'s2',title:'一个二年级女孩的信，读哭了三个老师',likes:156,
@@ -241,7 +241,7 @@ export const STORIES: CommunityStory[] = [
       {id:'sc4',content:'看到"你们不要太累"这几个字眼泪就下来了。',author:AUTHORS.liu,createdAt:'2026-07-24'},
       {id:'sc5',content:'我教了25年书，最感动的永远是留守儿童的信。他们想要的从来不是物质，是陪伴。',author:AUTHORS.wang,createdAt:'2026-07-24'},
       {id:'sc6',content:'请问可以分享更多孩子们的来信吗？想做一个关于留守儿童书信的专题。',author:AUTHORS.ma,createdAt:'2026-07-25'},
-    ],createdAt:'2026-07-23',
+    ],createdAt:'2026-08-05',
   },
   {
     id:'s3',title:'运动会上的"小队长"：10岁男孩的蜕变',likes:67,
@@ -395,9 +395,10 @@ const A2 = {
 }
 
 // ── 防 HMR 重复添加 ──
-const _initialized = (typeof globalThis !== 'undefined' ? (globalThis as any).__communityDataInit : false)
+interface CommunityGlobal { __communityDataInit?: boolean }
+const _initialized = (typeof globalThis !== 'undefined' ? (globalThis as CommunityGlobal).__communityDataInit : false)
 if (!_initialized) {
-  if (typeof globalThis !== 'undefined') (globalThis as any).__communityDataInit = true
+  if (typeof globalThis !== 'undefined') (globalThis as CommunityGlobal).__communityDataInit = true
 
   // 追加问答（8条新）
   QUESTIONS.push(
@@ -416,20 +417,20 @@ if (!_initialized) {
     { id:'s10',title:'和傣族孩子学做"毫崩"（傣族年糕）',likes:52, content:'手工课那天，班里傣族孩子们的奶奶们主动来到学校教大家做"毫崩"——一种用糯米和芭蕉叶包的传统食物。整个教室变成了厨房。', author:A2.xueli,images:['🍚'],teamName:'彩云之南志愿队',location:'云南西双版纳', tags:['傣族文化','手工课','家校互动','传统文化'], comments:[],createdAt:'2026-07-31'},
     { id:'s11',title:'"老师，这是我用一个月攒的钱买的"',likes:133, content:'结营前一天，一个叫阿木的彝族男孩塞给我一个塑料袋。打开一看，是一支崭新的钢笔，标价18元。他每天上学走5公里山路，把每天2元零花钱攒了一个月。那支钢笔现在还放在我的书桌上，我没有用过一次。', author:A2.ting,images:['🖊️'],teamName:'阳光支教队',location:'四川美姑', tags:['彝族','学生礼物','感动','贫困'], comments:[{ id:'sc21',content:'看哭了。这些孩子给你的东西比任何东西都重。',author:AUTHORS.zhao,createdAt:'2026-08-01'}],createdAt:'2026-08-01'},
     { id:'s12',title:'用一部老式胶片相机记录下的支教12天',likes:98, content:'带去了一台理光胶片相机。一卷36张，每天只拍3张。胶卷洗出来的时候我哭了——因为那36帧里，没有一张是我自己的自拍。每一张都是他们。', author:A2.fang,images:['📷'],teamName:'青苗助学计划',location:'甘肃天水', tags:['胶片摄影','记录','离别','12天'], comments:[],createdAt:'2026-08-01'},
-    { id:'s13',title:'"老师，你能教我写自己的名字吗？"',likes:188, content:'支教第3天才发现班里有个女孩不认识自己的名字。我花了整整一节课教她。当她说"老师，这个名字真好看"的时候——那是我第一次，让她看见了自己的名字。', author:A2.ting,images:['✍️'],teamName:'阳光支教队',location:'四川美姑', tags:['识字','彝族','名字'], comments:[{ id:'sc22',content:'让她看见了自己的名字——这句话太有力量了。',author:AUTHORS.zhao,createdAt:'2026-08-02'}],createdAt:'2026-08-02'},
-    { id:'s14',title:'我们不是来"帮助"的——我们是来"学习"的',likes:67, content:'支教结束后很多人问我帮助了多少孩子。我回答不上来。是孩子教我怎么用树叶吹出鸟叫声。是11岁男孩告诉我"读书不是为了离开山里"。他们教会我的，远比我教给他们的多。', author:A2.xueli,images:['🌿'],teamName:'彩云之南志愿队',location:'云南西双版纳', tags:['支教反思','双向成长','公益理念','初心'], comments:[],createdAt:'2026-08-02'},
-    { id:'s15',title:'一年后，收到了支教学生的来信',likes:215, content:'支教结束一周年那天，收到了7封信。一封封打开：有人考了98分，有人学会了用电脑，有人问"你什么时候回来"。支教结束了365天，但好像从来没有真正离开过。', author:AUTHORS.han,images:['✉️'],teamName:'凡星支教队',location:'四川筠连', tags:['一年后','学生来信','成长','联结'], comments:[{ id:'sc24',content:'我也收到了！！去年支教的孩子们给我寄了明信片，哭了一下午。',author:A2.xueli,createdAt:'2026-08-03'}],createdAt:'2026-08-03'},
-    { id:'s16',title:'乡村小学的第一场"科技节"',likes:104, content:'用瓶盖、吸管、橡皮筋和纸板给全校办了一场科技节。纸杯传声筒、吸管火箭、橡皮筋动力车……没有3D打印，没有Arduino，但孩子们的眼睛比任何一个科技馆里的城里孩子都亮。', author:A2.dapeng,images:['🔬'],teamName:'筑梦支教团',location:'宁夏固原', tags:['科技节','科学教育','低成本','创造力'], comments:[],createdAt:'2026-08-03'},
+    { id:'s13',title:'"老师，你能教我写自己的名字吗？"',likes:188, content:'支教第3天才发现班里有个女孩不认识自己的名字。我花了整整一节课教她。当她说"老师，这个名字真好看"的时候——那是我第一次，让她看见了自己的名字。', author:A2.ting,images:['✍️'],teamName:'阳光支教队',location:'四川美姑', tags:['识字','彝族','名字'], comments:[{ id:'sc22',content:'让她看见了自己的名字——这句话太有力量了。',author:AUTHORS.zhao,createdAt:'2026-08-02'}],createdAt:'2026-07-28'},
+    { id:'s14',title:'我们不是来"帮助"的——我们是来"学习"的',likes:67, content:'支教结束后很多人问我帮助了多少孩子。我回答不上来。是孩子教我怎么用树叶吹出鸟叫声。是11岁男孩告诉我"读书不是为了离开山里"。他们教会我的，远比我教给他们的多。', author:A2.xueli,images:['🌿'],teamName:'彩云之南志愿队',location:'云南西双版纳', tags:['支教反思','双向成长','公益理念','初心'], comments:[],createdAt:'2026-07-28'},
+    { id:'s15',title:'一年后，收到了支教学生的来信',likes:215, content:'支教结束一周年那天，收到了7封信。一封封打开：有人考了98分，有人学会了用电脑，有人问"你什么时候回来"。支教结束了365天，但好像从来没有真正离开过。', author:AUTHORS.han,images:['✉️'],teamName:'凡星支教队',location:'四川筠连', tags:['一年后','学生来信','成长','联结'], comments:[{ id:'sc24',content:'我也收到了！！去年支教的孩子们给我寄了明信片，哭了一下午。',author:A2.xueli,createdAt:'2026-08-03'}],createdAt:'2026-07-29'},
+    { id:'s16',title:'乡村小学的第一场"科技节"',likes:104, content:'用瓶盖、吸管、橡皮筋和纸板给全校办了一场科技节。纸杯传声筒、吸管火箭、橡皮筋动力车……没有3D打印，没有Arduino，但孩子们的眼睛比任何一个科技馆里的城里孩子都亮。', author:A2.dapeng,images:['🔬'],teamName:'筑梦支教团',location:'宁夏固原', tags:['科技节','科学教育','低成本','创造力'], comments:[],createdAt:'2026-07-29'},
   )
   // 追加招募（7条新）
   RECRUITS.push(
     { id:'r9',type:'volunteer_wanted',status:'active', title:'青海海东市民和县急需中学生支教队', content:'海东市民和县官亭镇中心学校急需支教队伍。初中+小学共800名学生，40%为回族和土族。提供教师周转房。需求：英语、数学、物理、体育。', author:{ id:'g4',name:'民和县教育局',avatar:'🏫',role:'govt',verified:true,badge:'青海海东民和县教育局',location:'青海海东'},region:'青海海东市民和县', tags:['青海','回族','土族','800名学生'],deadline:'2027-06-20', contact:'电话: 0972-XXXXXXX',views:234,createdAt:'2026-08-01'},
     { id:'r10',type:'team_recruit',status:'active', title:'筑梦支教团2027暑期招募—6年深耕陕甘宁', content:'西安交通大学筑梦支教团招募2027暑期队员。服务地：宁夏固原、甘肃天水、陕西商洛。时长15-18天。招募25-30人。特色课程：AI启蒙、科技制作、历史故事、书法。', author:{...A2.dapeng,role:'official',badge:'筑梦支教团·副队长'},region:'宁夏固原/甘肃天水/陕西商洛', tags:['西安交大','陕甘宁','6年','25-30人'],deadline:'2027-05-31', contact:'公众号: 筑梦支教团',views:234,createdAt:'2026-08-01'},
     { id:'r11',type:'material_request',status:'active', title:'青海玉树称多县支教点急需保暖物资', content:'玉树称多县海拔4200米，8月份晚上温度只有5度左右，冬季可达-25度。急需保暖睡袋×30、羽绒服×30（6-12岁）、加厚棉被×20、保温杯×50。', author:{ id:'v10',name:'追光者支教队',avatar:'💫',role:'official',verified:true,badge:'追光者支教队·物资组',location:'青海玉树'},region:'青海玉树称多县', tags:['高寒','保暖物资','睡袋','羽绒服','青海'],deadline:'2026-08-15', contact:'微信: zhuiguangzhe_team',views:189,createdAt:'2026-08-02'},
-    { id:'r12',type:'volunteer_wanted',status:'active', title:'西藏日喀则市南木林县招募首个支教队伍', content:'南木林县目前还没有任何支教队伍对接。完全小学600名学生，80%藏族。有藏语基础的优先，会唱歌跳舞的优先（藏族孩子特别喜欢文艺活动）。', author:{ id:'g5',name:'日喀则市教育局',avatar:'🏛️',role:'govt',verified:true,badge:'西藏日喀则市教育局',location:'西藏日喀则'},region:'西藏日喀则南木林县', tags:['西藏','藏族','首个支教队','600名学生'],deadline:'2027-06-01', contact:'电话: 0892-XXXXXXX',views:432,createdAt:'2026-08-03'},
-    { id:'r13',type:'self_recommend',status:'active', title:'美术专业毕业生，想用画笔记录100个支教瞬间', content:'中国美术学院插画专业应届毕业生，女，24岁。我想去支教队里做"随队画家"——每天用画笔记录课堂上的孩子们。最后做成绘本《100个山里孩子的笑脸》。自带画材，自理交通。', author:{ id:'p5',name:'小美',avatar:'美',role:'public',verified:false,badge:'中国美术学院·插画专业',location:'浙江杭州'},region:'不限', tags:['画家','记录','绘本','艺术'], contact:'微信: xiaomei_art2026',views:756,createdAt:'2026-08-03'},
-    { id:'r14',type:'team_recruit',status:'active', title:'彩云之南志愿队2027招募—边疆少数民族教育', content:'云南大学彩云之南志愿队招募2027暑期队员。服务地：西双版纳（傣族）、怒江（傈僳族）、迪庆（藏族）。特色项目：民族文化传承、边疆地理科普、东南亚语兴趣课。', author:{...A2.xueli,role:'official',badge:'彩云之南志愿队·队长'},region:'云南西双版纳/怒江/迪庆', tags:['云南','少数民族','傣族','藏族','边疆'],deadline:'2027-05-15', contact:'公众号: 彩云之南志愿队',views:312,createdAt:'2026-08-03'},
-    { id:'r15',type:'material_request',status:'active', title:'河南信阳乡村小学募集教学一体机', content:'信阳市商城县汪桥镇中心小学唯一的投影仪用了12年坏掉了。希望能募集到1-2台闲置的教学一体机（带触摸屏那种），新旧均可。', author:{...A2.zhang2,role:'official',badge:'汪桥镇中心小学校长'},region:'河南信阳商城县', tags:['教学设备','一体机','河南','600人','多媒体'],deadline:'2026-09-01', contact:'手机: 136XXXX2345',views:201,createdAt:'2026-08-04'},
+    { id:'r12',type:'volunteer_wanted',status:'active', title:'西藏日喀则市南木林县招募首个支教队伍', content:'南木林县目前还没有任何支教队伍对接。完全小学600名学生，80%藏族。有藏语基础的优先，会唱歌跳舞的优先（藏族孩子特别喜欢文艺活动）。', author:{ id:'g5',name:'日喀则市教育局',avatar:'🏛️',role:'govt',verified:true,badge:'西藏日喀则市教育局',location:'西藏日喀则'},region:'西藏日喀则南木林县', tags:['西藏','藏族','首个支教队','600名学生'],deadline:'2027-06-01', contact:'电话: 0892-XXXXXXX',views:432,createdAt:'2026-07-29'},
+    { id:'r13',type:'self_recommend',status:'active', title:'美术专业毕业生，想用画笔记录100个支教瞬间', content:'中国美术学院插画专业应届毕业生，女，24岁。我想去支教队里做"随队画家"——每天用画笔记录课堂上的孩子们。最后做成绘本《100个山里孩子的笑脸》。自带画材，自理交通。', author:{ id:'p5',name:'小美',avatar:'美',role:'public',verified:false,badge:'中国美术学院·插画专业',location:'浙江杭州'},region:'不限', tags:['画家','记录','绘本','艺术'], contact:'微信: xiaomei_art2026',views:756,createdAt:'2026-07-29'},
+    { id:'r14',type:'team_recruit',status:'active', title:'彩云之南志愿队2027招募—边疆少数民族教育', content:'云南大学彩云之南志愿队招募2027暑期队员。服务地：西双版纳（傣族）、怒江（傈僳族）、迪庆（藏族）。特色项目：民族文化传承、边疆地理科普、东南亚语兴趣课。', author:{...A2.xueli,role:'official',badge:'彩云之南志愿队·队长'},region:'云南西双版纳/怒江/迪庆', tags:['云南','少数民族','傣族','藏族','边疆'],deadline:'2027-05-15', contact:'公众号: 彩云之南志愿队',views:312,createdAt:'2026-07-27'},
+    { id:'r15',type:'material_request',status:'active', title:'河南信阳乡村小学募集教学一体机', content:'信阳市商城县汪桥镇中心小学唯一的投影仪用了12年坏掉了。希望能募集到1-2台闲置的教学一体机（带触摸屏那种），新旧均可。', author:{...A2.zhang2,role:'official',badge:'汪桥镇中心小学校长'},region:'河南信阳商城县', tags:['教学设备','一体机','河南','600人','多媒体'],deadline:'2026-09-01', contact:'手机: 136XXXX2345',views:201,createdAt:'2026-07-30'},
   )
 }
 
