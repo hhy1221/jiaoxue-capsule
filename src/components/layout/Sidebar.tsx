@@ -56,6 +56,7 @@ export default function Sidebar() {
   const pathname = usePathname()
   const [hoveredHref, setHoveredHref] = useState<string | null>(null)
   const [pressingHref, setPressingHref] = useState<string | null>(null)
+  const [asideExited, setAsideExited] = useState(0)
 
   const asideRef = useRef<HTMLElement>(null)
   const navRef = useRef<HTMLElement>(null)
@@ -64,7 +65,6 @@ export default function Sidebar() {
 
   const glowRaf = useRef<number>(undefined)
   const ribbonRaf = useRef<number>(undefined)
-  const restoreTimer = useRef<ReturnType<typeof setTimeout>>(undefined)
 
   const isActive = (href: string, exact?: boolean) =>
     exact ? pathname === href : pathname.startsWith(href)
@@ -180,38 +180,38 @@ export default function Sidebar() {
   /* ── hover 变化 → 光斑+缎带追踪 ── */
   useEffect(() => {
     if (hoveredHref) {
-      // 有新的 hover → 取消任何待执行的"回归"定时器
-      if (restoreTimer.current) { clearTimeout(restoreTimer.current); restoreTimer.current = undefined }
       animateGlowTo(hoveredHref)
       animateRibbonTo(hoveredHref, true)
-    } else {
-      // 光标离开了某项 → 延迟 180ms 再回归激活项
-      // 如果 180ms 内又 hover 了别的东西，这个定时器会被上面的 clearTimeout 取消
-      const href = findActiveHref()
-      if (href) {
-        restoreTimer.current = setTimeout(() => {
-          animateGlowTo(href)
-          animateRibbonTo(href)
-        }, 180)
-      }
     }
+    // hoveredHref=null 时不做任何事 — 光斑停在原位等待下次 hover 或离开侧边栏
   }, [hoveredHref])
+
+  /* ── 离开侧边栏 → 回归激活项 ── */
+  useEffect(() => {
+    if (asideExited === 0) return
+    const href = findActiveHref()
+    if (href) {
+      animateGlowTo(href)
+      animateRibbonTo(href)
+    }
+  }, [asideExited])
 
   /* ── 清理 ── */
   useEffect(() => () => {
     if (glowRaf.current) cancelAnimationFrame(glowRaf.current)
     if (ribbonRaf.current) cancelAnimationFrame(ribbonRaf.current)
-    if (restoreTimer.current) clearTimeout(restoreTimer.current)
   }, [])
 
   return (
     <>
-      <aside ref={asideRef} className="fixed left-0 top-0 h-full z-40 w-[220px] flex flex-col"
+      <aside ref={asideRef}
+        className="fixed left-0 top-0 h-full z-40 w-[220px] flex flex-col"
         style={{
           background: 'linear-gradient(175deg,#fefcf8 0%,#fdf9f2 20%,#fcf6ec 50%,#fdf9f3 80%,#fefcf8 100%)',
           borderRight: '1.5px solid rgba(200,180,160,0.22)',
           boxShadow: '3px 0 20px rgba(80,40,20,0.04)',
-        }}>
+        }}
+        onMouseLeave={() => { setAsideExited(c => c + 1) }}>
 
         {/* Logo */}
         <div className="px-5 pt-7 pb-4">
