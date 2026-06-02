@@ -64,8 +64,14 @@ export default function SocialPage() {
         <div key={p.id} className="picture-book-card tape-top mb-5 break-inside-avoid overflow-hidden"
           style={{transform:`rotate(${i%2===0?'-0.25deg':'0.2deg'})`}}>
           {/* 作品展示 */}
-          <div className="flex items-center justify-center p-6"
-            style={{background:'linear-gradient(180deg,rgba(240,235,220,0.4),transparent)',fontSize:56}}>{p.image}</div>
+          {p.image.startsWith('/') ? (
+            <div style={{height:220,overflow:'hidden'}}>
+              <img src={p.image} alt={p.studentName+'的作品'} className="w-full h-full object-cover"/>
+            </div>
+          ) : (
+            <div className="flex items-center justify-center p-6"
+              style={{background:'linear-gradient(180deg,rgba(240,235,220,0.4),transparent)',fontSize:56}}>{p.image}</div>
+          )}
 
           <div className="px-4 pb-4">
             {/* 学生信息 */}
