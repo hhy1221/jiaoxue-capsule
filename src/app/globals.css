@@ -375,6 +375,15 @@ main.page-enter .picture-book-card { opacity: 0; }
   100% { opacity: 1; transform: translateY(0) rotate(0deg) scale(1); }
 }
 
+/* 手写标题 — 从左到右一笔一划写出 */
+@keyframes handwriteReveal {
+  from { clip-path: inset(0 100% 0 0); }
+  to   { clip-path: inset(0 0 0 0); }
+}
+.handwrite-title {
+  animation: handwriteReveal 1.8s cubic-bezier(0.65,0,0.35,1) both;
+}
+
 /* 滚动条 */
 /* 锁死滚动条避免缎带水平跳动 */
 html { overflow-y: scroll; }

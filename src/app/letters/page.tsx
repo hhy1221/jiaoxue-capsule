@@ -189,7 +189,9 @@ export default function LettersPage() {
                     style={{ color: 'var(--faded)' }}>
                     {TONE_EMOJIS[selected.tone]} {TONE_LABELS[selected.tone]} · 致{selected.studentName}同学
                   </div>
-                  <h2 className="handwriting text-[46px] font-normal tracking-[0.06em] leading-tight mb-3.5 max-sm:text-[34px]"
+                  <h2
+                    key={selected.id}
+                    className="handwrite-title handwriting text-[46px] font-normal tracking-[0.06em] leading-tight mb-3.5 max-sm:text-[34px]"
                     style={{ color: 'var(--ink)' }}>
                     {selected.title || `致 ${selected.studentName}`}
                   </h2>
