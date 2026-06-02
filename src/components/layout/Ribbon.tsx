@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useLayoutEffect } from 'react'
+import { useRef, useLayoutEffect, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 
 /**
@@ -24,9 +24,9 @@ export default function Ribbon() {
   const innerRef = useRef<HTMLDivElement>(null)
   const prevPathname = useRef(pathname)
   const busyRef = useRef(false)
+  const returningHome = useRef(false) // 标记来自 return-home 事件
   const isHome = pathname === '/'
 
-  // 水平摇摆（布料惯性）
   function startSway() {
     const inner = innerRef.current
     if (!inner) return
@@ -34,6 +34,35 @@ export default function Ribbon() {
     void inner.offsetHeight
     inner.style.animation = 'ribbonSway 0.7s ease-out both'
   }
+
+  // ═══ 监听 return-home → 缎带快速下拉随后立即回弹，与幕布下滑同步 ═══
+  useEffect(() => {
+    const handler = () => {
+      const outer = outerRef.current
+      if (!outer) return
+      returningHome.current = true
+
+      // 缎带快速落到 70vh（200ms）
+      outer.style.transition = 'none'
+      outer.style.height = '110px'
+      void outer.offsetHeight
+      requestAnimationFrame(() => {
+        if (!outer) return
+        outer.style.transition = 'height 0.2s cubic-bezier(0.22,0.61,0.36,1)'
+        outer.style.height = '70vh'
+      })
+
+      // 落地后立即弹回（180ms 后开始）
+      setTimeout(() => {
+        if (!outer) return
+        outer.style.transition = EASE_PULL
+        outer.style.height = '110px'
+        setTimeout(startSway, 350)
+      }, 200)
+    }
+    window.addEventListener('return-home', handler)
+    return () => window.removeEventListener('return-home', handler)
+  }, [])
 
   useLayoutEffect(() => {
     const outer = outerRef.current
@@ -45,8 +74,11 @@ export default function Ribbon() {
     /* ─────────── 在首页 ─────────── */
     if (isHome) {
       busyRef.current = false
-      if (isNavigation) {
-        // 从内页返回 → 缎带先下拉，幕布下滑后回弹
+      if (isNavigation && returningHome.current) {
+        // return-home 事件已启动完整动画（下拉+回弹），此处不重复
+        returningHome.current = false
+      } else if (isNavigation) {
+        // 浏览器回退 or 地址栏输入 → 正常流程
         outer.style.transition = 'none'
         outer.style.height = '110px'
         void outer.offsetHeight
@@ -55,7 +87,6 @@ export default function Ribbon() {
           outer.style.transition = EASE_DROP
           outer.style.height = '70vh'
         })
-        // 幕布下滑 ~500ms 后回弹 + 摇摆
         setTimeout(() => {
           if (!outer) return
           outer.style.transition = EASE_PULL
