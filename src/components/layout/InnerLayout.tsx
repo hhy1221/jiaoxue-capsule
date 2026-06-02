@@ -12,20 +12,15 @@ const ANIM_MODE: Record<string, 'sides'|'elastic'|'blur'|'scale'> = {
 
 export default function InnerLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
-  const [ribbonH, setRibbonH] = useState('70vh')
   const [sidebarSlide, setSidebarSlide] = useState(false)
   const animSeq = useRef(0)
 
-  // 缎带 + 侧边栏
+  // 侧边栏滑入（缎带已由 Ribbon 组件统一处理）
   useEffect(() => {
-    const t = setTimeout(() => setRibbonH('110px'), 50)
-
     if (sessionStorage.getItem('from-home') === '1') {
       sessionStorage.removeItem('from-home')
       setSidebarSlide(true)
     }
-
-    return () => clearTimeout(t)
   }, [])
 
   // 卡片动画 — pathname 变化时触发
@@ -51,26 +46,6 @@ export default function InnerLayout({ children }: { children: React.ReactNode })
 
   return (
     <>
-      {/* 书签缎带 — 阶段2：从70vh回弹到110px */}
-      <div className="fixed right-[28px] top-0 z-50 pointer-events-none max-md:hidden"
-        style={{
-          height: ribbonH,
-          overflow: 'hidden',
-          transition: 'height 0.45s cubic-bezier(0.34,1.56,0.64,1)',
-        }}>
-        <div className="w-[28px] min-h-[110px] rounded-b-md"
-          style={{
-            background: 'linear-gradient(180deg, #c8a888 0%, #b89878 40%, #c8a888 100%)',
-            boxShadow: '0 2px 8px rgba(80,40,20,0.12)',
-          }}>
-          <div className="absolute -bottom-1 left-1 right-1 h-2 rounded-b"
-            style={{
-              background: 'linear-gradient(180deg, rgba(200,168,136,0.6), transparent)',
-            }}
-          />
-        </div>
-      </div>
-
       {/* 侧边栏 — 仅从首页进入时滑入 */}
       <div style={sidebarSlide ? {animation:'slideInLeft 0.45s cubic-bezier(0.16,1,0.3,1)'} : {}}>
         <Sidebar />

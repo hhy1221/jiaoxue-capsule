@@ -3,6 +3,7 @@ import { Noto_Serif_SC, Noto_Sans_SC } from "next/font/google"
 import "./globals.css"
 import { SkinProvider } from "@/lib/skin-context"
 import HeroCurtain from "@/components/layout/HeroCurtain"
+import Ribbon from "@/components/layout/Ribbon"
 
 const notoSerif = Noto_Serif_SC({
   variable: "--font-serif", subsets: ["latin"],
@@ -27,6 +28,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="font-[family-name:var(--font-sans)]">
         <SkinProvider>
           <HeroCurtain />
+          <Ribbon />
           {children}
         </SkinProvider>
       </body>

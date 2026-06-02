@@ -12,13 +12,11 @@ export default function HeroCurtain() {
   const [showLogin, setShowLogin] = useState(false)
 
   const curtainRef = useRef<HTMLDivElement>(null)
-  const ribbonRef = useRef<HTMLDivElement>(null)
   const busyRef = useRef(false)
   const prevPathname = useRef(pathname)
 
   useLayoutEffect(() => {
     const curtain = curtainRef.current
-    const ribbon = ribbonRef.current
     if (!curtain) return
 
     const curtailVal = typeof sessionStorage !== 'undefined' ? sessionStorage.getItem('curtain') : null
@@ -40,24 +38,10 @@ export default function HeroCurtain() {
           curtain.style.transition = 'transform 0.5s cubic-bezier(0.34,1.56,0.64,1)'
           curtain.style.transform = 'translateY(0)'
         })
-        if (ribbon) {
-          ribbon.style.transition = 'none'
-          ribbon.style.height = '70vh'
-          void ribbon.offsetHeight
-          requestAnimationFrame(() => {
-            if (!ribbon) return
-            ribbon.style.transition = 'height 0.4s cubic-bezier(0.34,1.56,0.64,1)'
-            ribbon.style.height = '110px'
-          })
-        }
       } else {
         // 初始加载首页
         curtain.style.display = 'block'
         curtain.style.transform = 'translateY(0)'
-        if (ribbon) {
-          ribbon.style.transition = 'none'
-          ribbon.style.height = '110px'
-        }
       }
       return
     }
@@ -73,26 +57,14 @@ export default function HeroCurtain() {
       curtain.style.transition = 'none'
       curtain.style.transform = 'translateY(0)'
 
-      // 阶段 1：缎带下拉
-      if (ribbon) {
-        ribbon.style.transition = 'none'
-        ribbon.style.height = '110px'
-        void ribbon.offsetHeight
-        requestAnimationFrame(() => {
-          if (!ribbon) return
-          ribbon.style.transition = 'height 0.45s cubic-bezier(0.34,1.56,0.64,1)'
-          ribbon.style.height = '70vh'
-        })
-      }
-
-      // 阶段 2：幕布上滑（稍晚于缎带）
+      // 幕布上滑（缎带由 Ribbon 组件独立处理）
       const t1 = setTimeout(() => {
         if (!curtain) return
         curtain.style.transition = 'transform 0.5s cubic-bezier(0.65,0,0.35,1)'
         curtain.style.transform = 'translateY(-105vh)'
       }, 80)
 
-      // 阶段 3：动画结束后隐藏幕布
+      // 动画结束后隐藏幕布
       const t2 = setTimeout(() => {
         if (!curtain) return
         curtain.style.display = 'none'
@@ -108,10 +80,6 @@ export default function HeroCurtain() {
     /* ─────────── 直接访问内页 → 隐藏幕布 ─────────── */
     if (!busyRef.current) {
       curtain.style.display = 'none'
-      if (ribbon) {
-        ribbon.style.transition = 'none'
-        ribbon.style.height = '110px'
-      }
     }
   }, [pathname, isHome])
 
@@ -119,6 +87,7 @@ export default function HeroCurtain() {
     e.preventDefault()
     sessionStorage.setItem('from-home', '1')
     sessionStorage.setItem('curtain', '1')
+    sessionStorage.setItem('ribbon-drop', '1')
     router.push(path)
   }, [router])
 
@@ -135,20 +104,6 @@ export default function HeroCurtain() {
         transform: 'translateY(0)',
         pointerEvents: isHome ? 'auto' : 'none',
       }}>
-      {/* 缎带 */}
-      <div ref={ribbonRef} style={{
-        position: 'fixed', right: 28, top: 0, zIndex: 1000, width: 28,
-        height: '110px',
-        pointerEvents: 'none', overflow: 'hidden',
-      }}>
-        <div style={{
-          width: 28, minHeight: '100%',
-          background: 'linear-gradient(180deg,#c8a888,#b89878 40%,#c8a888 100%)',
-          borderRadius: '0 0 6px 6px',
-          boxShadow: '0 2px 8px rgba(80,40,20,0.12)',
-        }} />
-      </div>
-
       {/* 全屏大图背景 */}
       <div className="fixed inset-0 z-0" style={{ background: "url('/images/bg-hero.webp') center/cover no-repeat" }} />
 
