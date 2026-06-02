@@ -2,6 +2,8 @@
 import { MOCK_DASHBOARD, MOCK_NOTIFICATIONS } from '@/lib/mock-data'
 import Link from 'next/link'
 import { TrendingUp, Bell, Calendar, Users, BookOpen, Camera, PenLine, Sparkles } from 'lucide-react'
+import CountUp from '@/components/animations/CountUp'
+import { useEffect, useRef } from 'react'
 
 const QUICK_ACTIONS=[
   {e:'👧',l:'新建学生',h:'/students'},{e:'📝',l:'写评语',h:'/students'},
@@ -15,6 +17,24 @@ export default function DashboardPage() {
   const d=MOCK_DASHBOARD
   STATS[0].value=d.studentCount;STATS[1].value=d.diaryCount;STATS[2].value=d.photoCount;STATS[3].value=d.classCount
   const maxTag=Math.max(...d.tagDistribution.map(t=>t.count))
+
+  // 标签条藤蔓生长
+  const barRefs = useRef<(HTMLDivElement|null)[]>([])
+  useEffect(() => {
+    const bars = barRefs.current.filter(Boolean) as HTMLDivElement[]
+    bars.forEach((bar, i) => {
+      const targetWidth = bar.dataset.width || '0%'
+      // 初始清零
+      bar.style.transition = 'none'
+      bar.style.width = '0%'
+      void bar.offsetHeight
+      // 生长动画
+      setTimeout(() => {
+        bar.style.transition = 'width 0.7s cubic-bezier(0.16,1,0.3,1)'
+        bar.style.width = targetWidth
+      }, 300 + i * 120)
+    })
+  }, [])
   return (<>
     <header className="flex items-center justify-between pb-[22px] mb-5 flex-wrap gap-3 relative" style={{borderBottom:'1.5px solid rgba(180,160,130,0.25)'}}>
       <div>
@@ -28,11 +48,11 @@ export default function DashboardPage() {
     <div className="grid grid-cols-[repeat(auto-fill,minmax(160px,1fr))] gap-4 mb-6">
       {STATS.map((s,i)=>(<div key={s.label} className="picture-book-card p-4 flex items-center gap-4 cursor-default hover:-translate-y-1 hover:shadow-md transition-all duration-300" style={{transform:`rotate(${i%2===0?'-0.2deg':'0.15deg'})`}}>
         <div className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0" style={{background:s.bg,color:s.color}}><s.icon size={20}/></div>
-        <div><p className="text-[24px] font-bold text-[var(--ink)]" style={{fontFamily:'var(--font-serif)'}}>{s.value}</p><p className="text-[10px] tracking-[0.08em]" style={{color:'var(--faded)'}}>{s.label}</p></div>
+        <div><p className="text-[24px] font-bold" style={{fontFamily:'var(--font-serif)',color:'var(--ink)'}}><CountUp target={s.value} style={{color:'var(--ink)'}} /></p><p className="text-[10px] tracking-[0.08em]" style={{color:'var(--faded)'}}>{s.label}</p></div>
       </div>))}
       <div className="picture-book-card p-4 flex items-center gap-4 cursor-default hover:-translate-y-1 hover:shadow-md transition-all duration-300" style={{transform:'rotate(-0.15deg)',borderColor:'rgba(122,180,90,0.25)'}}>
         <div className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0" style={{background:'rgba(122,180,90,0.08)',color:'#6aaa50'}}><TrendingUp size={20}/></div>
-        <div><p className="text-[24px] font-bold text-green-600" style={{fontFamily:'var(--font-serif)'}}>↑{d.activeTrend}%</p><p className="text-[10px] tracking-[0.08em]" style={{color:'var(--faded)'}}>活跃度</p></div>
+        <div><p className="text-[24px] font-bold text-green-600" style={{fontFamily:'var(--font-serif)'}}>↑<CountUp target={d.activeTrend} suffix="%" style={{color:'#6aaa50'}} /></p><p className="text-[10px] tracking-[0.08em]" style={{color:'var(--faded)'}}>活跃度</p></div>
       </div>
     </div>
 
@@ -48,7 +68,24 @@ export default function DashboardPage() {
           {d.tagDistribution.map((t,i)=>(<div key={t.name} className="flex items-center gap-3 group cursor-default">
             <span className="text-[11px] w-16 flex-shrink-0 text-right font-medium text-[var(--ink-soft)]">{t.name}</span>
             <div className="flex-1 h-6 rounded-full overflow-hidden relative" style={{background:'rgba(210,195,170,0.12)'}}>
-              <div className="h-full rounded-full transition-all duration-700 ease-out group-hover:brightness-110" style={{width:`${(t.count/maxTag)*100}%`,background:`linear-gradient(90deg,rgba(200,140,80,${0.25+i*0.06}),rgba(200,140,80,${0.5+i*0.08}))`}}/>
+              <div
+                ref={el => { barRefs.current[i] = el }}
+                data-width={`${(t.count/maxTag)*100}%`}
+                className="h-full rounded-full group-hover:brightness-110 relative"
+                style={{
+                  background: `linear-gradient(90deg,rgba(200,140,80,${0.25+i*0.06}),rgba(200,140,80,${0.5+i*0.08}))`,
+                  width: `${(t.count/maxTag)*100}%`, // fallback
+                }}>
+                {/* 藤蔓末端的叶子 — 生长完成后显示 */}
+                <span className="absolute -right-1 top-1/2 -translate-y-1/2 block rounded-full"
+                  style={{
+                    width: 8, height: 6,
+                    background: `rgba(140,180,100,${0.3 + i * 0.1})`,
+                    opacity: 0,
+                    animation: `vineLeafAppear 0.3s ease-out ${0.9 + i * 0.12}s both`,
+                  }}
+                />
+              </div>
               {/* Label on bar */}
               <span className="absolute left-2 top-1/2 -translate-y-1/2 text-[9px] font-semibold text-[var(--ink)] whitespace-nowrap">{t.count}人</span>
             </div>

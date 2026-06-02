@@ -384,6 +384,12 @@ main.page-enter .picture-book-card { opacity: 0; }
   animation: handwriteReveal 1.8s cubic-bezier(0.65,0,0.35,1) both;
 }
 
+/* 藤蔓叶片出现 */
+@keyframes vineLeafAppear {
+  from { opacity: 0; transform: translateY(-50%) scale(0); }
+  to   { opacity: 1; transform: translateY(-50%) scale(1); }
+}
+
 /* 滚动条 */
 /* 锁死滚动条避免缎带水平跳动 */
 html { overflow-y: scroll; }
