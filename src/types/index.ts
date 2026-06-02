@@ -92,3 +92,61 @@ export const PRESET_SKINS: SkinConfig[] = [
 
 // ── 通知 ──
 export interface Notification { id: string; type: 'info' | 'warning' | 'success'; title: string; content: string; read: boolean; createdAt: string }
+
+// ═══════════════════════════════════════
+// 社区交流平台 v4
+// ═══════════════════════════════════════
+
+export type CommunityAuthorRole = 'teacher' | 'volunteer' | 'student' | 'official' | 'govt' | 'public'
+export type PostType = 'question' | 'story' | 'recruitment' | 'resource'
+export type QuestionSubject = 'math' | 'chinese' | 'english' | 'science' | 'art' | 'music' | 'pe' | 'psychology' | 'general' | 'other'
+export type RecruitmentType = 'team_recruit' | 'volunteer_wanted' | 'material_request' | 'self_recommend'
+
+export const SUBJECT_LABELS: Record<QuestionSubject, string> = {
+  math: '数学', chinese: '语文', english: '英语', science: '科学', art: '美术', music: '音乐', pe: '体育', psychology: '心理', general: '通识', other: '其他',
+}
+export const SUBJECT_EMOJIS: Record<QuestionSubject, string> = {
+  math: '🧮', chinese: '📖', english: '🌍', science: '🔬', art: '🎨', music: '🎵', pe: '⚽', psychology: '💭', general: '📚', other: '📌',
+}
+export const RECRUIT_LABELS: Record<RecruitmentType, string> = {
+  team_recruit: '支教队招新', volunteer_wanted: '支教地需求', material_request: '物资求助', self_recommend: '志愿者自荐',
+}
+export const RECRUIT_EMOJIS: Record<RecruitmentType, string> = {
+  team_recruit: '🌟', volunteer_wanted: '📍', material_request: '📦', self_recommend: '🙋',
+}
+
+export interface CommunityAuthor {
+  id: string; name: string; avatar: string; role: CommunityAuthorRole; verified: boolean; badge?: string; teamName?: string; location?: string
+}
+
+export interface CommunityQuestion {
+  id: string; title: string; content: string; author: CommunityAuthor; subject: QuestionSubject; gradeRange: string; region: string; tags: string[]; answers: CommunityAnswer[]; bestAnswerId?: string; status: 'open' | 'answered' | 'resolved'; views: number; likes: number; createdAt: string
+}
+
+export interface CommunityAnswer {
+  id: string; content: string; author: CommunityAuthor; likes: number; isAccepted: boolean; createdAt: string
+}
+
+export interface CommunityRecruit {
+  id: string; type: RecruitmentType; title: string; content: string; author: CommunityAuthor; region: string; tags: string[]; deadline?: string; contact: string; status: 'active' | 'closed'; views: number; createdAt: string
+}
+
+export interface CommunityStory {
+  id: string; title: string; content: string; author: CommunityAuthor; images: string[]; teamName: string; location: string; tags: string[]; likes: number; comments: CommunityComment[]; createdAt: string
+}
+
+export interface CommunityComment {
+  id: string; content: string; author: CommunityAuthor; createdAt: string
+}
+
+export interface StudentSocialPost {
+  id: string; studentName: string; studentAvatar: string; grade: string; school: string; content: string; image: string; type: 'artwork' | 'question' | 'greeting' | 'story'; likes: number; createdAt: string; verifiedBy: string; interestGroup?: string
+}
+
+export interface InterestGroup {
+  id: string; name: string; emoji: string; description: string; memberCount: number
+}
+
+export interface OfficialAccount {
+  id: string; name: string; avatar: string; type: 'team' | 'school' | 'govt'; verified: boolean; description: string; memberCount: number; location: string; activeSince: string
+}

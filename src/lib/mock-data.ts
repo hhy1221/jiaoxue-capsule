@@ -1,7 +1,7 @@
 // ═══════════════════════════════════════
 // 支教记忆胶囊 — 完整演示假数据 v3
 // ═══════════════════════════════════════
-import { Student, GrowthRecord, Letter, Schedule, Classroom, ClassroomMoment, Material, TeachingNote, Conversation, Message, Review, Announcement, Album, Resource, DashboardData, PenpalMatch, TreeholeMessage, DialectEntry, VideoScript, User, Team, Semester, Notification } from '@/types'
+import { Student, GrowthRecord, Letter, Schedule, Classroom, ClassroomMoment, Material, TeachingNote, Conversation, Message, Review, Announcement, Album, Resource, DashboardData, PenpalMatch, TreeholeMessage, DialectEntry, VideoScript, User, Team, Semester, Notification, CommunityQuestion, CommunityRecruit, CommunityStory, StudentSocialPost, InterestGroup, OfficialAccount } from '@/types'
 
 // ── 用户 ──
 export const MOCK_USER: User = { id: 'u1', name: '黄寒阳', email: 'huang@uestc.edu.cn', avatar: '黄', roles: ['captain', 'teacher'], teamId: 't1', createdAt: '2026-07-01' }
@@ -311,4 +311,207 @@ export const MOCK_NOTIFICATIONS: Notification[] = [
   { id: 'n1', type: 'success', title: 'AI临别信生成完成', content: '刘小宇的临别信已生成，点击查看', read: false, createdAt: '2026-07-30' },
   { id: 'n2', type: 'info', title: '新笔友匹配', content: '陈小雨和张欣怡匹配成功，匹配度82%', read: false, createdAt: '2026-07-29' },
   { id: 'n3', type: 'warning', title: '课表调整提醒', content: '明天的体育课调到上午9:20', read: true, createdAt: '2026-07-25' },
+]
+
+// ═══════════════════════════════════════
+// 社区交流平台 · 假数据 v4
+// ═══════════════════════════════════════
+
+export const MOCK_QUESTIONS: CommunityQuestion[] = [
+  {
+    id: 'q1', title: '如何在数学课上让三年级的孩子们保持注意力？', status: 'answered',
+    content: '我教的三年级数学课，孩子们上课到一半就开始走神。试过讲笑话、拍桌子，但效果不持久。有没有什么小游戏或者教学技巧能让40分钟的课堂一直保持活力？',
+    author: { id: 'v1', name: '小张老师', avatar: '张', role: 'volunteer', verified: true, badge: '凡星支教队', teamName: '凡星支教队', location: '四川筠连' },
+    subject: 'math', gradeRange: '2-4年级', region: '西南', tags: ['课堂管理', '注意力', '游戏教学', '小学数学'],
+    answers: [
+      { id: 'a1', content: '试试"数字接龙"游戏！每讲10分钟，停下来玩一轮。规则：老师说一个数字，学生站起来接龙（+3或×2）。错了就坐下，最后站着的得一颗星。既能复习运算，又让他们活动身体。我教了三年农村小学，这个方法百试不爽。', author: { id: 't1', name: '李老师', avatar: '李', role: 'teacher', verified: true, badge: '小学数学教师 · 15年教龄', location: '四川成都' }, likes: 28, isAccepted: true, createdAt: '2026-07-22' },
+      { id: 'a2', content: '农村孩子注意力容易分散很正常，别太焦虑。建议把40分钟拆成4段：5分钟复习+10分钟新课+5分钟游戏+10分钟新课+5分钟练习+5分钟总结。中间穿插身体律动，像"站起/坐下"指令游戏。', author: { id: 't2', name: '王老师', avatar: '王', role: 'teacher', verified: true, badge: '小学特级教师', location: '重庆' }, likes: 15, isAccepted: false, createdAt: '2026-07-23' },
+    ],
+    views: 342, likes: 24, createdAt: '2026-07-21',
+  },
+  {
+    id: 'q2', title: '语文写作课：怎么引导孩子写出真情实感？', status: 'open',
+    content: '班上有个孩子小雨，每次作文都是"今天很开心""今天天气很好"。她其实内心很细腻，但一到动笔就不会表达。有没有什么好的写作引导方法？',
+    author: { id: 'v1', name: '小张老师', avatar: '张', role: 'volunteer', verified: true, badge: '凡星支教队' },
+    subject: 'chinese', gradeRange: '1-3年级', region: '西南', tags: ['写作教学', '情感表达', '小学语文'],
+    answers: [],
+    views: 156, likes: 12, createdAt: '2026-07-23',
+  },
+  {
+    id: 'q3', title: '科学课没有实验器材怎么办？替代方案求助', status: 'answered',
+    content: '我们在贵州毕节支教，学校没有任何实验器材。这周要讲"水的三态变化"，没有酒精灯和烧杯。求低成本替代方案！',
+    author: { id: 'v2', name: '星辰支教队-阿杰', avatar: '杰', role: 'volunteer', verified: true, badge: '星辰支教队 · 队长', teamName: '星辰支教队', location: '贵州毕节' },
+    subject: 'science', gradeRange: '3-6年级', region: '西南', tags: ['实验器材', '低成本', '替代方案', '动手科学'],
+    answers: [
+      { id: 'a3', content: '用矿泉水瓶代替烧杯，蜡烛代替酒精灯，冰块从村里小卖部买。讲"蒸发"时，在黑板上用湿抹布写字，让孩子看字迹慢慢消失——这个实验零成本但孩子们记得最牢。', author: { id: 't3', name: '刘老师', avatar: '刘', role: 'teacher', verified: true, badge: '中学物理教师', location: '贵州贵阳' }, likes: 42, isAccepted: true, createdAt: '2026-07-24' },
+    ],
+    views: 489, likes: 56, createdAt: '2026-07-24',
+  },
+  {
+    id: 'q4', title: '体育课场地太小，如何设计60人的运动项目？', status: 'open',
+    content: '学校操场只有半个篮球场大，但有60个学生。之前分两组轮流，但等的那组就会闹。求小场地的体育课设计方案！',
+    author: { id: 'v3', name: '阳光支教队-小周', avatar: '周', role: 'volunteer', verified: true, badge: '阳光支教队', teamName: '阳光支教队', location: '四川凉山' },
+    subject: 'pe', gradeRange: '1-6年级', region: '西南', tags: ['体育课', '小场地', '大班额', '运动游戏'],
+    answers: [],
+    views: 203, likes: 18, createdAt: '2026-07-25',
+  },
+  {
+    id: 'q5', title: '心理课：怎么跟留守儿童聊"想爸爸妈妈"这件事？', status: 'answered',
+    content: '班上超过一半的孩子父母在外打工。有个孩子上课突然哭起来，说想妈妈了。我手足无措，不知道怎么安慰。求心理辅导技巧。',
+    author: { id: 'v4', name: '启明星-小陈', avatar: '陈', role: 'volunteer', verified: true, badge: '启明星支教队', teamName: '启明星支教队', location: '甘肃定西' },
+    subject: 'psychology', gradeRange: '1-6年级', region: '西北', tags: ['留守儿童', '心理辅导', '情感支持'],
+    answers: [
+      { id: 'a4', content: '不要急着转移注意力或说"别哭了"。先蹲下来抱抱他，等他哭完。然后可以跟他一起画一张"全家福"——画着画着，他会把思念变成画面。也可以让他写一封信给爸爸妈妈，你说你会帮忙寄出去。关键不是消除思念，而是让思念有一个出口。', author: { id: 't4', name: '赵老师', avatar: '赵', role: 'teacher', verified: true, badge: '国家二级心理咨询师', location: '陕西西安' }, likes: 67, isAccepted: true, createdAt: '2026-07-25' },
+    ],
+    views: 603, likes: 89, createdAt: '2026-07-25',
+  },
+  {
+    id: 'q6', title: '美术课材料费太贵，有没有用本地自然材料的方案？', status: 'resolved',
+    content: '支教经费有限，买的画纸和颜料很快就用完了。我们支教地附近有很多树叶、石头、泥土。有没有课程设计能就地取材？',
+    author: { id: 'v1', name: '小张老师', avatar: '张', role: 'volunteer', verified: true, badge: '凡星支教队' },
+    subject: 'art', gradeRange: '1-6年级', region: '西南', tags: ['美术课', '自然材料', '低成本', '环保'],
+    answers: [
+      { id: 'a5', content: '树叶拓印课！带孩子在校园里捡不同形状的叶子，涂上颜料（或者直接用湿叶子蘸墨水）印在纸上。石头画课：捡圆石头画动物/人脸，成本几乎为零。泥土可以做陶艺——虽然不能烧制，但捏泥人的过程本身就是最好的美术体验。', author: { id: 't5', name: '杨老师', avatar: '杨', role: 'teacher', verified: true, badge: '乡村美术教师', location: '四川泸州' }, likes: 35, isAccepted: true, createdAt: '2026-07-26' },
+    ],
+    views: 278, likes: 31, createdAt: '2026-07-26',
+  },
+]
+
+export const MOCK_RECRUITS: CommunityRecruit[] = [
+  {
+    id: 'r1', type: 'team_recruit', status: 'active',
+    title: '凡星支教队2027年暑期队员招募',
+    content: '电子科技大学凡星支教队招募2027年暑期支教队员。要求：在读本科生/研究生，有责任心和耐心，能完成完整13天支教。优先：有教学经验、有艺术特长、会摄影/视频制作。欢迎加入我们，把知识和温暖带到四川筠连！',
+    author: { id: 'u1', name: '黄寒阳', avatar: '黄', role: 'official', verified: true, badge: '凡星支教队 · 队长', teamName: '凡星支教队', location: '电子科技大学' },
+    region: '四川宜宾筠连县', tags: ['暑期支教', '大学生', '13天', '筠连'], deadline: '2027-06-15',
+    contact: '微信: fanxing_team / 邮箱: fanxing@uestc.edu.cn', views: 1203, createdAt: '2026-07-25',
+  },
+  {
+    id: 'r2', type: 'volunteer_wanted', status: 'active',
+    title: '云南红河州元阳县急需暑期支教队伍',
+    content: '元阳县牛角寨镇中心小学（海拔1800米）有120名小学生，目前没有固定的支教队伍对接。学校提供住宿（教师宿舍）和食堂，交通方便（距县城40分钟车程）。课程需求：英语启蒙、科学实验、音乐、美术。希望支教队人数15-25人，时长10-15天。',
+    author: { id: 'g1', name: '元阳县团委', avatar: '🏛️', role: 'govt', verified: true, badge: '云南省红河州元阳县团委', location: '云南红河' },
+    region: '云南红河州元阳县', tags: ['招募支教队', '小学', '120名学生', '提供住宿'], deadline: '2027-06-30',
+    contact: '电话: 0873-XXXXXXX / 联系人: 李书记', views: 856, createdAt: '2026-07-20',
+  },
+  {
+    id: 'r3', type: 'material_request', status: 'active',
+    title: '甘肃定西岷县支教点急需图书和体育器材',
+    content: '我们在岷县马坞镇支教，学校图书室只有200本书（大部分是90年代的旧书）。急需小学适读的绘本、科普、文学类书籍。同时体育器材只有两个破篮球，希望募集跳绳、足球、羽毛球拍等。',
+    author: { id: 'v4', name: '启明星支教队', avatar: '⭐', role: 'official', verified: true, badge: '启明星支教队', teamName: '启明星支教队', location: '甘肃定西' },
+    region: '甘肃定西岷县', tags: ['图书', '体育器材', '物资求助', '西部'], deadline: '2026-08-15',
+    contact: '邮箱: qimingxing@163.com / 微信: qimingxing_team', views: 634, createdAt: '2026-07-22',
+  },
+  {
+    id: 'r4', type: 'self_recommend', status: 'active',
+    title: '大二学生，暑假想去支教，求支教队收留！',
+    content: '我是西南大学大二数学系学生，男生，身体健康。性格温和有耐心，会打篮球和下围棋，可以教数学、体育和围棋课。家在成都，四川境内任何支教地都可以去。没有什么特殊技能，但有一颗真诚的心。',
+    author: { id: 'p1', name: '小林同学', avatar: '林', role: 'public', verified: false, badge: '西南大学 · 数学系大二', location: '四川成都' },
+    region: '四川境内', tags: ['志愿者', '大学生', '数学', '篮球', '围棋'], deadline: undefined,
+    contact: '微信: lin_math2026 / 邮箱: lin2024@swu.edu.cn', views: 245, createdAt: '2026-07-26',
+  },
+  {
+    id: 'r5', type: 'volunteer_wanted', status: 'closed',
+    title: '贵州黔东南州雷山县招募支教队（已结束）',
+    content: '雷山县方祥乡民族小学（苗族聚居区）招募暑期支教队伍，已找到合作队伍。',
+    author: { id: 'g2', name: '雷山县教育局', avatar: '🏫', role: 'govt', verified: true, badge: '贵州黔东南雷山县教育局', location: '贵州黔东南' },
+    region: '贵州黔东南州雷山县', tags: ['已结束', '苗族', '小学'], deadline: '2026-06-01',
+    contact: '已结束', views: 412, createdAt: '2026-05-15',
+  },
+]
+
+export const MOCK_STORIES: CommunityStory[] = [
+  {
+    id: 's1', title: '一个纸箱恐龙，让我看到孩子的无限创造力', likes: 89,
+    content: '今天手工课的主题是"变废为宝"。我抱了一堆废纸箱进教室，说大家可以做任何想做的东西。小宇花了整整一节课，用三个纸箱拼出了一只霸王龙——牙齿是牙签做的，鳞片是树叶贴的，尾巴还能摆动。他站在讲台上展示的时候，全班自发鼓掌。那一刻我突然明白：我们带来的不是知识，而是一把打开他们想象力之门的钥匙。',
+    author: { id: 'u1', name: '黄寒阳', avatar: '黄', role: 'teacher', verified: true, badge: '凡星支教队 · 队长', teamName: '凡星支教队' },
+    images: ['🦕', '📦', '🌟'], teamName: '凡星支教队', location: '四川筠连',
+    tags: ['手工课', '创造力', '学生故事', '感动'],
+    comments: [
+      { id: 'sc1', content: '这就是支教的意义所在！每一个孩子都是未被发现的宝藏。', author: { id: 't1', name: '李老师', avatar: '李', role: 'teacher', verified: true, badge: '小学教师' }, createdAt: '2026-07-23' },
+      { id: 'sc2', content: '求照片！想看看霸王龙长什么样 🦕', author: { id: 'p2', name: '热心网友小吴', avatar: '吴', role: 'public', verified: false }, createdAt: '2026-07-23' },
+    ],
+    createdAt: '2026-07-22',
+  },
+  {
+    id: 's2', title: '一个二年级女孩的信，读哭了三个老师', likes: 156,
+    content: '陈小雨用拼音和汉字混合写了她人生第一封给父母的信："爸爸妈妈，我在学校里hen好，老师们对我hen好。我学会了写自己的名字，还学会了画画。你们在外面不yao太lei，我会好好读书的。"——一个不到8岁的孩子，不抱怨父母的缺席，反而担心他们太累了。原来有些懂事，是让人心疼的。',
+    author: { id: 'u1', name: '黄寒阳', avatar: '黄', role: 'teacher', verified: true, badge: '凡星支教队 · 队长' },
+    images: ['✉️', '🌸', '💌'], teamName: '凡星支教队', location: '四川筠连',
+    tags: ['写信', '留守儿童', '感人', '父母'],
+    comments: [
+      { id: 'sc3', content: '看到这封信眼泪一下子就出来了。这些孩子懂事的让人心疼。', author: { id: 't3', name: '刘老师', avatar: '刘', role: 'teacher', verified: true }, createdAt: '2026-07-24' },
+    ],
+    createdAt: '2026-07-23',
+  },
+  {
+    id: 's3', title: '运动会上的"小队长"：10岁男孩的成长瞬间', likes: 67,
+    content: '今天是运动会。浩然被选为方阵小组长，他带着一年级的同学们喊口号、整队形。排练的时候嗓子都喊哑了还在坚持。更让我意外的是：他看到一年级的小朋友摔倒了，第一个跑过去扶起来。这个平时调皮捣蛋的孩子，在责任面前变得像个小大人。支教第5天，我看到了一个男孩的蜕变。',
+    author: { id: 'u1', name: '黄寒阳', avatar: '黄', role: 'teacher', verified: true, badge: '凡星支教队 · 队长' },
+    images: ['🏃', '🌟', '👦'], teamName: '凡星支教队', location: '四川筠连',
+    tags: ['运动会', '成长', '领导力', '责任'],
+    comments: [],
+    createdAt: '2026-07-24',
+  },
+  {
+    id: 's4', title: '支教地没有多媒体？我们用粉笔上了最生动的一课', likes: 134,
+    content: '学校只有一块黑板和一盒粉笔。但我们发现了粉笔的无限可能：语文老师用彩色粉笔画出了整篇课文的场景；数学老师用粉笔头教孩子们玩"跳数轴"游戏；美术老师在黑板上用粉笔末"吹画"。这些最原始的教学工具，反而激发了最纯粹的创造力。分享我们的粉笔画照片给所有"无多媒体"的支教同仁。',
+    author: { id: 'v2', name: '阿杰', avatar: '杰', role: 'volunteer', verified: true, badge: '星辰支教队', teamName: '星辰支教队', location: '贵州毕节' },
+    images: ['🖍️', '📋', '✨'], teamName: '星辰支教队', location: '贵州毕节',
+    tags: ['粉笔艺术', '无多媒体', '创意教学', '黑板'],
+    comments: [
+      { id: 'sc4', content: '这才是真正的教育！工具不重要，创造力才重要。', author: { id: 't1', name: '李老师', avatar: '李', role: 'teacher', verified: true }, createdAt: '2026-07-25' },
+    ],
+    createdAt: '2026-07-25',
+  },
+]
+
+export const MOCK_STUDENT_POSTS: StudentSocialPost[] = [
+  {
+    id: 'sp1', studentName: '小宇', studentAvatar: '🌟', grade: '三年级', school: '筠连县城南小学',
+    content: '今天我用废纸箱做了一只霸王龙！老师说我做得很棒，还让我上台给大家看。我想把这只恐龙送给我在成都的朋友——他会喜欢吗？',
+    image: '🦕', type: 'artwork', likes: 24, createdAt: '2026-07-22',
+    verifiedBy: '凡星支教队', interestGroup: '手工创意',
+  },
+  {
+    id: 'sp2', studentName: '小雨', studentAvatar: '🌻', grade: '二年级', school: '筠连县玉壶小学',
+    content: '我画了一幅画，是向日葵。因为老师说，向日葵总是追着太阳，就像我们要一直追着梦想。我还想交一个喜欢画画的朋友！',
+    image: '🌻', type: 'artwork', likes: 31, createdAt: '2026-07-23',
+    verifiedBy: '凡星支教队', interestGroup: '小画家',
+  },
+  {
+    id: 'sp3', studentName: '浩然', studentAvatar: '🚀', grade: '四年级', school: '筠连县城南小学',
+    content: '今天运动会上我当上了方阵组长！带着一年级的弟弟妹妹们喊口号，嗓子都喊哑了。我觉得领导力就是——让别人和自己一起变得更好！',
+    image: '🏃', type: 'story', likes: 18, createdAt: '2026-07-24',
+    verifiedBy: '凡星支教队', interestGroup: '运动小将',
+  },
+  {
+    id: 'sp4', studentName: '欣怡', studentAvatar: '🦋', grade: '一年级', school: '筠连县玉壶小学',
+    content: '今天老师教我们唱歌，我唱得最大声！我长大了想当一个歌手，给全世界的孩子们唱歌。',
+    image: '🎵', type: 'greeting', likes: 22, createdAt: '2026-07-25',
+    verifiedBy: '凡星支教队', interestGroup: '音乐之声',
+  },
+  {
+    id: 'sp5', studentName: '大勇', studentAvatar: '🦁', grade: '四年级', school: '筠连县城南小学',
+    content: '教室里的风扇坏了，我用螺丝刀把它修好了！老师说我以后可以当工程师。工程师是做什么的呀？',
+    image: '🔧', type: 'question', likes: 15, createdAt: '2026-07-26',
+    verifiedBy: '凡星支教队', interestGroup: '科学探索',
+  },
+]
+
+export const MOCK_INTEREST_GROUPS: InterestGroup[] = [
+  { id: 'g1', name: '手工创意', emoji: '✂️', description: '废纸箱、树叶、黏土…用双手创造世界', memberCount: 15 },
+  { id: 'g2', name: '小画家', emoji: '🎨', description: '用画笔记录看到的每一个美好瞬间', memberCount: 22 },
+  { id: 'g3', name: '运动小将', emoji: '⚽', description: '奔跑、跳跃、挥洒汗水的小运动员们', memberCount: 18 },
+  { id: 'g4', name: '科学探索', emoji: '🔬', description: '对世界充满好奇，用实验寻找答案', memberCount: 12 },
+  { id: 'g5', name: '音乐之声', emoji: '🎵', description: '唱歌、跳舞、演奏，用节奏表达自己', memberCount: 20 },
+  { id: 'g6', name: '故事大王', emoji: '📚', description: '爱读书、爱讲故事的小伙伴们', memberCount: 16 },
+]
+
+export const MOCK_OFFICIAL_ACCOUNTS: OfficialAccount[] = [
+  { id: 'oa1', name: '凡星支教队', avatar: '⭐', type: 'team', verified: true, description: '电子科技大学凡星支教队，连续11年深耕四川乡村教育', memberCount: 15, location: '四川成都', activeSince: '2015' },
+  { id: 'oa2', name: '星辰支教队', avatar: '✨', type: 'team', verified: true, description: '贵州大学星辰支教队，专注黔东南山区教育', memberCount: 20, location: '贵州贵阳', activeSince: '2018' },
+  { id: 'oa3', name: '筠连县团委', avatar: '🏛️', type: 'govt', verified: true, description: '共青团筠连县委员会，对接支教资源', memberCount: 5, location: '四川宜宾筠连县', activeSince: '2020' },
+  { id: 'oa4', name: '元阳县教育局', avatar: '🏫', type: 'govt', verified: true, description: '云南省红河州元阳县教育局', memberCount: 8, location: '云南红河', activeSince: '2019' },
+  { id: 'oa5', name: '青苗助学计划', avatar: '🌱', type: 'team', verified: true, description: '专注西部乡村教育的中学生志愿者组织', memberCount: 30, location: '北京', activeSince: '2016' },
 ]

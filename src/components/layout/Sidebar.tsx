@@ -28,6 +28,13 @@ const NAV_GROUPS: NavGroup[] = [
     { href: '/penpal-square', label: '笔友广场', icon: '💌' },
     { href: '/growth-video', label: '成长视频', icon: '🎬' },
   ]},
+  { label: '社区', items: [
+    { href: '/community', label: '支教社区', icon: '🌐' },
+    { href: '/community/questions', label: '教学问答', icon: '📚' },
+    { href: '/community/recruit', label: '招募广场', icon: '🌟' },
+    { href: '/community/stories', label: '支教故事', icon: '📸' },
+    { href: '/community/social', label: '学生天地', icon: '👦' },
+  ]},
   { label: '资源与团队', items: [
     { href: '/gallery', label: '相册', icon: '📷' },
     { href: '/members', label: '成员', icon: '👥' },
@@ -41,7 +48,7 @@ const NAV_GROUPS: NavGroup[] = [
 ]
 
 const GROUP_COLORS = [
-  { dot: '#d4a853' }, { dot: '#7a9a5a' }, { dot: '#6baed6' }, { dot: '#d4855e' }, { dot: '#a78bfa' },
+  { dot: '#d4a853' }, { dot: '#7a9a5a' }, { dot: '#6baed6' }, { dot: '#d4855e' }, { dot: '#e08860' }, { dot: '#a78bfa' },
 ]
 
 /* ═══════════════════════════════
