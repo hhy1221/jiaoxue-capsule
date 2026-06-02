@@ -113,16 +113,38 @@
 }
 
 /* ═══════════════════════════════════════
-   LAYER 1 — 全局底层：纸纹理 + 暖光
+   LAYER 1 — 全局底层：水彩纸纹理 + 晕染 + 暖光
    ═══════════════════════════════════════ */
 html {
-  background: var(--cream);
-  /* 确保首页上滑时露出的底色匹配内页 */
+  background: #fdf7ef;
   background-color: #fdf7ef;
+  /*
+    层次结构（从底到顶）：
+    1. 纸基色
+    2. 大水彩晕染（模拟颜料在湿纸上扩散）
+    3. 细微干笔触纹理
+    4. 纸张边缘暗角
+    5. SVG 噪点纸纹
+  */
   background-image:
-    radial-gradient(ellipse 600px 400px at 15% 8%, rgba(220,180,150,0.14) 0%, transparent 65%),
-    radial-gradient(ellipse 500px 350px at 85% 92%, rgba(190,200,175,0.10) 0%, transparent 60%),
-    radial-gradient(ellipse 400px 300px at 50% 45%, rgba(235,210,170,0.06) 0%, transparent 70%),
+    /* ─ 水彩晕染：暖琥珀（左上） ─ */
+    radial-gradient(ellipse 65% 55% at 12% 6%,  rgba(220,185,150,0.18) 0%, transparent 55%),
+    /* ─ 水彩晕染：淡蜜色（右上） ─ */
+    radial-gradient(ellipse 50% 45% at 88% 8%,  rgba(235,210,165,0.13) 0%, transparent 50%),
+    /* ─ 水彩晕染：暖赭石（左中，最大一块） ─ */
+    radial-gradient(ellipse 70% 60% at 8% 55%,  rgba(210,170,140,0.12) 0%, transparent 60%),
+    /* ─ 水彩晕染：淡绿灰（右下） ─ */
+    radial-gradient(ellipse 55% 50% at 90% 88%, rgba(190,200,180,0.10) 0%, transparent 55%),
+    /* ─ 水彩晕染：暖粉（中下） ─ */
+    radial-gradient(ellipse 45% 40% at 48% 78%, rgba(225,195,185,0.08) 0%, transparent 50%),
+    /* ─ 水彩晕染：中心柔和暖光 ─ */
+    radial-gradient(ellipse 60% 50% at 50% 45%, rgba(240,225,200,0.07) 0%, transparent 70%),
+    /* ─ 干笔触：横向淡刷痕 ─ */
+    linear-gradient(178deg, transparent 0%, rgba(180,155,130,0.025) 38%, transparent 40%),
+    linear-gradient(2deg,  transparent 0%, rgba(170,150,125,0.02) 62%, transparent 64%),
+    /* ─ 纸张边缘暗角（四边微暗，像旧书页） ─ */
+    radial-gradient(ellipse 90% 90% at 50% 50%, transparent 60%, rgba(180,150,120,0.06) 100%),
+    /* ─ SVG 噪点纸纹 ─ */
     url("data:image/svg+xml,%3Csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.018'/%3E%3C/svg%3E");
   background-attachment: fixed;
   min-height: 100vh;
@@ -131,15 +153,15 @@ html {
 /* 点阵网格 — 像绘图纸 */
 html::before {
   content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
-  background-image: radial-gradient(circle, rgba(180,160,140,0.08) 1px, transparent 1px);
-  background-size: 24px 24px;
+  background-image: radial-gradient(circle, rgba(180,160,140,0.07) 1px, transparent 1px);
+  background-size: 26px 26px;
 }
 
 /* 更粗噪点叠加 */
 html::after {
   content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
   background-image: url("data:image/svg+xml,%3Csvg width='120' height='120' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n2'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.5' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n2)' opacity='0.025'/%3E%3C/svg%3E");
-  opacity: 0.5;
+  opacity: 0.45;
 }
 
 @layer base {
