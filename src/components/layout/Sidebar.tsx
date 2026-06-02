@@ -274,7 +274,10 @@ export default function Sidebar() {
                 style={{ width:7,height:7,borderRadius:'50%',background:'radial-gradient(circle at 35% 35%,#fff,#d4c8b0)',boxShadow:'inset 0 1px 2px rgba(0,0,0,0.2)' }}/>
             ))}
           </div>
-          <Link href="/" className="flex items-center gap-3 no-underline group px-1">
+          <Link href="/" className="flex items-center gap-3 no-underline group px-1"
+            onClick={(e) => {
+              if (pathname !== '/') { e.preventDefault(); window.dispatchEvent(new CustomEvent('return-home')) }
+            }}>
             <div className="relative flex-shrink-0">
               <div className="absolute -inset-1.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500"
                 style={{ background:'radial-gradient(circle,rgba(200,160,120,0.2),transparent 70%)' }}/>
