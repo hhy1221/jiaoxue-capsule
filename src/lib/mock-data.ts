@@ -97,7 +97,7 @@ function buildSchedule(): Schedule {
       })),
     })
   }
-  return { id: 'sch1', teamId: 't1', semesterId: 's1', theme: 'green', days }
+  return { id: 'sch1', teamId: 't1', semesterId: 's1', theme: 'warm', days }
 }
 export const MOCK_SCHEDULE = buildSchedule()
 

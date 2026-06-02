@@ -86,7 +86,7 @@ export default function SchedulePage() {
   const [undoS,setUndoS]=useState<Row[][]>([])
   const [redoS,setRedoS]=useState<Row[][]>([])
   const [week,setWeek]=useState<0|1|2>(1)
-  const [theme,setTheme]=useState<'warm'|'green'|'blue'|'orange'>('orange')
+  const [theme,setTheme]=useState<'warm'|'green'|'blue'|'orange'>('warm')
   const [search,setSearch]=useState('')
   const [editing,setEditing]=useState<{ri:number;ci:number}|null>(null)
   const [editVal,setEditVal]=useState('')
