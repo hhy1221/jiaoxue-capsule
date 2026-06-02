@@ -2,22 +2,22 @@
 import InnerLayout from '@/components/layout/InnerLayout'
 import { QUESTIONS, STORIES, RECRUITS, OFFICIAL_ACCOUNTS } from '@/lib/community-data'
 import Link from 'next/link'
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { Heart, MessageCircle, Eye, MapPin, Clock, ArrowRight, BookOpen, Users, Star, CheckCircle, Calendar, ThumbsUp, TrendingUp, Flame, Award } from 'lucide-react'
 
 export default function CommunityPage() {
   const [activeTab, setActiveTab] = useState<'all'|'questions'|'stories'|'recruits'>('all')
 
-  const feedItems = (()=>{
-    let qs = QUESTIONS.map(q=>({type:'question' as const,data:q,time:q.createdAt}))
-    let ss = STORIES.map(s=>({type:'story' as const,data:s,time:s.createdAt}))
-    let rs = RECRUITS.filter(r=>r.status==='active').map(r=>({type:'recruit' as const,data:r,time:r.createdAt}))
-    let all = [...qs,...ss,...rs].sort((a,b)=>b.time.localeCompare(a.time))
+  const feedItems = useMemo(()=>{
+    const qs = QUESTIONS.map(q=>({type:'question' as const,data:q,time:q.createdAt}))
+    const ss = STORIES.map(s=>({type:'story' as const,data:s,time:s.createdAt}))
+    const rs = RECRUITS.filter(r=>r.status==='active').map(r=>({type:'recruit' as const,data:r,time:r.createdAt}))
+    const all = [...qs,...ss,...rs].sort((a,b)=>b.time.localeCompare(a.time))
     if (activeTab==='questions') return all.filter(i=>i.type==='question')
     if (activeTab==='stories') return all.filter(i=>i.type==='story')
     if (activeTab==='recruits') return all.filter(i=>i.type==='recruit')
     return all
-  })()
+  }, [activeTab])
 
   const tQ=QUESTIONS.length, tS=STORIES.length, tR=RECRUITS.filter(r=>r.status==='active').length
   const tAns=QUESTIONS.reduce((s,q)=>s+q.answers.length,0)

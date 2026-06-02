@@ -1,7 +1,7 @@
 'use client'
 import InnerLayout from '@/components/layout/InnerLayout'
 import { MOCK_RESOURCES } from '@/lib/mock-data'
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { Download, FileText, Search, Plus, Filter } from 'lucide-react'
 import UploadResourceForm from '@/components/forms/UploadResourceForm'
 import { useToast } from '@/components/animations/Toast'
@@ -16,11 +16,14 @@ export default function ResourcesPage() {
   const [showSearch, setShowSearch] = useState(false)
   const { toast } = useToast()
 
-  let items = filter==='all'?MOCK_RESOURCES:MOCK_RESOURCES.filter(r=>r.type===filter)
-  if (search.trim()) {
-    const q = search.trim().toLowerCase()
-    items = items.filter(r => r.title.toLowerCase().includes(q) || TYPE_NAMES[r.type].includes(q))
-  }
+  const items = useMemo(()=>{
+    let result = filter==='all'?MOCK_RESOURCES:MOCK_RESOURCES.filter(r=>r.type===filter)
+    if (search.trim()) {
+      const q = search.trim().toLowerCase()
+      result = result.filter(r => r.title.toLowerCase().includes(q) || TYPE_NAMES[r.type].includes(q))
+    }
+    return result
+  }, [filter, search])
 
   const handleDownload = (title: string) => {
     toast(`"${title}" 下载开始！`, 'success')
