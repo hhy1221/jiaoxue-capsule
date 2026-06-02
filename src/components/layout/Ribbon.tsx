@@ -134,14 +134,21 @@ export default function Ribbon() {
     }
   }, [pathname, isHome])
 
+  // 首次挂载设定初始高度（JSX 不写 height 避免被 React 重绘覆盖）
+  useLayoutEffect(() => {
+    const outer = outerRef.current
+    if (outer && !outer.style.height) {
+      outer.style.height = '110px'
+    }
+  }, [])
+
   return (
     <div
       ref={outerRef}
       className="max-md:hidden"
       style={{
         position: 'fixed', right: 28, top: 0, zIndex: 10000, width: 28,
-        height: '110px', pointerEvents: 'none', overflow: 'hidden',
-        // 容器本身不旋转，由内层处理 sway
+        pointerEvents: 'none', overflow: 'hidden',
       }}>
       {/* 内层 — 承载 sway 旋转 */}
       <div
