@@ -1,7 +1,7 @@
 'use client'
 
 import Sidebar from './Sidebar'
-import { useState, useLayoutEffect, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { usePathname } from 'next/navigation'
 
 const ANIM_MODE: Record<string, 'sides'|'elastic'|'blur'|'scale'|'drop'> = {
@@ -12,19 +12,15 @@ const ANIM_MODE: Record<string, 'sides'|'elastic'|'blur'|'scale'|'drop'> = {
 
 export default function InnerLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
-  const [sidebarSlide, setSidebarSlide] = useState(false)
-  const animSeq = useRef(0)
-
-  // 侧边栏滑入 — useLayoutEffect 在 hydration 提交后、浏览器绘制前同步执行
-  const didCheck = useRef(false)
-  useLayoutEffect(() => {
-    if (didCheck.current) return // 防 StrictMode 双重触发
-    didCheck.current = true
-    if (sessionStorage.getItem('from-home') === '1') {
+  // 渲染阶段同步读取 sessionStorage — 在首次绘制前确定是否需要滑入动画
+  const [sidebarSlide] = useState(() => {
+    if (typeof window !== 'undefined' && sessionStorage.getItem('from-home') === '1') {
       sessionStorage.removeItem('from-home')
-      setSidebarSlide(true)
+      return true
     }
-  }, [])
+    return false
+  })
+  const animSeq = useRef(0)
 
   // 卡片动画 — pathname 变化时触发
   useEffect(() => {
