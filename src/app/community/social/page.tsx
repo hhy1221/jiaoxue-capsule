@@ -1,7 +1,7 @@
 'use client'
 
 import InnerLayout from '@/components/layout/InnerLayout'
-import { MOCK_STUDENT_POSTS, MOCK_INTEREST_GROUPS } from '@/lib/mock-data'
+import { STUDENT_POSTS, INTEREST_GROUPS } from '@/lib/community-data'
 import { useState } from 'react'
 import { Heart, Shield, Sparkles, MessageCircle, UserCheck } from 'lucide-react'
 
@@ -9,8 +9,8 @@ export default function SocialPage() {
   const [selectedGroup, setSelectedGroup] = useState<string|null>(null)
 
   const filtered = selectedGroup
-    ? MOCK_STUDENT_POSTS.filter(p=>p.interestGroup===selectedGroup)
-    : MOCK_STUDENT_POSTS
+    ? STUDENT_POSTS.filter(p=>p.interestGroup===selectedGroup)
+    : STUDENT_POSTS
 
   return (<InnerLayout>
     <header className="flex items-center justify-between pb-[22px] mb-5 flex-wrap gap-3 relative" style={{borderBottom:'1.5px solid rgba(180,160,130,0.25)'}}>
@@ -47,7 +47,7 @@ export default function SocialPage() {
           border:`1.5px solid ${!selectedGroup?'rgba(107,174,214,0.35)':'rgba(200,180,160,0.18)'}`,
           color:!selectedGroup?'var(--ink)':'var(--faded)',fontWeight:!selectedGroup?600:400,fontFamily:'inherit',
         }}>🎨 全部</button>
-      {MOCK_INTEREST_GROUPS.map(g=>(
+      {INTEREST_GROUPS.map(g=>(
         <button key={g.id} onClick={()=>setSelectedGroup(selectedGroup===g.name?null:g.name)}
           className="px-3 py-1.5 rounded-full text-[11px] border-none cursor-pointer transition-all"
           style={{

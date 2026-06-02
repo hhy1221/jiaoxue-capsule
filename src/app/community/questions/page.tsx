@@ -1,7 +1,7 @@
 'use client'
 
 import InnerLayout from '@/components/layout/InnerLayout'
-import { MOCK_QUESTIONS } from '@/lib/mock-data'
+import { QUESTIONS } from '@/lib/community-data'
 import { SUBJECT_LABELS, SUBJECT_EMOJIS, QuestionSubject } from '@/types'
 import { useState, useMemo } from 'react'
 import { Search, MessageCircle, User, MapPin, CheckCircle, Clock, ThumbsUp } from 'lucide-react'
@@ -16,7 +16,7 @@ export default function QuestionsPage() {
   const [expandedId, setExpandedId] = useState<string | null>(null)
 
   const filtered = useMemo(()=>{
-    let items = [...MOCK_QUESTIONS]
+    let items = [...QUESTIONS]
     if (search.trim()) {
       const q = search.trim().toLowerCase()
       items = items.filter(x=>x.title.toLowerCase().includes(q)||x.content.toLowerCase().includes(q)||x.tags.some(t=>t.includes(q)))

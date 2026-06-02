@@ -1,7 +1,7 @@
 'use client'
 
 import InnerLayout from '@/components/layout/InnerLayout'
-import { MOCK_STORIES } from '@/lib/mock-data'
+import { STORIES } from '@/lib/community-data'
 import { useState } from 'react'
 import { Heart, MessageCircle, MapPin, Clock, Share2 } from 'lucide-react'
 
@@ -12,14 +12,14 @@ export default function StoriesPage() {
     <header className="flex items-center justify-between pb-[22px] mb-5 flex-wrap gap-3 relative" style={{borderBottom:'1.5px solid rgba(180,160,130,0.25)'}}>
       <div>
         <h1 className="text-[22px] font-semibold tracking-[0.03em] text-[var(--ink)]" style={{fontFamily:'var(--font-serif)'}}>📸 支教故事</h1>
-        <p className="text-[12px] mt-0.5 tracking-[0.06em]" style={{color:'var(--faded)'}}>课堂瞬间 · 成长故事 · 感动时刻 · {MOCK_STORIES.length} 篇温暖记录</p>
+        <p className="text-[12px] mt-0.5 tracking-[0.06em]" style={{color:'var(--faded)'}}>课堂瞬间 · 成长故事 · 感动时刻 · {STORIES.length} 篇温暖记录</p>
       </div>
       <button className="picture-book-btn primary" style={{fontSize:12}}>✏️ 分享故事</button>
     </header>
 
     {/* 瀑布流布局 */}
     <div className="columns-2 gap-5 max-md:columns-1">
-      {MOCK_STORIES.map((s,i)=>(
+      {STORIES.map((s,i)=>(
         <div key={s.id} className="picture-book-card tape-top mb-5 break-inside-avoid overflow-hidden"
           style={{transform:`rotate(${i%2===0?'-0.2deg':'0.15deg'})`}}>
           {/* 图片区 — emoji 拼贴 */}

@@ -1,7 +1,7 @@
 'use client'
 
 import InnerLayout from '@/components/layout/InnerLayout'
-import { MOCK_RECRUITS, MOCK_OFFICIAL_ACCOUNTS } from '@/lib/mock-data'
+import { RECRUITS, OFFICIAL_ACCOUNTS } from '@/lib/community-data'
 import { RECRUIT_LABELS, RECRUIT_EMOJIS, RecruitmentType, CommunityRecruit } from '@/types'
 import { useState } from 'react'
 import { MapPin, Clock, Eye, Phone, Mail, Calendar } from 'lucide-react'
@@ -9,7 +9,7 @@ import { MapPin, Clock, Eye, Phone, Mail, Calendar } from 'lucide-react'
 export default function RecruitPage() {
   const [tab, setTab] = useState<RecruitmentType | 'all'>('all')
 
-  const filtered = tab==='all' ? MOCK_RECRUITS : MOCK_RECRUITS.filter(r=>r.type===tab)
+  const filtered = tab==='all' ? RECRUITS : RECRUITS.filter(r=>r.type===tab)
 
   return (<InnerLayout>
     <header className="flex items-center justify-between pb-[22px] mb-5 flex-wrap gap-3 relative" style={{borderBottom:'1.5px solid rgba(180,160,130,0.25)'}}>
