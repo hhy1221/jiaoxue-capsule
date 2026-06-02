@@ -1,9 +1,7 @@
 import type { Metadata } from "next"
 import { Noto_Serif_SC, Noto_Sans_SC } from "next/font/google"
 import "./globals.css"
-import { SkinProvider } from "@/lib/skin-context"
-import HeroCurtain from "@/components/layout/HeroCurtain"
-import Ribbon from "@/components/layout/Ribbon"
+import AppProviders from "@/components/layout/AppProviders"
 
 const notoSerif = Noto_Serif_SC({
   variable: "--font-serif", subsets: ["latin"],
@@ -26,11 +24,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Liu+Jian+Mao+Cao&family=ZCOOL+KuaiLe&display=swap" rel="stylesheet"/>
       </head>
       <body className="font-[family-name:var(--font-sans)]">
-        <SkinProvider>
-          <HeroCurtain />
-          <Ribbon />
-          {children}
-        </SkinProvider>
+        <AppProviders>{children}</AppProviders>
       </body>
     </html>
   )

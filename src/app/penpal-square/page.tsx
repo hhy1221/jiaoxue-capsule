@@ -3,18 +3,24 @@ import InnerLayout from '@/components/layout/InnerLayout'
 import { MOCK_PENPAL_MATCHES, MOCK_STUDENTS } from '@/lib/mock-data'
 import { Tabs,TabsContent,TabsList,TabsTrigger } from '@/components/ui/tabs'
 import { Heart, MessageCircle, Sparkles, ArrowRight } from 'lucide-react'
+import Confetti from '@/components/animations/Confetti'
+import { useToast } from '@/components/animations/Toast'
+import { useState } from 'react'
 
 const MATCH_CARD_COLORS=['linear-gradient(135deg,rgba(216,110,88,0.06),rgba(240,160,120,0.04))','linear-gradient(135deg,rgba(90,150,180,0.06),rgba(180,210,230,0.04))','linear-gradient(135deg,rgba(140,110,190,0.06),rgba(200,180,220,0.04))']
 const MATCH_ACCENTS=['#d4855e','#6baed6','#a78bfa']
 
 export default function PenpalSquarePage() {
+  const [celebrate, setCelebrate] = useState(false)
+  const { toast } = useToast()
   return(<InnerLayout>
     <header className="flex items-center justify-between pb-[22px] mb-5 flex-wrap gap-3 relative" style={{borderBottom:'1.5px solid rgba(180,160,130,0.25)'}}>
       <div>
         <h1 className="text-[19px] font-semibold tracking-[0.03em] text-[var(--ink)]" style={{fontFamily:'var(--font-serif)'}}>💌 笔友广场</h1>
         <p className="text-[11px] mt-0.5 tracking-[0.06em]" style={{color:'var(--faded)'}}>AI匹配 · 跨届通信 · 支教结束后关系不断</p>
       </div>
-      <button className="picture-book-btn primary" style={{fontSize:11}}><Sparkles size={14}/> AI匹配新笔友</button>
+      <button className="picture-book-btn primary" style={{fontSize:11}} onClick={() => { setCelebrate(true); toast('笔友匹配成功！', 'success') }}><Sparkles size={14}/> AI匹配新笔友</button>
+      <Confetti active={celebrate} />
       <div className="absolute -bottom-[7px] left-1/2 -translate-x-1/2 text-[7px] tracking-[7px] whitespace-nowrap" style={{color:'rgba(180,160,130,0.5)'}}>· · · · · · · · · · · ·</div>
     </header>
 
