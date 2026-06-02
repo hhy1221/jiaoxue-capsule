@@ -74,7 +74,7 @@ const ROWSPAN_SKIP:Record<number,Record<number,boolean>> = {
   2: {0: true}, 3: {0: true}, 6: {0: true}, 7: {0: true},
 }
 
-const SAVE_KEY='ssd3'
+const SAVE_KEY='ssd4'
 
 function clone(g:Row[]):Row[]{return g.map(r=>[...r])}
 
