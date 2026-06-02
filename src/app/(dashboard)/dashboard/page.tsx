@@ -45,7 +45,7 @@ export default function DashboardPage() {
     </header>
 
     {/* Stats row */}
-    <div className="grid grid-cols-[repeat(auto-fill,minmax(160px,1fr))] gap-4 mb-6">
+    <div className="grid grid-cols-5 gap-4 mb-6 max-lg:grid-cols-3 max-sm:grid-cols-2">
       {STATS.map((s,i)=>(<div key={s.label} className="picture-book-card p-4 flex items-center gap-4 cursor-default hover:-translate-y-1 hover:shadow-md transition-all duration-300" style={{transform:`rotate(${i%2===0?'-0.2deg':'0.15deg'})`}}>
         <div className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0" style={{background:s.bg,color:s.color}}><s.icon size={20}/></div>
         <div><p className="text-[24px] font-bold" style={{fontFamily:'var(--font-serif)',color:'var(--ink)'}}><CountUp target={s.value} style={{color:'var(--ink)'}} /></p><p className="text-[10px] tracking-[0.08em]" style={{color:'var(--faded)'}}>{s.label}</p></div>
