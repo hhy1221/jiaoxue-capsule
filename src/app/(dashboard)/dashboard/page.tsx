@@ -1,5 +1,5 @@
 'use client'
-import { MOCK_DASHBOARD, MOCK_NOTIFICATIONS } from '@/lib/mock-data'
+import { MOCK_DASHBOARD, MOCK_NOTIFICATIONS, MOCK_STUDENTS } from '@/lib/mock-data'
 import Link from 'next/link'
 import { TrendingUp, Bell, Calendar, Users, BookOpen, Camera, PenLine, Sparkles } from 'lucide-react'
 import CountUp from '@/components/animations/CountUp'
@@ -114,7 +114,7 @@ export default function DashboardPage() {
       </div>
       <div className="space-y-3">
         {d.recentDiaries.map((rd,i)=>(<div key={i} className="flex items-start gap-3 p-3.5 rounded-md transition-colors hover:shadow-sm cursor-default" style={{background:'rgba(245,240,230,0.3)',border:'1px solid rgba(200,180,160,0.08)'}}>
-          <div className="w-9 h-9 rounded-full flex items-center justify-center text-sm flex-shrink-0 mt-0.5" style={{background:'rgba(200,160,120,0.1)',color:'var(--ink-soft)',border:'1.5px solid rgba(200,160,120,0.12)'}}>{rd.studentName[0]}</div>
+          {(() => { const stu = MOCK_STUDENTS.find(s => s.name === rd.studentName); return stu ? <div className="w-9 h-9 rounded-full overflow-hidden flex-shrink-0 mt-0.5" style={{boxShadow:'0 2px 6px rgba(100,70,40,0.1)',border:'2px solid #fff',outline:'1px solid rgba(180,150,120,0.35)'}}><img src={stu.photo} alt={stu.name} className="w-full h-full object-cover"/></div> : <div className="w-9 h-9 rounded-full flex items-center justify-center text-sm flex-shrink-0 mt-0.5" style={{background:'rgba(200,160,120,0.1)',color:'var(--ink-soft)',border:'1.5px solid rgba(200,160,120,0.12)'}}>{rd.studentName[0]}</div> })()}
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2 mb-0.5"><span className="text-[12px] font-semibold text-[var(--ink)]">{rd.studentName}</span><span className="text-[10px]" style={{color:'var(--faded)'}}>{rd.timeAgo}</span></div>
             <p className="text-[12px] leading-relaxed line-clamp-2" style={{color:'var(--ink-soft)'}}>{rd.content}</p>
