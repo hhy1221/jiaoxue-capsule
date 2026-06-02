@@ -12,11 +12,13 @@ export default function HeroCurtain() {
   const [showLogin, setShowLogin] = useState(false)
 
   const curtainRef = useRef<HTMLDivElement>(null)
+  const backdropRef = useRef<HTMLDivElement>(null)
   const busyRef = useRef(false)
   const prevPathname = useRef(pathname)
 
   useLayoutEffect(() => {
     const curtain = curtainRef.current
+    const backdrop = backdropRef.current
     if (!curtain) return
 
     const curtailVal = typeof sessionStorage !== 'undefined' ? sessionStorage.getItem('curtain') : null
@@ -28,28 +30,26 @@ export default function HeroCurtain() {
       busyRef.current = false
 
       if (isNavigation) {
-        // 从内页返回 → clip-path 从顶部展开（不露背景）
+        // 从内页返回 → 幕布从上方滑入（translateY，与退场上滑对称）
+        // 遮底：黑色 backdrop 盖住间隙，避免露出 body 背景
+        if (backdrop) backdrop.style.display = 'block'
         curtain.style.display = 'block'
-        curtain.style.transform = 'translateY(0)'
         curtain.style.transition = 'none'
-        curtain.style.clipPath = 'inset(0 0 100% 0)'
+        curtain.style.transform = 'translateY(-105vh)'
         void curtain.offsetHeight
         requestAnimationFrame(() => {
           if (!curtain) return
-          curtain.style.transition = 'clip-path 0.5s cubic-bezier(0.34,1.56,0.64,1)'
-          curtain.style.clipPath = 'inset(0 0 0 0)'
+          curtain.style.transition = 'transform 0.5s cubic-bezier(0.34,1.56,0.64,1)'
+          curtain.style.transform = 'translateY(0)'
         })
-        // 动画结束后清除 clip-path
         setTimeout(() => {
-          if (!curtain) return
-          curtain.style.clipPath = ''
-          curtain.style.transition = 'none'
+          if (backdrop) backdrop.style.display = 'none'
         }, 600)
       } else {
         // 初始加载首页
         curtain.style.display = 'block'
         curtain.style.transform = 'translateY(0)'
-        curtain.style.clipPath = ''
+        if (backdrop) backdrop.style.display = 'none'
       }
       return
     }
@@ -104,7 +104,14 @@ export default function HeroCurtain() {
   }, [handleNav])
 
   return (
-    <div
+    <>
+      {/* 入场遮底层 — 幕布从上方滑入时盖住间隙 */}
+      <div
+        ref={backdropRef}
+        className="fixed inset-0 z-[9998]"
+        style={{ background: '#000', display: 'none', pointerEvents: 'none' }}
+      />
+      <div
       ref={curtainRef}
       className="fixed inset-0 z-[9999] bg-black overflow-hidden"
       style={{
@@ -176,5 +183,6 @@ export default function HeroCurtain() {
 
       {showLogin && <WeChatLogin onClose={() => setShowLogin(false)} />}
     </div>
+    </>
   )
 }
