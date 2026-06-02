@@ -28,20 +28,28 @@ export default function HeroCurtain() {
       busyRef.current = false
 
       if (isNavigation) {
-        // 从内页返回 → 幕布从上往下滑入
+        // 从内页返回 → clip-path 从顶部展开（不露背景）
         curtain.style.display = 'block'
+        curtain.style.transform = 'translateY(0)'
         curtain.style.transition = 'none'
-        curtain.style.transform = 'translateY(-105vh)'
+        curtain.style.clipPath = 'inset(0 0 100% 0)'
         void curtain.offsetHeight
         requestAnimationFrame(() => {
           if (!curtain) return
-          curtain.style.transition = 'transform 0.5s cubic-bezier(0.34,1.56,0.64,1)'
-          curtain.style.transform = 'translateY(0)'
+          curtain.style.transition = 'clip-path 0.5s cubic-bezier(0.34,1.56,0.64,1)'
+          curtain.style.clipPath = 'inset(0 0 0 0)'
         })
+        // 动画结束后清除 clip-path
+        setTimeout(() => {
+          if (!curtain) return
+          curtain.style.clipPath = ''
+          curtain.style.transition = 'none'
+        }, 600)
       } else {
         // 初始加载首页
         curtain.style.display = 'block'
         curtain.style.transform = 'translateY(0)'
+        curtain.style.clipPath = ''
       }
       return
     }
