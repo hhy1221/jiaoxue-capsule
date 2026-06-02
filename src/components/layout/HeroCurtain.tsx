@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useLayoutEffect, useCallback, useRef } from 'react'
+import { useState, useEffect, useLayoutEffect, useCallback, useRef } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import WeChatLogin from '@/components/auth/WeChatLogin'
 import MagicDust from '@/components/animations/MagicDust'
@@ -15,6 +15,7 @@ export default function HeroCurtain() {
   const curtainRef = useRef<HTMLDivElement>(null)
   const busyRef = useRef(false)
   const prevPathname = useRef(pathname)
+  const returningHome = useRef(false)
 
   useLayoutEffect(() => {
     const curtain = curtainRef.current
@@ -28,8 +29,16 @@ export default function HeroCurtain() {
     if (isHome) {
       busyRef.current = false
 
+      if (isNavigation && returningHome.current) {
+        // return-home 事件已经播放了动画，幕布盖着屏幕，直接到位
+        returningHome.current = false
+        curtain.style.display = 'block'
+        curtain.style.transform = 'translateY(0)'
+        return
+      }
+
       if (isNavigation) {
-        // 从内页返回 → 幕布从上方平滑滑入（与退场上滑完全对称，无弹跳不露底）
+        // 通过浏览器回退/直接地址栏输入返回首页 — 走正常动画
         curtain.style.display = 'block'
         curtain.style.transition = 'none'
         curtain.style.transform = 'translateY(-105vh)'
@@ -40,7 +49,6 @@ export default function HeroCurtain() {
           curtain.style.transform = 'translateY(0)'
         })
       } else {
-        // 初始加载首页
         curtain.style.display = 'block'
         curtain.style.transform = 'translateY(0)'
       }
@@ -83,6 +91,36 @@ export default function HeroCurtain() {
       curtain.style.display = 'none'
     }
   }, [pathname, isHome])
+
+  // ═══ 监听 return-home 自定义事件 → 先播放幕布下滑动画，再跳转路由 ═══
+  useEffect(() => {
+    const handler = () => {
+      const curtain = curtainRef.current
+      if (!curtain || returningHome.current) return
+      if (isHome) return // 已经在首页了
+
+      returningHome.current = true
+
+      // 幕布从上方滑下来，盖住当前内页
+      curtain.style.display = 'block'
+      curtain.style.transition = 'none'
+      curtain.style.transform = 'translateY(-105vh)'
+      void curtain.offsetHeight
+      requestAnimationFrame(() => {
+        if (!curtain) return
+        curtain.style.transition = 'transform 0.5s cubic-bezier(0.65,0,0.35,1)'
+        curtain.style.transform = 'translateY(0)'
+      })
+
+      // 动画结束后跳转
+      setTimeout(() => {
+        router.push('/')
+      }, 550)
+    }
+
+    window.addEventListener('return-home', handler)
+    return () => window.removeEventListener('return-home', handler)
+  }, [isHome, router])
 
   const handleNav = useCallback((e: React.MouseEvent, path: string) => {
     e.preventDefault()

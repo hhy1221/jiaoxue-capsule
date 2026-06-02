@@ -332,7 +332,14 @@ export default function Sidebar() {
                       onMouseLeave={() => setHoveredHref(null)}
                       onMouseDown={() => setPressingHref(item.href)}
                       onMouseUp={() => setPressingHref(null)}
-                      onClick={pulseRibbon}>
+                      onClick={(e) => {
+                        if (item.href === '/') {
+                          e.preventDefault()
+                          window.dispatchEvent(new CustomEvent('return-home'))
+                          return
+                        }
+                        pulseRibbon()
+                      }}>
                       {/* 图标 — hover弹跳 */}
                       <span className="text-sm w-5 text-center flex-shrink-0"
                         style={{

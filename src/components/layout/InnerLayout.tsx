@@ -20,11 +20,9 @@ export default function InnerLayout({ children }: { children: React.ReactNode })
     if (!fromHome) return
     sessionStorage.removeItem('from-home')
 
-    // 找侧边栏 DOM 元素
     const sidebar = document.querySelector('[data-sidebar]') as HTMLElement | null
     if (!sidebar) return
 
-    // 设初始位置 → 下一帧启动动画
     sidebar.style.transition = 'none'
     sidebar.style.transform = 'translateX(-100%)'
     void sidebar.offsetHeight
