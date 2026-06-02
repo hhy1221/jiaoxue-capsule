@@ -18,8 +18,8 @@ interface Props {
 export default function CountUp({ target, duration = 800, suffix = '', className, style }: Props) {
   const [value, setValue] = useState(0)
   const [inkDry, setInkDry] = useState(false)
-  const rafRef = useRef<number>()
-  const startTime = useRef<number>()
+  const rafRef = useRef<number>(undefined)
+  const startTime = useRef<number>(undefined)
 
   useEffect(() => {
     startTime.current = undefined

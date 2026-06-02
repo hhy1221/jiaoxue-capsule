@@ -18,7 +18,7 @@ interface Props {
 export default function CastingCircle({ active, label = 'AI 正在生成…' }: Props) {
   const [shatter, setShatter] = useState(false)
   const [hidden, setHidden] = useState(!active)
-  const shatterTimer = useRef<ReturnType<typeof setTimeout>>()
+  const shatterTimer = useRef<ReturnType<typeof setTimeout>>(undefined)
 
   useEffect(() => {
     if (active) {

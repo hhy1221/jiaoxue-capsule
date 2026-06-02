@@ -62,9 +62,9 @@ export default function Sidebar() {
   const glowRef = useRef<HTMLDivElement>(null)
   const ribbonRef = useRef<HTMLDivElement>(null)
 
-  const glowRaf = useRef<number>()
-  const ribbonRaf = useRef<number>()
-  const restoreTimer = useRef<ReturnType<typeof setTimeout>>()
+  const glowRaf = useRef<number>(undefined)
+  const ribbonRaf = useRef<number>(undefined)
+  const restoreTimer = useRef<ReturnType<typeof setTimeout>>(undefined)
 
   const isActive = (href: string, exact?: boolean) =>
     exact ? pathname === href : pathname.startsWith(href)
