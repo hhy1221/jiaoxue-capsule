@@ -16,6 +16,13 @@ const NAV_GROUPS: NavGroup[] = [
     { href: '/', label: '首页', icon: '🏠', exact: true },
     { href: '/dashboard', label: '仪表盘', icon: '📊' },
   ]},
+  { label: '支教社区', items: [
+    { href: '/community', label: '社区首页', icon: '🌐', exact: true },
+    { href: '/community/questions', label: '教学问答', icon: '📚' },
+    { href: '/community/stories', label: '支教故事', icon: '📸' },
+    { href: '/community/recruit', label: '招募广场', icon: '🌟' },
+    { href: '/community/social', label: '学生天地', icon: '👦' },
+  ]},
   { label: '支教工作', items: [
     { href: '/students', label: '学生档案', icon: '📝' },
     { href: '/schedule', label: '课表管理', icon: '📅' },
@@ -27,13 +34,6 @@ const NAV_GROUPS: NavGroup[] = [
     { href: '/ai-workshop', label: 'AI 工坊', icon: '✨' },
     { href: '/penpal-square', label: '笔友广场', icon: '💌' },
     { href: '/growth-video', label: '成长视频', icon: '🎬' },
-  ]},
-  { label: '社区', items: [
-    { href: '/community', label: '支教社区', icon: '🌐' },
-    { href: '/community/questions', label: '教学问答', icon: '📚' },
-    { href: '/community/recruit', label: '招募广场', icon: '🌟' },
-    { href: '/community/stories', label: '支教故事', icon: '📸' },
-    { href: '/community/social', label: '学生天地', icon: '👦' },
   ]},
   { label: '资源与团队', items: [
     { href: '/gallery', label: '相册', icon: '📷' },
