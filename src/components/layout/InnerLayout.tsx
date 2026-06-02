@@ -51,8 +51,8 @@ export default function InnerLayout({ children }: { children: React.ReactNode })
 
   return (
     <>
-      {/* 侧边栏 — 仅从首页进入时滑入 */}
-      <div style={sidebarSlide ? {animation:'slideInLeft 0.45s cubic-bezier(0.16,1,0.3,1)'} : {}}>
+      {/* 侧边栏 — 用 CSS custom property 传递动画，Sidebar 自己应用 */}
+      <div style={{ '--sidebar-anim': sidebarSlide ? 'slideInLeft 0.45s cubic-bezier(0.16,1,0.3,1) both' : 'none' } as React.CSSProperties}>
         <Sidebar />
       </div>
 
