@@ -5,6 +5,7 @@ import { Tabs,TabsContent,TabsList,TabsTrigger } from '@/components/ui/tabs'
 import { Heart, MessageCircle, Sparkles, ArrowRight } from 'lucide-react'
 import Confetti from '@/components/animations/Confetti'
 import { useToast } from '@/components/animations/Toast'
+import PenpalMessageDialog from '@/components/forms/PenpalMessageDialog'
 import { useState } from 'react'
 
 const MATCH_CARD_COLORS=['linear-gradient(135deg,rgba(216,110,88,0.06),rgba(240,160,120,0.04))','linear-gradient(135deg,rgba(90,150,180,0.06),rgba(180,210,230,0.04))','linear-gradient(135deg,rgba(140,110,190,0.06),rgba(200,180,220,0.04))']
@@ -12,6 +13,8 @@ const MATCH_ACCENTS=['#d4855e','#6baed6','#a78bfa']
 
 export default function PenpalSquarePage() {
   const [celebrate, setCelebrate] = useState(0)
+  const [chatOpen, setChatOpen] = useState(false)
+  const [chatPair, setChatPair] = useState({ a:'', b:'' })
   const { toast } = useToast()
   return(<InnerLayout>
     <header className="flex items-center justify-between pb-[22px] mb-5 flex-wrap gap-3 relative" style={{borderBottom:'1.5px solid rgba(180,160,130,0.25)'}}>
@@ -58,7 +61,7 @@ export default function PenpalSquarePage() {
           {/* Actions */}
           <div className="flex items-center justify-between">
             {m.status==='active'?<span className="text-[10px] px-2.5 py-1 rounded-full flex items-center gap-1" style={{background:'rgba(122,170,90,0.1)',border:'1px solid rgba(122,170,90,0.2)',color:'#5a8a3a'}}><MessageCircle size={11}/> 通信中 ({m.letters.length}封)</span>:<span className="text-[10px] px-2.5 py-1 rounded-full" style={{background:'rgba(240,180,60,0.1)',border:'1px solid rgba(240,180,60,0.2)',color:'#b08030'}}>🌱 待开始</span>}
-            <button className="picture-book-btn primary flex items-center gap-1" style={{fontSize:10,padding:'4px 12px'}}>开始通信 <ArrowRight size={11}/></button>
+            <button className="picture-book-btn primary flex items-center gap-1" style={{fontSize:10,padding:'4px 12px'}} onClick={()=>{setChatPair({a:a?.name||'?',b:b?.name||'?'});setChatOpen(true)}}>开始通信 <ArrowRight size={11}/></button>
           </div>
         </div>)
       })}
@@ -75,7 +78,7 @@ export default function PenpalSquarePage() {
         </div>
         <div className="flex items-center gap-2">
           <Heart size={14} style={{color:'#d4855e'}}/>
-          <button className="picture-book-btn" style={{fontSize:10,padding:'3px 10px'}}>查看通信 →</button>
+          <button className="picture-book-btn" style={{fontSize:10,padding:'3px 10px'}} onClick={()=>{setChatPair({a:m.studentAName,b:m.studentBName});setChatOpen(true)}}>查看通信 →</button>
         </div>
       </div>))}
     </div></TabsContent></Tabs>
@@ -83,5 +86,6 @@ export default function PenpalSquarePage() {
     <div className="mt-6 picture-book-card p-5 text-center" style={{border:'2px dashed rgba(200,180,160,0.2)',background:'linear-gradient(135deg,rgba(245,238,225,0.3),rgba(240,230,215,0.2))'}}>
       <p className="handwriting text-[14px] tracking-[0.06em]" style={{color:'var(--ink-faint)'}}>+ AI根据性格标签和兴趣爱好自动匹配最合适的笔友</p>
     </div>
+    <PenpalMessageDialog open={chatOpen} onClose={()=>setChatOpen(false)} studentA={chatPair.a} studentB={chatPair.b} />
   </InnerLayout>)
 }

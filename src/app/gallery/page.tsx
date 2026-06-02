@@ -4,6 +4,7 @@ import { MOCK_ALBUMS } from '@/lib/mock-data'
 import { useState, useEffect } from 'react'
 import { Camera, Image, Plus, Search, Grid3X3 } from 'lucide-react'
 import Confetti from '@/components/animations/Confetti'
+import CreateAlbumForm from '@/components/forms/CreateAlbumForm'
 
 const COVERS=['🎉','🔬','🏃','🎨','🌟','📖','🎵','✂️','🌍','💌']
 const COVER_GRADIENTS=[
@@ -17,6 +18,7 @@ const ACCENTS=['#d4855e','#6baed6','#7a9a5a','#a78bfa','#f0a060','#e06080','#60b
 export default function GalleryPage() {
   const [view,setView]=useState<'grid'|'list'>('grid')
   const [confetti, setConfetti] = useState(0)
+  const [showCreateAlbum, setShowCreateAlbum] = useState(false)
   const total=MOCK_ALBUMS.reduce((a,b)=>a+b.count,0)
   useEffect(() => { setConfetti(1) }, [])
   return (<InnerLayout>
@@ -32,7 +34,7 @@ export default function GalleryPage() {
       <div className="flex gap-2 items-center">
         <button onClick={()=>setView('grid')} className={`picture-book-btn ${view==='grid'?'primary':''}`} style={{fontSize:11,padding:'4px 10px'}}><Grid3X3 size={14}/></button>
         <button onClick={()=>setView('list')} className={`picture-book-btn ${view==='list'?'primary':''}`} style={{fontSize:11,padding:'4px 10px'}}><Search size={14}/></button>
-        <button className="picture-book-btn primary" style={{fontSize:11}}><Plus size={14}/> 新建相册</button>
+        <button className="picture-book-btn primary" style={{fontSize:11}} onClick={()=>setShowCreateAlbum(true)}><Plus size={14}/> 新建相册</button>
       </div>
       <div className="absolute -bottom-[7px] left-1/2 -translate-x-1/2 text-[7px] tracking-[7px] whitespace-nowrap" style={{color:'rgba(180,160,130,0.5)'}}>· · · · · · · · · · · ·</div>
     </header>
@@ -71,7 +73,7 @@ export default function GalleryPage() {
           </div>)
         })}
         {/* Add new album card */}
-        <div className="picture-book-card p-0 overflow-hidden cursor-pointer hover:-translate-y-1.5 hover:shadow-lg transition-all duration-400 flex items-center justify-center min-h-[240px]" style={{border:'2px dashed rgba(200,180,160,0.3)'}}>
+        <div className="picture-book-card p-0 overflow-hidden cursor-pointer hover:-translate-y-1.5 hover:shadow-lg transition-all duration-400 flex items-center justify-center min-h-[240px]" style={{border:'2px dashed rgba(200,180,160,0.3)'}} onClick={()=>setShowCreateAlbum(true)}>
           <div className="text-center p-6">
             <div className="w-12 h-12 rounded-full mx-auto mb-3 flex items-center justify-center" style={{background:'rgba(200,180,160,0.1)'}}>
               <Plus size={24} style={{color:'var(--faded)'}}/>
@@ -112,5 +114,6 @@ export default function GalleryPage() {
       </p>
     </div>
     <Confetti trigger={confetti} />
+    <CreateAlbumForm open={showCreateAlbum} onClose={() => setShowCreateAlbum(false)} />
   </InnerLayout>)
 }

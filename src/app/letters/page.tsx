@@ -3,6 +3,7 @@ import InnerLayout from '@/components/layout/InnerLayout'
 import { MOCK_LETTERS, MOCK_STUDENTS } from '@/lib/mock-data'
 import { TONE_LABELS, TONE_EMOJIS, LetterTone } from '@/types'
 import { useToast } from '@/components/animations/Toast'
+import BatchLetterDialog from '@/components/forms/BatchLetterDialog'
 import { useState, useMemo } from 'react'
 
 const SEARCHABLE_TONES: Record<LetterTone, string> = {
@@ -19,6 +20,7 @@ const TONE_COLORS: Record<LetterTone, { dot: string; text: string; border: strin
 export default function LettersPage() {
   const [search, setSearch] = useState('')
   const [selectedId, setSelectedId] = useState(MOCK_LETTERS[0]?.id || null)
+  const [showBatch, setShowBatch] = useState(false)
   const { toast } = useToast()
 
   // 实时筛选
@@ -70,8 +72,8 @@ export default function LettersPage() {
         </p>
       </div>
       <div className="flex gap-2 flex-wrap">
-        <button className="picture-book-btn" style={{ fontSize: 12 }} onClick={() => toast('导出功能即将上线', 'info')}>📥 导出 PDF</button>
-        <button className="picture-book-btn primary" style={{ fontSize: 12 }}>✨ 批量生成</button>
+        <button className="picture-book-btn" style={{ fontSize: 12 }} onClick={() => { window.print() }}>📥 导出 PDF</button>
+        <button className="picture-book-btn primary" style={{ fontSize: 12 }} onClick={() => setShowBatch(true)}>✨ 批量生成</button>
       </div>
       <div className="absolute -bottom-[7px] left-1/2 -translate-x-1/2 text-[7px] tracking-[7px]"
         style={{ color: 'rgba(180,160,130,0.5)' }}>· · · · · · · · · · · ·</div>
@@ -335,13 +337,16 @@ export default function LettersPage() {
 
             {/* 操作按钮 */}
             <div className="flex gap-3 mt-5 justify-center">
-              <button className="picture-book-btn primary" style={{ padding: '10px 28px' }}>
+              <button className="picture-book-btn primary" style={{ padding: '10px 28px' }} onClick={() => window.print()}>
                 📥 导出 PDF
               </button>
-              <button className="picture-book-btn" style={{ padding: '10px 28px' }}>
+              <button className="picture-book-btn" style={{ padding: '10px 28px' }} onClick={() => window.print()}>
                 🖨️ 打印
               </button>
-              <button className="picture-book-btn" style={{ padding: '10px 28px' }}>
+              <button className="picture-book-btn" style={{ padding: '10px 28px' }} onClick={() => {
+                const text = selected?.content || ''
+                navigator.clipboard.writeText(text).then(() => toast('已复制到剪贴板！', 'success')).catch(() => toast('复制失败','error'))
+              }}>
                 📋 复制
               </button>
             </div>
@@ -356,5 +361,6 @@ export default function LettersPage() {
         )}
       </div>
     </div>
+    <BatchLetterDialog open={showBatch} onClose={()=>setShowBatch(false)} />
   </InnerLayout>)
 }

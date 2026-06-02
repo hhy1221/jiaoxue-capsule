@@ -2,11 +2,14 @@
 import InnerLayout from '@/components/layout/InnerLayout'
 import { MOCK_ANNOUNCEMENTS } from '@/lib/mock-data'
 import { Pin, Clock, User, Megaphone, Plus } from 'lucide-react'
+import { useState } from 'react'
+import PublishAnnouncementForm from '@/components/forms/PublishAnnouncementForm'
 
 const CARD_COLORS=['#d4855e','#7a9a5a','#6baed6','#a78bfa','#f0a060']
 
 export default function AnnouncementsPage() {
   const sorted=[...MOCK_ANNOUNCEMENTS].sort((a,b)=>(b.pinned?1:0)-(a.pinned?1:0))
+  const [showForm, setShowForm] = useState(false)
   return (<InnerLayout>
     <header className="flex items-center justify-between pb-[22px] mb-5 flex-wrap gap-3 relative" style={{borderBottom:'1.5px solid rgba(180,160,130,0.25)'}}>
       <div>
@@ -17,7 +20,7 @@ export default function AnnouncementsPage() {
           队伍通知 · {MOCK_ANNOUNCEMENTS.length}条公告 · {MOCK_ANNOUNCEMENTS.filter(a=>a.pinned).length}条置顶
         </p>
       </div>
-      <button className="picture-book-btn primary" style={{fontSize:11}}><Plus size={14}/> 发布公告</button>
+      <button className="picture-book-btn primary" style={{fontSize:11}} onClick={()=>setShowForm(true)}><Plus size={14}/> 发布公告</button>
       <div className="absolute -bottom-[7px] left-1/2 -translate-x-1/2 text-[7px] tracking-[7px] whitespace-nowrap" style={{color:'rgba(180,160,130,0.5)'}}>· · · · · · · · · · · ·</div>
     </header>
 
@@ -54,7 +57,7 @@ export default function AnnouncementsPage() {
       })}
     </div>
 
-    {/* Empty card */}
-    <button className="add-new-btn mt-6">＋ 发布新公告</button>
+    <button className="add-new-btn mt-6" onClick={()=>setShowForm(true)}>＋ 发布新公告</button>
+    <PublishAnnouncementForm open={showForm} onClose={()=>setShowForm(false)} />
   </InnerLayout>)
 }

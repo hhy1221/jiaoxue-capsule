@@ -3,6 +3,8 @@ import InnerLayout from '@/components/layout/InnerLayout'
 import { MOCK_STUDENTS } from '@/lib/mock-data'
 import Link from 'next/link'
 import { Play, Download, Sparkles, CalendarDays } from 'lucide-react'
+import { useToast } from '@/components/animations/Toast'
+import { useState } from 'react'
 
 const AVATAR_GRADS=['linear-gradient(135deg,#ecdcc8,#ddc8b0,#e4d4c0)','linear-gradient(135deg,#d8e8d4,#c8dcc0,#d4e0cc)','linear-gradient(135deg,#d8dde8,#c8d3e0,#d4dce8)','linear-gradient(135deg,#ecd8c8,#ddc0b0,#e4d0c0)','linear-gradient(135deg,#d8ecd8,#c0d8c0,#d4e8d4)','linear-gradient(135deg,#f0e8d8,#e8dcc0,#ece4d0)','linear-gradient(135deg,#e8d8ec,#dcc0e0,#e4d4e8)','linear-gradient(135deg,#d8ece8,#c0dcd8,#d4e8e4)']
 const COVER_COLORS=['#d4855e','#7a9a5a','#6baed6','#a78bfa','#f0a060','#e06880','#60b8a8','#c0a060']
@@ -13,13 +15,15 @@ const FEATURED = [MOCK_STUDENTS[0],MOCK_STUDENTS[1],MOCK_STUDENTS[2]]
 const REST = MOCK_STUDENTS.slice(3)
 
 export default function GrowthVideoPage() {
+  const { toast } = useToast()
+  const [generating, setGenerating] = useState(false)
   return(<InnerLayout>
     <header className="flex items-center justify-between pb-[22px] mb-5 flex-wrap gap-3 relative" style={{borderBottom:'1.5px solid rgba(180,160,130,0.25)'}}>
       <div>
         <h1 className="text-[19px] font-semibold tracking-[0.03em] text-[var(--ink)]" style={{fontFamily:'var(--font-serif)'}}>🎬 成长纪念视频</h1>
         <p className="text-[11px] mt-0.5 tracking-[0.06em]" style={{color:'var(--faded)'}}>AI自动选取照片+评语，生成60秒专属成长纪念视频</p>
       </div>
-      <button className="picture-book-btn primary" style={{fontSize:11}}><Sparkles size={14}/> 一键生成全部</button>
+      <button className="picture-book-btn primary" style={{fontSize:11}} onClick={()=>{setGenerating(true);setTimeout(()=>{setGenerating(false);toast('全部视频生成完成！','success')},3000)}}>{generating?'⏳ 生成中...':<><Sparkles size={14}/> 一键生成全部</>}</button>
       <div className="absolute -bottom-[7px] left-1/2 -translate-x-1/2 text-[7px] tracking-[7px] whitespace-nowrap" style={{color:'rgba(180,160,130,0.5)'}}>· · · · · · · · · · · ·</div>
     </header>
 
@@ -75,7 +79,7 @@ export default function GrowthVideoPage() {
                 <span className="flex items-center gap-1 text-[9px]" style={{color:'var(--faded)'}}><CalendarDays size={10}/> {s.createdAt}</span>
                 <div className="flex gap-2">
                   <Link href={`/growth-video/${s.id}`} className="picture-book-btn primary no-underline flex items-center gap-1" style={{fontSize:10,padding:'4px 12px'}}><Play size={11}/>预览</Link>
-                  <button className="picture-book-btn flex items-center gap-1" style={{fontSize:10,padding:'4px 12px'}}><Download size={11}/>下载</button>
+                  <button className="picture-book-btn flex items-center gap-1" style={{fontSize:10,padding:'4px 12px'}} onClick={()=>toast('视频下载开始！','success')}><Download size={11}/>下载</button>
                 </div>
               </div>
             </div>
@@ -108,7 +112,7 @@ export default function GrowthVideoPage() {
             <div className="flex flex-wrap gap-1 mb-3">
               {s.tags.slice(0,3).map((t,ti)=>(<span key={t} className="text-[9px] px-1.5 py-0.5 rounded" style={{background:`${c}08`,color:'var(--ink-faint)'}}>{t}</span>))}
             </div>
-            <button className="w-full picture-book-btn primary flex items-center justify-center gap-1.5" style={{fontSize:10,padding:'6px 0'}}>
+            <button className="w-full picture-book-btn primary flex items-center justify-center gap-1.5" style={{fontSize:10,padding:'6px 0'}} onClick={()=>toast('正在生成纪念视频…','success')}>
               <Sparkles size={12}/>生成纪念视频
             </button>
           </div>)

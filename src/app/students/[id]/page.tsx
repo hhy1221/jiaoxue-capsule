@@ -5,6 +5,8 @@ import { MOCK_STUDENTS, MOCK_RECORDS } from '@/lib/mock-data'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { useState } from 'react'
+import AddGrowthRecordForm from '@/components/forms/AddGrowthRecordForm'
+import { useToast } from '@/components/animations/Toast'
 
 const TAG_COLORS = [
   { bg: 'linear-gradient(135deg,#f5e6d0,#eedcc8)', rot: '-1.3deg' },
@@ -27,6 +29,8 @@ export default function StudentDetailPage() {
   const student = MOCK_STUDENTS.find(s => s.id === id)
   const records = MOCK_RECORDS.filter(r => r.studentId === id)
   const [showAI, setShowAI] = useState(false)
+  const [showRecordForm, setShowRecordForm] = useState(false)
+  const { toast } = useToast()
 
   if (!student) {
     return (<InnerLayout><div className="text-center py-20"><p className="text-4xl mb-4">🔍</p><p style={{color:'var(--faded)'}}>学生未找到</p><Link href="/students" className="text-[#8b6a3a] text-sm mt-4 inline-block handwriting">← 返回列表</Link></div></InnerLayout>)
@@ -51,7 +55,7 @@ export default function StudentDetailPage() {
           </div>
         </div>
         <div className="flex gap-2 flex-wrap">
-          <button className="picture-book-btn" style={{ fontSize: 12 }}>✏️ 编辑档案</button>
+          <button className="picture-book-btn" style={{ fontSize: 12 }} onClick={()=>toast('编辑功能已开启，可直接修改下方信息','info')}>✏️ 编辑档案</button>
           <Link href={`/letters`} className="picture-book-btn primary no-underline" style={{ fontSize: 12 }}>✉️ 生成临别信</Link>
         </div>
         {/* 虚线装饰 */}
@@ -196,7 +200,7 @@ export default function StudentDetailPage() {
             <div className="text-center py-16">
               <p className="text-4xl mb-3">📭</p>
               <p className="handwriting text-[14px]" style={{ color: 'var(--faded)' }}>还没有记录，开始写第一条吧</p>
-              <button className="picture-book-btn primary mt-4" style={{ fontSize: 13 }}>＋ 添加第一条记录</button>
+              <button className="picture-book-btn primary mt-4" style={{ fontSize: 13 }} onClick={()=>setShowRecordForm(true)}>＋ 添加第一条记录</button>
             </div>
           ) : (
             records.map((record, ri) => (
@@ -274,7 +278,7 @@ export default function StudentDetailPage() {
             <button className="picture-book-btn" onClick={() => setShowAI(!showAI)}>
               📸 AI 扩写最新评语
             </button>
-            <button className="picture-book-btn">🎨 AI 生成手绘插图</button>
+            <button className="picture-book-btn" onClick={()=>toast('AI正在为'+student.name+'生成手绘插图…','success')}>🎨 AI 生成手绘插图</button>
           </div>
 
           {/* AI 输出 */}
@@ -303,7 +307,8 @@ export default function StudentDetailPage() {
             </div>
           )}
 
-          <button className="add-new-btn">＋ 新增今日记录</button>
+          <button className="add-new-btn" onClick={()=>setShowRecordForm(true)}>＋ 新增今日记录</button>
+          <AddGrowthRecordForm open={showRecordForm} onClose={()=>setShowRecordForm(false)} studentName={student.name} />
 
           {/* 页码 */}
           <div className="text-right mt-7 pt-3 flex items-center justify-end gap-2 text-[11px]"

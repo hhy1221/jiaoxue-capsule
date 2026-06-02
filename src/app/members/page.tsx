@@ -2,6 +2,8 @@
 import InnerLayout from '@/components/layout/InnerLayout'
 import { MOCK_MEMBERS, MOCK_TEAM } from '@/lib/mock-data'
 import { ROLE_LABELS } from '@/types'
+import { useState } from 'react'
+import InviteMemberForm from '@/components/forms/InviteMemberForm'
 
 const AVATAR_GRADIENTS = [
   'linear-gradient(135deg,#f5e6d0,#e8d4b8)',
@@ -20,6 +22,7 @@ const CARD_BORDERS = [
 ]
 
 export default function MembersPage() {
+  const [showForm, setShowForm] = useState(false)
   return (<InnerLayout>
     <header className="flex items-center justify-between pb-[22px] mb-5 flex-wrap gap-3 relative"
       style={{ borderBottom: '1.5px solid rgba(180,160,130,0.25)' }}>
@@ -97,6 +100,7 @@ export default function MembersPage() {
       })}
     </div>
 
-    <button className="add-new-btn mt-6">＋ 邀请新成员</button>
+    <button className="add-new-btn mt-6" onClick={()=>setShowForm(true)}>＋ 邀请新成员</button>
+    <InviteMemberForm open={showForm} onClose={()=>setShowForm(false)} />
   </InnerLayout>)
 }
