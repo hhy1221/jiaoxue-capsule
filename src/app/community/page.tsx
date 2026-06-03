@@ -18,17 +18,30 @@ export default function CommunityPage() {
     const qs = QUESTIONS.map(q=>({type:'question' as const,data:q,time:q.createdAt}))
     const ss = STORIES.map(s=>({type:'story' as const,data:s,time:s.createdAt}))
     const rs = RECRUITS.filter(r=>r.status==='active').map(r=>({type:'recruit' as const,data:r,time:r.createdAt}))
-    const all = [...qs,...ss,...rs].sort((a,b)=>{
-      const dc = b.time.localeCompare(a.time)
-      if (dc !== 0) return dc
-      const aImg = hasImage(a.data) ? 1 : 0
-      const bImg = hasImage(b.data) ? 1 : 0
-      return bImg - aImg
-    })
-    if (activeTab==='questions') return all.filter(i=>i.type==='question')
-    if (activeTab==='stories') return all.filter(i=>i.type==='story')
-    if (activeTab==='recruits') return all.filter(i=>i.type==='recruit')
-    return all
+
+    // 分离有真实图片的文章 vs 其余，实现精确位置控制
+    const all = [...qs, ...ss, ...rs]
+    const imgItems = all.filter(i => hasImage(i.data))
+    const noImgItems = all.filter(i => !hasImage(i.data))
+
+    // 各自按日期降序
+    const byDate = (a: typeof all[0], b: typeof all[0]) => b.time.localeCompare(a.time)
+    imgItems.sort(byDate)
+    noImgItems.sort(byDate)
+
+    // 精确插入：第1张图→左列首位(index 0)，第2张图→右列第2位(≈总数一半+1)
+    const halfIdx = Math.ceil(noImgItems.length / 2)
+    const sorted: typeof all = []
+    if (imgItems.length > 0) sorted.push(imgItems[0])           // 左列第1篇
+    sorted.push(...noImgItems.slice(0, halfIdx))
+    if (imgItems.length > 1) sorted.push(imgItems[1])           // 右列第2篇
+    sorted.push(...noImgItems.slice(halfIdx))
+    for (let i = 2; i < imgItems.length; i++) sorted.push(imgItems[i])
+
+    if (activeTab==='questions') return sorted.filter(i=>i.type==='question')
+    if (activeTab==='stories') return sorted.filter(i=>i.type==='story')
+    if (activeTab==='recruits') return sorted.filter(i=>i.type==='recruit')
+    return sorted
   }, [activeTab])
 
   const tQ=QUESTIONS.length, tS=STORIES.length, tR=RECRUITS.filter(r=>r.status==='active').length
