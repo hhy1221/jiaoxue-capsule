@@ -14,34 +14,53 @@ export default function CommunityPage() {
     }
     return false
   }
-  const feedItems = useMemo(()=>{
-    const qs = QUESTIONS.map(q=>({type:'question' as const,data:q,time:q.createdAt}))
-    const ss = STORIES.map(s=>({type:'story' as const,data:s,time:s.createdAt}))
-    const rs = RECRUITS.filter(r=>r.status==='active').map(r=>({type:'recruit' as const,data:r,time:r.createdAt}))
+  const { leftCol, rightCol } = useMemo(() => {
+    type FeedItem = { type: 'question' | 'story' | 'recruit'; data: typeof QUESTIONS[0] | typeof STORIES[0] | typeof RECRUITS[0]; time: string }
+    const qs: FeedItem[] = QUESTIONS.map(q => ({ type: 'question', data: q, time: q.createdAt }))
+    const ss: FeedItem[] = STORIES.map(s => ({ type: 'story', data: s, time: s.createdAt }))
+    const rs: FeedItem[] = RECRUITS.filter(r => r.status === 'active').map(r => ({ type: 'recruit', data: r, time: r.createdAt }))
 
-    // 分离有真实图片的文章 vs 其余，实现精确位置控制
     const all = [...qs, ...ss, ...rs]
     const imgItems = all.filter(i => hasImage(i.data))
     const noImgItems = all.filter(i => !hasImage(i.data))
 
-    // 各自按日期降序
-    const byDate = (a: typeof all[0], b: typeof all[0]) => b.time.localeCompare(a.time)
+    const byDate = (a: FeedItem, b: FeedItem) => b.time.localeCompare(a.time)
     imgItems.sort(byDate)
     noImgItems.sort(byDate)
 
-    // 精确插入：第1张图→左列首位(index 0)，第2张图→右列第2位(≈总数一半+1)
-    const halfIdx = Math.ceil(noImgItems.length / 2)
-    const sorted: typeof all = []
-    if (imgItems.length > 0) sorted.push(imgItems[0])           // 左列第1篇
-    sorted.push(...noImgItems.slice(0, halfIdx))
-    if (imgItems.length > 1) sorted.push(imgItems[1])           // 右列第2篇
-    sorted.push(...noImgItems.slice(halfIdx))
-    for (let i = 2; i < imgItems.length; i++) sorted.push(imgItems[i])
+    // ── 硬控左右两列 ──
+    const leftCol: FeedItem[] = []
+    const rightCol: FeedItem[] = []
+    let ni = 0 // noImgItems 游标
+    let ii = 0 // imgItems 游标
 
-    if (activeTab==='questions') return sorted.filter(i=>i.type==='question')
-    if (activeTab==='stories') return sorted.filter(i=>i.type==='story')
-    if (activeTab==='recruits') return sorted.filter(i=>i.type==='recruit')
-    return sorted
+    // 左[0] = 🦕 恐龙（第1张图）
+    if (imgItems[ii]) leftCol.push(imgItems[ii++])
+
+    // 右[0] = 普通文章（占位 filler）
+    if (noImgItems[ni]) rightCol.push(noImgItems[ni++])
+
+    // 右[1] = ✉️ 女孩的信（第2张图）
+    if (imgItems[ii]) rightCol.push(imgItems[ii++])
+
+    // 左右交替填入剩余内容
+    while (ni < noImgItems.length || ii < imgItems.length) {
+      // 左列取下一个
+      if (ni < noImgItems.length) { leftCol.push(noImgItems[ni++]) }
+      else if (ii < imgItems.length) { leftCol.push(imgItems[ii++]) }
+      // 右列取下一个
+      if (ni < noImgItems.length) { rightCol.push(noImgItems[ni++]) }
+      else if (ii < imgItems.length) { rightCol.push(imgItems[ii++]) }
+    }
+
+    const filterCol = (col: FeedItem[]) => {
+      if (activeTab === 'questions') return col.filter(i => i.type === 'question')
+      if (activeTab === 'stories') return col.filter(i => i.type === 'story')
+      if (activeTab === 'recruits') return col.filter(i => i.type === 'recruit')
+      return col
+    }
+
+    return { leftCol: filterCol(leftCol), rightCol: filterCol(rightCol) }
   }, [activeTab])
 
   const tQ=QUESTIONS.length, tS=STORIES.length, tR=RECRUITS.filter(r=>r.status==='active').length
@@ -67,13 +86,23 @@ export default function CommunityPage() {
               style={{background:activeTab===t.k?'linear-gradient(135deg,#9b7a4a,#7a5a3a)':'transparent',color:activeTab===t.k?'#fff':'var(--ink-soft)',fontWeight:activeTab===t.k?600:400,fontFamily:'inherit'}}>{t.l}</button>
           ))}</div>
 
-        {/* 双列信息流 — 瀑布流：卡片高度由内容决定，自然错落 */}
-        <div className="columns-2 gap-4 max-md:columns-1 [&>*]:break-inside-avoid [&>*]:mb-4">
-          {feedItems.map(item=>{
-            if (item.type==='story') return <StoryCardMini key={item.data.id} s={item.data}/>
-            if (item.type==='question') return <QuestionCardMini key={item.data.id} q={item.data}/>
-            return <RecruitCardMini key={item.data.id} r={item.data}/>
-          })}</div>
+        {/* 双列信息流 — 硬控左右列：左[0]=恐龙图，右[1]=女孩的信 */}
+        <div className="grid grid-cols-2 gap-4 max-md:grid-cols-1">
+          <div className="flex flex-col gap-4">
+            {leftCol.map(item => {
+              if (item.type === 'story') return <StoryCardMini key={item.data.id} s={item.data as typeof STORIES[0]} />
+              if (item.type === 'question') return <QuestionCardMini key={item.data.id} q={item.data as typeof QUESTIONS[0]} />
+              return <RecruitCardMini key={item.data.id} r={item.data as typeof RECRUITS[0]} />
+            })}
+          </div>
+          <div className="flex flex-col gap-4">
+            {rightCol.map(item => {
+              if (item.type === 'story') return <StoryCardMini key={item.data.id} s={item.data as typeof STORIES[0]} />
+              if (item.type === 'question') return <QuestionCardMini key={item.data.id} q={item.data as typeof QUESTIONS[0]} />
+              return <RecruitCardMini key={item.data.id} r={item.data as typeof RECRUITS[0]} />
+            })}
+          </div>
+        </div>
       </div>
 
       {/* 右栏 */}
