@@ -221,7 +221,7 @@ export default function SpotlightSearch() {
                 {query ? `没有找到与「${query}」相关的内容` : '输入关键词开始搜索…'}
               </p>
               <p className="text-[10px] mt-1 opacity-50" style={{ color: 'var(--faded)' }}>
-                试试搜索"数学"、"筠连"、"教案"、"赵一曼"…
+                试试搜索"数学"、"教案"、"募捐"、"赵一曼"…
               </p>
             </div>
           ) : (

@@ -13,8 +13,8 @@ const notoSans = Noto_Sans_SC({
 })
 
 export const metadata: Metadata = {
-  title: "支教记忆胶囊 — AI 赋能支教，让记忆不散场",
-  description: "记录每个孩子的成长，支教结束时 AI 自动生成专属临别信。凡星支教队 2026 筠连夏令营。",
+  title: "支教星火 — 全国支教工作者的一站式平台",
+  description: "连接全国支教队员、一线教师、地方团委与热心公众。记录孩子成长，AI 生成临别信，教学资源共享，让每一段支教故事被看见。",
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

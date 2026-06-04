@@ -1,18 +1,21 @@
 // ═══════════════════════════════════════
-// 支教记忆胶囊 — 完整演示假数据 v3
+// 支教星火 — 全国平台演示数据 v4
 // ═══════════════════════════════════════
 import { Student, GrowthRecord, Letter, Schedule, Classroom, ClassroomMoment, Material, TeachingNote, Conversation, Message, Review, Announcement, Album, Resource, DashboardData, PenpalMatch, TreeholeMessage, DialectEntry, VideoScript, User, Team, Semester, Notification, CommunityQuestion, CommunityRecruit, CommunityStory, StudentSocialPost, InterestGroup, OfficialAccount } from '@/types'
 
 // ── 用户 ──
 export const MOCK_USER: User = { id: 'u1', name: '黄寒阳', email: 'huang@uestc.edu.cn', avatar: '黄', roles: ['captain', 'teacher'], teamId: 't1', createdAt: '2026-07-01' }
 export const MOCK_TEAM: Team = { id: 't1', name: '凡星支教队', slug: 'fanxing', description: '电子科技大学计算机学院凡星支教队，连续11年深耕四川乡村教育', logo: '⭐', color: '#2E7D32', createdAt: '2015-01-01' }
-export const MOCK_SEMESTER: Semester = { id: 's1', teamId: 't1', name: '2026筠连夏令营', startDate: '2026-07-19', endDate: '2026-07-31', location: '四川宜宾筠连县', isActive: true }
+export const MOCK_SEMESTER: Semester = { id: 's1', teamId: 't1', name: '2026凡星夏令营', startDate: '2026-07-19', endDate: '2026-07-31', location: '四川宜宾', isActive: true }
 export const MOCK_MEMBERS: User[] = [
   MOCK_USER,
   { id: 'u2', name: '周老师', email: 'zhou@test.com', avatar: '周', roles: ['vice_captain', 'teacher'], teamId: 't1', createdAt: '2026-07-01' },
   { id: 'u3', name: '王老师', email: 'wang@test.com', avatar: '王', roles: ['teacher'], teamId: 't1', createdAt: '2026-07-01' },
   { id: 'u4', name: '李老师', email: 'li@test.com', avatar: '李', roles: ['teacher'], teamId: 't1', createdAt: '2026-07-02' },
   { id: 'u5', name: '张指导', email: 'zhang@test.com', avatar: '张', roles: ['advisor'], teamId: 't1', createdAt: '2026-07-01' },
+  { id: 'u6', name: '刘老师', email: 'liu@test.com', avatar: '刘', roles: ['teacher'], teamId: 't2', createdAt: '2026-06-15' },
+  { id: 'u7', name: '陈老师', email: 'chen@test.com', avatar: '陈', roles: ['captain'], teamId: 't2', createdAt: '2026-06-10' },
+  { id: 'u8', name: '杨老师', email: 'yang@test.com', avatar: '杨', roles: ['teacher'], teamId: 't3', createdAt: '2026-06-20' },
 ]
 
 // ── 学生 ──
@@ -292,7 +295,7 @@ export const MOCK_VIDEO_SCRIPTS: VideoScript[] = [
 
 // ── 仪表盘数据 ──
 export const MOCK_DASHBOARD: DashboardData = {
-  studentCount: 60, diaryCount: 128, photoCount: 342, classCount: 34, activeTrend: 12,
+  studentCount: 1280, diaryCount: 3652, photoCount: 12480, classCount: 856, activeTrend: 18,
   recentDiaries: [
     { studentName: '刘小宇', content: '今天主动帮同桌讲解数学题，讲了三遍直到对方完全理解，非常有耐心', timeAgo: '10分钟前' },
     { studentName: '陈小雨', content: '作文写了整整两页纸，描述了和欣怡一起去摘野花的故事，细腻感人', timeAgo: '25分钟前' },

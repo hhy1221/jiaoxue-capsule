@@ -11,13 +11,13 @@ import { CommunityIdentity, IDENTITY_LABELS, CommunityProfile } from '@/types'
 const MOCK_PROFILE: CommunityProfile = {
   id: 'u1', name: '黄寒阳', avatar: '🌱',
   identity: 'team_leader' as CommunityIdentity, verified: true,
-  location: '四川宜宾筠连县', organization: '电子科技大学 · 凡星支教队', badge: '凡星支教队·队长',
-  bio: '电子科技大学计算机学院大一学生。2026年暑假带队前往筠连县支教，希望用技术为乡村教育做点实事。擅长科学实验课、AI启蒙课，也喜欢用相机记录孩子们的笑容。',
+  location: '四川成都', organization: '电子科技大学', badge: '支教星火平台用户',
+  bio: '电子科技大学计算机学院大一学生。2026年暑假参与乡村支教，希望用技术为乡村教育做点实事。擅长科学实验课、AI启蒙课，也喜欢用相机记录孩子们的笑容。',
   tags: ['AI启蒙', '科学实验', '摄影记录', '五育并举', 'Lesson Plan'],
   skills: ['编程教学', '摄影摄像', '科学实验', '文案写作'],
   interests: ['短期支教', 'AI教育', '少数民族文化', '课程设计'],
   localNeeds: [
-    { title: '招募2027年暑期支教队员', description: '凡星支教队2027年计划前往筠连县+新增一个支教点。需要15-20名队员，特别欢迎有美术、音乐、体育特长的同学。面试时间：2027年5月。', contactInfo: '公众号: 凡星支教 / 微信: fanxing_team', deadline: '2027-05-15' },
+    { title: '招募2027年暑期支教队员', description: '计划于2027年前往乡村支教点。需要15-20名队员，特别欢迎有美术、音乐、体育特长的同学。面试时间：2027年5月。', contactInfo: '公众号: 凡星支教 / 微信: fanxing_team', deadline: '2027-05-15' },
     { title: '募集二手笔记本电脑（5台）', description: '用于乡村小学计算机启蒙课。不需要高配，能开机、能装Python即可。新旧均可，学生自用。', contactInfo: '微信: hhy_study', deadline: '2027-06-01' },
   ],
   stats: { questionsAnswered: 8, resourcesShared: 15, storiesWritten: 8, recruitsPosted: 2, joinedAt: '2026-01-15' },

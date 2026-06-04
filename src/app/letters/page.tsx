@@ -214,7 +214,7 @@ export default function LettersPage() {
                     }}>黄</div>
                   <div className="text-[11px] leading-relaxed" style={{ color: 'var(--faded)', letterSpacing: '0.04em' }}>
                     <strong className="text-[12px]" style={{ color: 'var(--ink)' }}>黄老师</strong><br />
-                    凡星支教队 · 2026 筠连夏令营
+                    全国支教平台 · 让爱与知识同行
                   </div>
                 </div>
 
@@ -322,7 +322,7 @@ export default function LettersPage() {
               {/* 页码装饰 */}
               <div className="flex items-center justify-between px-10 py-4 text-[10px]"
                 style={{ borderTop: '1px solid rgba(180,150,120,0.12)', color: 'var(--faded)', letterSpacing: '0.06em' }}>
-                <span>凡星支教队 · 记忆胶囊 · 2026</span>
+                <span>凡星支教队 · 支教星火 · 2026</span>
                 <div className="flex gap-1.5">
                   {[0, 0, 1, 0, 0].map((accent, i) => (
                     <span key={i}

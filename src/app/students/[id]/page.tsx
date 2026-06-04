@@ -51,7 +51,7 @@ export default function StudentDetailPage() {
             📒 {student.name}的成长手记
           </div>
           <div className="text-[11px] mt-0.5 tracking-[0.06em]" style={{ color: 'var(--faded)' }}>
-            凡星支教队 · 筠连 · 2026夏
+            全国支教平台 · 用心记录每一个孩子
           </div>
         </div>
         <div className="flex gap-2 flex-wrap">

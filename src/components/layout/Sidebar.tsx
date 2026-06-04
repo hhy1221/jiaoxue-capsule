@@ -339,7 +339,7 @@ export default function Sidebar() {
             </div>
             <div className="min-w-0">
               <h2 className="text-[15px] font-semibold tracking-[0.04em] leading-tight text-[var(--ink)]"
-                style={{ fontFamily:'var(--font-serif)' }}>记忆胶囊</h2>
+                style={{ fontFamily:'var(--font-serif)' }}>支教星火</h2>
               <p className="text-[9px] tracking-[0.12em] mt-0.5 handwriting"
                 style={{ color:'var(--faded)' }}>凡星支教队</p>
             </div>
@@ -482,9 +482,9 @@ export default function Sidebar() {
               style={{ background:'rgba(185,210,190,0.45)',transform:'rotate(12deg)',boxShadow:'0 1px 2px rgba(0,0,0,0.04)' }}/>
             <p className="text-[9px] leading-relaxed tracking-[0.06em] text-center handwriting"
               style={{ color:'var(--ink-faint)' }}>
-              2026 · 筠连<br/>
+              全国支教平台<br/>
               <span className="text-[12px] font-semibold tracking-[0.04em]"
-                style={{ color:'var(--ink-soft)',fontFamily:'var(--font-serif)' }}>13天夏令营</span>
+                style={{ color:'var(--ink-soft)',fontFamily:'var(--font-serif)' }}>因你而温暖</span>
             </p>
             <p className="text-[8px] text-center mt-1.5 tracking-[0.1em] handwriting"
               style={{ color:'var(--faded)',opacity:0.5 }}>让记忆不散场</p>

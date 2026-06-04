@@ -380,7 +380,7 @@ export default function SchedulePage() {
 
     <div className="text-[10px] flex items-center justify-between flex-wrap gap-2" style={{ color: 'var(--faded)' }}>
       <span>💡 点击课表中课程单元格查看色彩分类 · 双击编辑 · Ctrl+S 保存</span>
-      <span>凡星支教队 · 2026 筠连夏令营</span>
+      <span>全国支教平台 · 星火相传</span>
     </div>
   </InnerLayout>)
 }

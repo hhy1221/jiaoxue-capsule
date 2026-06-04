@@ -89,7 +89,7 @@ export default function WeChatLogin({ onClose }: { onClose: () => void }) {
                 onClick={onClose}
                 className="w-full py-2.5 rounded-xl bg-[#07C160] text-white text-[13px] tracking-wider border-none cursor-pointer hover:bg-[#06ad56] transition-colors"
               >
-                进入记忆胶囊
+                进入支教星火
               </button>
             </>
           )}

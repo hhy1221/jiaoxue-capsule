@@ -41,7 +41,7 @@ export default function StudentsPage() {
 
   return (<InnerLayout>
     <header className="flex items-center justify-between pb-[22px] mb-5 flex-wrap gap-3 relative" style={{borderBottom:'1.5px solid rgba(180,160,130,0.25)'}}>
-      <div><h1 className="text-[19px] font-semibold tracking-[0.03em] text-[var(--ink)]" style={{fontFamily:'var(--font-serif)'}}>📒 学生档案</h1><p className="text-[11px] mt-0.5 tracking-[0.06em]" style={{color:'var(--faded)'}}>共 {MOCK_STUDENTS.length} 位学生 · 凡星支教队 · 筠连 · 2026夏</p></div>
+      <div><h1 className="text-[19px] font-semibold tracking-[0.03em] text-[var(--ink)]" style={{fontFamily:'var(--font-serif)'}}>📒 学生档案</h1><p className="text-[11px] mt-0.5 tracking-[0.06em]" style={{color:'var(--faded)'}}>共 {MOCK_STUDENTS.length} 位学生 · 汇聚来自全国各地的孩子</p></div>
       <div className="flex gap-2 flex-wrap"><button className="picture-book-btn" style={{fontSize:11}} onClick={() => setShowSearch(!showSearch)}><Search size={14}/> 搜索</button><button className="picture-book-btn primary" style={{fontSize:11}} onClick={()=>setShowForm(true)}><Plus size={14}/> 添加学生</button></div>
       <div className="absolute -bottom-[7px] left-1/2 -translate-x-1/2 text-[7px] tracking-[7px] whitespace-nowrap" style={{color:'rgba(180,160,130,0.5)'}}>· · · · · · · · · · · ·</div>
     </header>

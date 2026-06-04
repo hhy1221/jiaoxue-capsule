@@ -153,7 +153,7 @@ export default function HeroCurtain() {
       <nav className="fixed top-0 left-0 right-0 z-50 px-10 py-5 flex items-center justify-between max-sm:px-5 max-sm:py-3">
         <div className="flex items-center gap-2 text-white text-[17px] tracking-wider no-underline" style={{ fontFamily: "var(--font-serif)", textShadow: "0 1px 3px rgba(0,0,0,0.2)" }}>
           <span className="w-[6px] h-[6px] rounded-full bg-[#f0c060] shadow-[0_0_6px_rgba(240,192,96,0.5)]" />
-          记忆胶囊
+          支教星火
         </div>
         <div className="flex gap-6 items-center max-sm:gap-4 pr-12">
           <a href="/dashboard" onClick={(e) => handleNav(e, '/dashboard')} className="text-[11px] text-white/80 tracking-widest no-underline hover:text-white transition-colors" style={{ textShadow: "0 1px 3px rgba(0,0,0,0.2)" }}>仪表盘</a>
@@ -192,8 +192,8 @@ export default function HeroCurtain() {
             boxShadow: '0 4px 32px rgba(0,0,0,0.08),0 1px 2px rgba(0,0,0,0.04),inset 0 1px 0 rgba(255,255,255,0.05)',
           }}>
           <div className="absolute top-0 left-[20%] right-[20%] h-px" style={{ background: 'linear-gradient(90deg,transparent,rgba(255,255,255,0.18),transparent)' }} />
-          <p className="text-[11px] text-white/60 tracking-[0.35em] mb-3.5" style={{ textShadow: "0 1px 4px rgba(0,0,0,0.2)" }}>凡星支教队 · 二〇二六 · 筠连</p>
-          <h1 className="text-[clamp(42px,9vw,96px)] font-black text-white leading-none whitespace-nowrap mb-1.5 tracking-normal" style={{ fontFamily: "var(--font-serif)", textShadow: "0 2px 4px rgba(0,0,0,0.12),0 4px 24px rgba(0,0,0,0.08)" }}>支教记忆胶囊</h1>
+          <p className="text-[11px] text-white/60 tracking-[0.35em] mb-3.5" style={{ textShadow: "0 1px 4px rgba(0,0,0,0.2)" }}>全国支教工作者的一站式平台</p>
+          <h1 className="text-[clamp(42px,9vw,96px)] font-black text-white leading-none whitespace-nowrap mb-1.5 tracking-normal" style={{ fontFamily: "var(--font-serif)", textShadow: "0 2px 4px rgba(0,0,0,0.12),0 4px 24px rgba(0,0,0,0.08)" }}>支教星火</h1>
           <p className="text-[14px] font-light text-white/65 tracking-[0.16em] mb-5" style={{ textShadow: "0 1px 4px rgba(0,0,0,0.2)" }}>记录每个孩子 · AI 自动生成专属临别信</p>
           <div className="w-10 h-px bg-white/30 mx-auto mb-[18px]" />
           <div className="flex gap-5 justify-center mb-[18px] flex-wrap max-sm:gap-2.5">
