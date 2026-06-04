@@ -5,7 +5,7 @@ import { QUESTIONS } from '@/lib/community-data'
 import { SUBJECT_LABELS, SUBJECT_EMOJIS, QuestionSubject } from '@/types'
 import { useState, useMemo, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
-import { Search, MessageCircle, Eye, ThumbsUp, CheckCircle, Clock, User, Filter, MapPin, ChevronDown, ChevronUp } from 'lucide-react'
+import { Search, MessageCircle, Eye, ThumbsUp, CheckCircle, Clock, MapPin, Trophy, Flame, ArrowRight } from 'lucide-react'
 import AuthorBadge from '@/components/community/AuthorBadge'
 
 const REGIONS = ['全部','西南','西北','华东','华中','华南','东北']
@@ -35,6 +35,13 @@ function QuestionsContent() {
   },[search,subject,region,status])
 
   const totalAnswers = QUESTIONS.reduce((s,q)=>s+q.answers.length,0)
+
+  // ── 热门回答 Top 8（跨所有问题，按点赞降序）──
+  const topAnswers = useMemo(() => {
+    const all: { answer: typeof QUESTIONS[0]['answers'][0]; questionTitle: string; questionId: string }[] = []
+    QUESTIONS.forEach(q => { q.answers.forEach(a => { all.push({ answer: a, questionTitle: q.title, questionId: q.id }) }) })
+    return all.sort((a, b) => b.answer.likes - a.answer.likes).slice(0, 8)
+  }, [])
 
   return (<InnerLayout>
     <header className="relative mb-6 rounded-2xl overflow-hidden" style={{
@@ -94,8 +101,11 @@ function QuestionsContent() {
       </div>
     </div>
 
-    {/* 问题列表 */}
-    <div className="space-y-4">
+    {/* ═══ 双列布局：问题列表 + 精华回答榜 ═══ */}
+    <div className="grid grid-cols-[1fr_320px] gap-6 max-lg:grid-cols-1">
+      <div>
+        {/* 问题列表 */}
+        <div className="space-y-4">
       {filtered.map(q=>{
         const expanded = expandedId === q.id
         const isLiked = liked.has(q.id)
@@ -218,6 +228,64 @@ function QuestionsContent() {
           <p className="text-[12px] mt-1 opacity-60">试试其他关键词或筛选条件</p>
         </div>
       )}
+        </div>
+      </div>
+
+      {/* ═══ 右栏：精华回答榜 ═══ */}
+      <div className="space-y-4 max-lg:hidden">
+        <div className="picture-book-card p-4 sticky top-24" style={{ transform: 'rotate(0.04deg)' }}>
+          <h3 className="text-[14px] font-semibold mb-4 text-[var(--ink)] flex items-center gap-1.5" style={{ fontFamily: 'var(--font-serif)' }}>
+            <Trophy size={14} style={{ color: '#e08050' }} /> 精华回答榜
+          </h3>
+          <p className="text-[10px] mb-3" style={{ color: 'var(--faded)' }}>跨所有问题 · 按点赞数降序</p>
+          {topAnswers.map((item, i) => {
+            const rankColor = i === 0 ? '#e08050' : i === 1 ? '#d4a040' : i === 2 ? '#b89860' : 'var(--faded)'
+            const isTop3 = i < 3
+            return (
+              <div key={item.answer.id} className="py-2.5 group"
+                style={{ borderBottom: i < topAnswers.length - 1 ? '1px solid rgba(200,180,160,0.08)' : 'none' }}>
+                {/* 排名 + 核心信息 */}
+                <div className="flex gap-2.5">
+                  <span className="text-[22px] font-bold flex-shrink-0 w-7 text-center leading-none"
+                    style={{ color: rankColor, fontFamily: 'var(--font-serif)' }}>
+                    {isTop3 ? ['🥇', '🥈', '🥉'][i] : `${i + 1}`}
+                  </span>
+                  <div className="min-w-0">
+                    {/* 回答摘要 */}
+                    <p className="text-[11px] leading-snug line-clamp-2 mb-1 font-medium"
+                      style={{ color: 'var(--ink-soft)' }}>
+                      {item.answer.content.split('\n')[0].slice(0, 80)}{item.answer.content.length > 80 ? '…' : ''}
+                    </p>
+                    {/* 来源问题 */}
+                    <p className="text-[9px] leading-snug mb-1 line-clamp-1" style={{ color: 'var(--faded)' }}>
+                      来自「{item.questionTitle}」
+                    </p>
+                    {/* 作者 + 点赞 */}
+                    <div className="flex items-center justify-between text-[9px]">
+                      <span className="flex items-center gap-1" style={{ color: 'var(--faded)' }}>
+                        <span>{item.answer.author.avatar}</span>
+                        <span>{item.answer.author.name}</span>
+                        {item.answer.isAccepted && (
+                          <span className="text-[8px] px-1 rounded-full" style={{ background: 'rgba(122,180,90,0.1)', color: '#5a8a3a' }}>已采纳</span>
+                        )}
+                      </span>
+                      <span className="flex items-center gap-1 font-semibold" style={{ color: rankColor }}>
+                        <ThumbsUp size={9} /> {item.answer.likes}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )
+          })}
+          {/* 底部链接 */}
+          <div className="mt-3 pt-3 text-center" style={{ borderTop: '1px solid rgba(200,180,160,0.1)' }}>
+            <p className="text-[10px] handwriting" style={{ color: 'var(--faded)' }}>
+              这些回答来自一线教师的实战经验 🎯
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
   </InnerLayout>)
 }
