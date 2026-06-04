@@ -49,9 +49,10 @@ function RecruitCard({recruit:r}:{recruit:CommunityRecruit}) {
   const label = RECRUIT_LABELS[r.type]
 
   return (
-    <div className="picture-book-card p-5 cursor-pointer transition-all duration-300"
+    <div className="picture-book-card p-5 cursor-pointer transition-all duration-300" role="button" tabIndex={0}
       style={{transform:'rotate(-0.08deg)',...(expanded?{borderColor:'rgba(160,130,100,0.5)',boxShadow:'var(--shadow-md)'}:{})}}
-      onClick={()=>setExpanded(!expanded)}>
+      onClick={()=>setExpanded(!expanded)}
+      onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();setExpanded(!expanded)}}}>
       <div className="flex items-start gap-3">
         {/* 类型标识 */}
         <div className="w-10 h-10 rounded-xl flex items-center justify-center text-lg flex-shrink-0"

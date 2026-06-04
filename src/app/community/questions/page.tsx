@@ -16,6 +16,8 @@ export default function QuestionsPage() {
   const [status, setStatus] = useState<string>('all')
   const [expandedId, setExpandedId] = useState<string | null>(null)
   const [liked, setLiked] = useState<Set<string>>(new Set())
+  const [answerTexts, setAnswerTexts] = useState<Record<string, string>>({})
+  const [answerSubmitted, setAnswerSubmitted] = useState<Set<string>>(new Set())
 
   const filtered = useMemo(()=>{
     let items = QUESTIONS
@@ -97,9 +99,11 @@ export default function QuestionsPage() {
         const isLiked = liked.has(q.id)
         const hasBest = q.answers.some(a=>a.isAccepted)
 
-        return (<div key={q.id} className={`picture-book-card p-0 overflow-hidden cursor-pointer transition-all duration-300 ${expanded?'shadow-md':''}`}
+        return (<div key={q.id} role="button" tabIndex={0}
+          className={`picture-book-card p-0 overflow-hidden cursor-pointer transition-all duration-300 ${expanded?'shadow-md':''}`}
           style={{...(expanded?{borderColor:'rgba(160,130,90,0.45)'}:{})}}
-          onClick={()=>setExpandedId(expanded?null:q.id)}>
+          onClick={()=>setExpandedId(expanded?null:q.id)}
+          onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();setExpandedId(expanded?null:q.id)}}}>
 
           <div className="p-5">
             {/* 状态 + 学科标签 */}
@@ -178,13 +182,30 @@ export default function QuestionsPage() {
           </div>)}
 
           {/* 空答案提示 */}
-          {expanded && q.answers.length===0 && (<div className="px-5 pb-5 pt-4 text-center" style={{borderTop:'1px solid rgba(200,180,160,0.1)'}}>
-            <p className="text-[12px] handwriting" style={{color:'var(--faded)'}}>还没有人回答这个问题，期待你的帮助 ✨</p>
+          {expanded && q.answers.length===0 && !answerSubmitted.has(q.id) && (<div className="px-5 pb-5 pt-4" style={{borderTop:'1px solid rgba(200,180,160,0.1)'}}>
+            <p className="text-[12px] handwriting text-center" style={{color:'var(--faded)'}}>还没有人回答这个问题，期待你的帮助 ✨</p>
             <textarea placeholder="写下你的回答…" rows={3}
+              value={answerTexts[q.id] || ''}
+              onChange={e => setAnswerTexts(prev => ({...prev, [q.id]: e.target.value}))}
               className="w-full mt-3 p-4 rounded-xl text-[13px] outline-none resize-none"
               style={{border:'1.5px solid rgba(200,180,160,0.2)',background:'var(--surface)',color:'var(--ink)',fontFamily:'inherit'}}/>
-            <button className="picture-book-btn primary mt-2" style={{fontSize:12}}>发布回答</button>
+            <div className="flex justify-end mt-2">
+              <button
+                disabled={!answerTexts[q.id]?.trim()}
+                className="picture-book-btn primary"
+                style={{fontSize:12, opacity: answerTexts[q.id]?.trim() ? 1 : 0.5}}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  if (!answerTexts[q.id]?.trim()) return
+                  setAnswerSubmitted(prev => new Set(prev).add(q.id))
+                }}>发布回答</button>
+            </div>
           </div>)}
+          {answerSubmitted.has(q.id) && (
+            <div className="px-5 pb-5 pt-4 text-center" style={{borderTop:'1px solid rgba(200,180,160,0.1)'}}>
+              <p className="text-[13px] text-green-600 handwriting">✅ 回答已发布！感谢你的帮助</p>
+            </div>
+          )}
         </div>)
       })}
 

@@ -416,3 +416,22 @@ html { overflow-y: scroll; }
 @media (max-width: 768px) {
   .bookmark-ribbon { display: none; }
 }
+
+/* ═══════════════════════════════════════
+   LAYER 5 — 打印样式（临别信专用）
+   ═══════════════════════════════════════ */
+@media print {
+  /* 隐藏非信件内容 */
+  nav, aside, .bookmark-ribbon, .picture-book-btn, button,
+  header, footer, .add-new-btn, [data-sidebar] { display: none !important; }
+  /* 信件核心区域全宽 */
+  body { background: #fff !important; }
+  html { background: #fff !important; }
+  html::before, html::after { display: none !important; }
+  .page-enter { animation: none !important; }
+  /* 移除旋转卡片 */
+  .picture-book-card { transform: none !important; box-shadow: none !important; border: none !important; }
+  /* 杂志页全宽 */
+  main { padding: 0 !important; margin: 0 !important; max-width: 100% !important; }
+  @page { margin: 2cm; size: A4; }
+}
