@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
-import { useState, useRef, useCallback, useEffect } from 'react'
+import { useState, useRef, useCallback, useEffect, useLayoutEffect } from 'react'
 
 /* ═══════════════════════════════
    导航分组
@@ -74,6 +74,10 @@ export default function Sidebar() {
 
   const glowRaf = useRef<number>(undefined)
   const ribbonRaf = useRef<number>(undefined)
+
+  // ═══ 导航栏滚动位置持久化 — 跨页面切换保持不动 ═══
+  const navScrollRef = useRef(0)
+  const STORAGE_KEY_SCROLL = 'sidebar-nav-scroll'
 
   // 同步宽度到 CSS 变量 + 持久化
   useEffect(() => {
@@ -203,7 +207,21 @@ export default function Sidebar() {
     }, 140)
   }, [])
 
-  /* ── 初始化 + pathname 变化时重置到激活项 ── */
+  /* ═══ 同步恢复 nav 滚动位置（浏览器 paint 前执行，零闪动）═══ */
+  useLayoutEffect(() => {
+    const nav = navRef.current
+    if (!nav) return
+    // 用 ref 快照 + sessionStorage 双重恢复
+    let target = navScrollRef.current
+    if (!target) {
+      try { target = Number(sessionStorage.getItem(STORAGE_KEY_SCROLL)) || 0 } catch {}
+    }
+    if (target > 0) {
+      nav.scrollTop = target
+    }
+  }, [pathname])
+
+  /* ── 初始化 + pathname 变化时：光斑/缎带归位，滚动位置保持不动 ── */
   useEffect(() => {
     const href = findActiveHref()
     if (href) {
@@ -220,24 +238,6 @@ export default function Sidebar() {
           ribbonRef.current.style.top = `${pos.top}px`
           ribbonRef.current.style.height = `${pos.height * 0.6}px`
           ribbonRef.current.style.opacity = '1'
-        }
-        // ═══ 自动滚动到可见位置 — 防止靠下的菜单项被遮挡 ═══
-        const nav = navRef.current
-        const activeEl = nav?.querySelector(`[data-nav-href="${href}"]`)
-        if (activeEl && nav) {
-          const navRect = nav.getBoundingClientRect()
-          const elRect = activeEl.getBoundingClientRect()
-          // 如果激活项一半以上在可见区域外，才滚动
-          const elCenter = elRect.top + elRect.height / 2
-          const navCenter = navRect.top + navRect.height / 2
-          const isAbove = elRect.bottom < navRect.top + elRect.height * 0.6
-          const isBelow = elRect.top > navRect.bottom - elRect.height * 0.6
-          if (isAbove || isBelow) {
-            nav.scrollTo({
-              top: nav.scrollTop + elCenter - navCenter,
-              behavior: 'smooth',
-            })
-          }
         }
       })
     }
@@ -261,6 +261,32 @@ export default function Sidebar() {
       animateRibbonTo(href)
     }
   }, [asideExited])
+
+  /* ── 滚动时持续保存 scrollTop → ref + sessionStorage ── */
+  useEffect(() => {
+    const nav = navRef.current
+    if (!nav) return
+    const onScroll = () => {
+      navScrollRef.current = nav.scrollTop
+      try { sessionStorage.setItem(STORAGE_KEY_SCROLL, String(nav.scrollTop)) } catch {}
+    }
+    nav.addEventListener('scroll', onScroll, { passive: true })
+    return () => nav.removeEventListener('scroll', onScroll)
+  }, [])
+
+  /* ── 初始挂载：从 sessionStorage 恢复滚动位置 ── */
+  useEffect(() => {
+    const nav = navRef.current
+    if (!nav) return
+    try {
+      const saved = sessionStorage.getItem(STORAGE_KEY_SCROLL)
+      if (saved) {
+        const top = Number(saved)
+        navScrollRef.current = top
+        requestAnimationFrame(() => { nav.scrollTop = top })
+      }
+    } catch {}
+  }, [])
 
   /* ── 清理 ── */
   useEffect(() => () => {
