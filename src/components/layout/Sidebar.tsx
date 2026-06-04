@@ -349,6 +349,27 @@ export default function Sidebar() {
             <span className="text-[10px] opacity-30" style={{ color:'var(--faded)' }}>✦</span>
             <div className="h-px flex-1" style={{ background:'linear-gradient(90deg,transparent,rgba(180,160,130,0.25),transparent)' }}/>
           </div>
+
+          {/* 万能搜索触发器 */}
+          <div className="px-2.5 pt-1">
+            <button
+              onClick={() => window.dispatchEvent(new CustomEvent('open-spotlight'))}
+              className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-[11px] cursor-pointer transition-all hover:shadow-sm border-none"
+              style={{
+                background: 'rgba(245,240,230,0.5)',
+                border: '1.5px solid rgba(200,180,160,0.2)',
+                color: 'var(--faded)',
+                fontFamily: 'inherit',
+                letterSpacing: '0.03em',
+              }}>
+              <span className="text-sm">🔍</span>
+              <span className="flex-1 text-left">搜索...</span>
+              <kbd className="text-[9px] px-1.5 py-0.5 rounded"
+                style={{ background: 'rgba(200,180,160,0.12)', color: 'var(--faded)', border: '1px solid rgba(200,180,160,0.2)', fontFamily: 'var(--font-mono), monospace' }}>
+                Ctrl+K
+              </kbd>
+            </button>
+          </div>
         </div>
 
         {/* Nav */}
