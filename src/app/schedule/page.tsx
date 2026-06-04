@@ -140,7 +140,7 @@ export default function SchedulePage() {
     const isSel=selected.has(k)
     const isEdit=editing&&editing.ri===ri&&editing.ci===ci
     const has=cell&&cell!==''
-    if(isEdit)return(<td className="p-0 border" style={{borderColor:tt.border}}><textarea ref={inpRef as any} value={editVal} onChange={e=>setEditVal(e.target.value)} onBlur={saveEdit} onKeyDown={e=>{if(e.key==='Enter'&&!e.shiftKey)saveEdit();if(e.key==='Escape')setEditing(null)}} className="w-full min-h-[32px] p-2 border-none outline-none resize-y text-[11px] text-center" style={{background:'#fff',color:'var(--ink)',border:'2px dashed var(--primary-skin)'}} autoFocus/></td>)
+    if(isEdit)return(<td className="p-0 border" style={{borderColor:tt.border}}><textarea ref={inpRef} value={editVal} onChange={e=>setEditVal(e.target.value)} onBlur={saveEdit} onKeyDown={e=>{if(e.key==='Enter'&&!e.shiftKey)saveEdit();if(e.key==='Escape')setEditing(null)}} className="w-full min-h-[32px] p-2 border-none outline-none resize-y text-[11px] text-center" style={{background:'#fff',color:'var(--ink)',border:'2px dashed var(--primary-skin)'}} autoFocus/></td>)
     return(<td onClick={()=>toggleSel(ri,ci)} onDoubleClick={()=>startEdit(ri,ci)} rowSpan={rowspan||1}
       className={'p-2 text-center border transition-all align-middle cursor-pointer'+(isSel?' ring-2 ring-[var(--primary-skin)]':'')}
       style={{background:isSel?'rgba(200,160,120,0.12)':tt.cellBg,borderColor:tt.border,fontSize:11,fontWeight:has?600:400}}>
@@ -155,12 +155,12 @@ export default function SchedulePage() {
         <div className="flex items-center gap-2 flex-wrap">
           {/* Week */}
           <div className="flex rounded-lg border p-0.5" style={{borderColor:'rgba(200,180,160,0.2)',background:'rgba(245,240,230,0.3)'}}>
-            {[{v:1,l:'第一周'},{v:2,l:'第二周'},{v:0,l:'全部'}].map(o=>(<button key={o.v} onClick={()=>setWeek(o.v as any)} className="px-3 py-1.5 rounded-md text-[11px] font-medium border-none cursor-pointer transition-colors" style={{background:week===o.v?tt.thBg:'transparent',color:week===o.v?'#fff':'var(--ink-soft)'}}>{o.l}</button>))}
+            {([{v:1,l:'第一周'},{v:2,l:'第二周'},{v:0,l:'全部'}] as {v:0|1|2;l:string}[]).map(o=>(<button key={o.v} onClick={()=>setWeek(o.v)} className="px-3 py-1.5 rounded-md text-[11px] font-medium border-none cursor-pointer transition-colors" style={{background:week===o.v?tt.thBg:'transparent',color:week===o.v?'#fff':'var(--ink-soft)'}}>{o.l}</button>))}
           </div>
           <div className="w-px h-6" style={{background:'rgba(200,180,160,0.2)'}}/>
           {/* Theme */}
           <div className="flex rounded-lg border p-0.5" style={{borderColor:'rgba(200,180,160,0.2)',background:'rgba(245,240,230,0.3)'}}>
-            {Object.entries(THEMES).map(([k,v])=>(<button key={k} onClick={()=>setTheme(k as any)} className="w-6 h-6 rounded-md text-[12px] border-none cursor-pointer flex items-center justify-center transition-colors" style={{background:theme===k?tt.thBg:'transparent',color:theme===k?'#fff':'var(--ink-soft)'}} title={k}>{v.name}</button>))}
+            {(Object.keys(THEMES) as Array<keyof typeof THEMES>).map(k=>(<button key={k} onClick={()=>setTheme(k)} className="w-6 h-6 rounded-md text-[12px] border-none cursor-pointer flex items-center justify-center transition-colors" style={{background:theme===k?tt.thBg:'transparent',color:theme===k?'#fff':'var(--ink-soft)'}} title={k}>{THEMES[k].name}</button>))}
           </div>
         </div>
       </div>

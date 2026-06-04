@@ -47,7 +47,7 @@ export default function StoriesPage() {
           <div className="flex gap-1">
             {[{k:'latest',l:'最新'},{k:'hot',l:'最热'}].map(t=>{
               const isActive = sortBy===t.k
-              return (<button key={t.k} onClick={()=>setSortBy(t.k as any)}
+              return (<button key={t.k} onClick={()=>setSortBy(t.k as 'latest'|'hot')}
                 className="px-4 py-1.5 rounded-full text-[11px] border-none cursor-pointer transition-all"
                 style={{background:isActive?'linear-gradient(135deg,#9b7a4a,#7a5a3a)':'var(--surface)',color:isActive?'#fff':'var(--faded)',fontWeight:isActive?600:400,fontFamily:'inherit',border:`1.5px solid ${isActive?'transparent':'rgba(200,180,160,0.18)'}`}}>
                 {t.k==='hot'?<span><Flame size={11}/> {t.l}</span>:t.l}

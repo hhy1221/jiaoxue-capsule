@@ -61,7 +61,7 @@ export default function QuestionsPage() {
       <div className="flex gap-2 flex-wrap items-center">
         {/* 学科标签 */}
         <div className="flex gap-1.5 flex-wrap">
-          {[{k:'all',e:'📋',l:'全部学科'} as any,...Object.entries(SUBJECT_LABELS).map(([k,l])=>({k,e:SUBJECT_EMOJIS[k as QuestionSubject],l}))].map((s:any)=>(
+          {([{k:'all',e:'📋',l:'全部学科'} as const, ...(Object.entries(SUBJECT_LABELS) as [QuestionSubject, string][]).map(([k,l])=>({k,e:SUBJECT_EMOJIS[k],l}) as const)]).map(s=>(
             <button key={s.k} onClick={()=>setSubject(s.k)}
               className="px-3 py-1.5 rounded-full text-[11px] border-none cursor-pointer transition-all hover:-translate-y-0.5"
               style={{

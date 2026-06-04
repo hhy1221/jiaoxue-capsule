@@ -22,7 +22,7 @@ export default function RecruitPage() {
 
     {/* Tab 切换 */}
     <div className="flex gap-2 mb-5 flex-wrap">
-      {[{k:'all',e:'📋',l:'全部'} as any, ...Object.entries(RECRUIT_LABELS).map(([k,l])=>({k,e:RECRUIT_EMOJIS[k as RecruitmentType],l}))].map((t:any)=>(
+      {([{k:'all',e:'📋',l:'全部'} as const, ...(Object.entries(RECRUIT_LABELS) as [RecruitmentType, string][]).map(([k,l])=>({k,e:RECRUIT_EMOJIS[k],l}) as const)]).map(t=>(
         <button key={t.k} onClick={()=>setTab(t.k)}
           className="px-3 py-1.5 rounded-full text-[11px] border-none cursor-pointer transition-all"
           style={{
