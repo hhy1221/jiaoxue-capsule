@@ -67,7 +67,7 @@ export default function StoriesPage() {
               <div className="relative" style={{background:hasPhoto?'#1a1510':'linear-gradient(180deg,rgba(245,238,220,0.6),rgba(240,230,215,0.3))'}}>
                 {hasPhoto?<>
                   <div className="relative" style={{maxHeight:'400px',overflow:'hidden'}}>
-                    <img src={s.images[0]} alt={s.title} className="w-full object-cover" style={{maxHeight:'400px'}}/>
+                    <img src={s.images[0]} alt={s.title} className="w-full object-cover" style={{maxHeight:'400px'}} loading="lazy"/>
                     <div className="absolute bottom-0 left-0 right-0 h-32" style={{background:'linear-gradient(0deg,rgba(30,20,10,0.7),transparent)'}}/>
                   </div>
                   <div className="absolute bottom-0 left-0 right-0 p-5 text-white z-10">

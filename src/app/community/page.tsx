@@ -138,7 +138,7 @@ function StoryCardMini({s}:{s:typeof STORIES[0]}) {
   return (<Link href="/community/stories" className="no-underline block group">
     <div className="picture-book-card overflow-hidden cursor-pointer hover:-translate-y-1 hover:shadow-md transition-all duration-300">
       <div style={{height:hasImg?150:0,overflow:'hidden',background:hasImg?'transparent':'transparent'}}>
-        {hasImg&&<img src={s.images[0]} alt={s.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"/>}
+        {hasImg&&<img src={s.images[0]} alt={s.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy"/>}
         {!hasImg&&s.images[0]&&<div className="flex items-center justify-center h-full text-[32px] opacity-25" style={{background:'linear-gradient(135deg,rgba(220,200,170,0.15),rgba(200,180,150,0.08))'}}>{s.images[0]}</div>}
       </div>
       <div className="p-4">

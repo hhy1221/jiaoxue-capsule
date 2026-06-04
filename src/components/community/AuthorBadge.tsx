@@ -1,6 +1,7 @@
 'use client'
 import { CommunityAuthor } from '@/types'
 import { CheckCircle } from 'lucide-react'
+import { useState } from 'react'
 
 /**
  * 社区作者头像组件 — 统一处理真实图片 vs emoji 头像
@@ -21,10 +22,11 @@ export default function AuthorBadge({
   const textSizes = { xs: 'text-[9px]', sm: 'text-[11px]', md: 'text-[13px]' }
   const dim = dims[size]
   const isImage = typeof author.avatar === 'string' && author.avatar.startsWith('/')
+  const [imgOk, setImgOk] = useState(true)
 
   return (
     <div className="flex items-center gap-2">
-      {isImage ? (
+      {isImage && imgOk ? (
         <div
           className="rounded-full overflow-hidden flex-shrink-0"
           style={{
@@ -35,10 +37,10 @@ export default function AuthorBadge({
             boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
           }}
         >
-          <img src={author.avatar} alt={author.name} className="w-full h-full object-cover" />
+          <img src={author.avatar} alt={author.name} className="w-full h-full object-cover" loading="lazy" onError={() => setImgOk(false)} />
         </div>
       ) : (
-        <span className="flex-shrink-0 text-base w-5 text-center">{author.avatar}</span>
+        <span className="flex-shrink-0 text-base w-5 text-center">{author.avatar || '👤'}</span>
       )}
       {showName && (
         <span className={`font-medium text-[var(--ink-soft)] ${textSizes[size]}`}>
