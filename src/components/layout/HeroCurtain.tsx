@@ -171,7 +171,7 @@ export default function HeroCurtain() {
 
       {/* 左下角统计 */}
       <div className="fixed bottom-8 left-10 z-20 flex gap-6 max-sm:left-4 max-sm:bottom-5 max-sm:gap-4">
-        {[{ num: '13', lbl: '天夏令营' }, { num: '60+', lbl: '位学生' }, { num: '5', lbl: '种语气' }].map(s => (
+        {[{ num: '9+', lbl: '支教队入驻' }, { num: '1,280+', lbl: '乡村学生' }, { num: '12,480+', lbl: '课堂照片' }, { num: '15+', lbl: '省份覆盖' }].map(s => (
           <div key={s.lbl} className="flex flex-col">
             <span className="text-[18px] font-semibold text-white/50 leading-none" style={{ fontFamily: "var(--font-serif)", textShadow: "0 1px 3px rgba(0,0,0,0.15)" }}>{s.num}</span>
             <span className="text-[8px] text-white/30 tracking-widest mt-0.5" style={{ textShadow: "0 1px 2px rgba(0,0,0,0.1)" }}>{s.lbl}</span>
@@ -196,12 +196,24 @@ export default function HeroCurtain() {
           <h1 className="text-[clamp(42px,9vw,96px)] font-black text-white leading-none whitespace-nowrap mb-1.5 tracking-normal" style={{ fontFamily: "var(--font-serif)", textShadow: "0 2px 4px rgba(0,0,0,0.12),0 4px 24px rgba(0,0,0,0.08)" }}>支教星火</h1>
           <p className="text-[14px] font-light text-white/65 tracking-[0.16em] mb-5" style={{ textShadow: "0 1px 4px rgba(0,0,0,0.2)" }}>记录每个孩子 · AI 自动生成专属临别信</p>
           <div className="w-10 h-px bg-white/30 mx-auto mb-[18px]" />
-          <div className="flex gap-5 justify-center mb-[18px] flex-wrap max-sm:gap-2.5">
-            {['📝 学生档案', '🤖 AI 临别信', '🎨 五种语气'].map(t => (
-              <span key={t} className="text-[12px] text-white/60 tracking-wider cursor-default hover:text-white/95 transition-colors" style={{ textShadow: "0 1px 3px rgba(0,0,0,0.2)" }}>{t}</span>
-            ))}
+          {/* 教师端 / 学生端 分流入口 */}
+          <div className="flex gap-4 justify-center mb-[14px] flex-wrap max-sm:gap-2.5">
+            <a href="/dashboard" onClick={(e) => handleNav(e, '/dashboard')}
+              className="inline-flex flex-col items-center gap-1.5 px-8 py-3 bg-white/12 text-white text-[13px] font-semibold tracking-wider rounded-[22px] no-underline shadow-[0_4px_18px_rgba(0,0,0,0.15)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/20 hover:shadow-[0_8px_28px_rgba(0,0,0,0.25)] border border-white/10 cursor-pointer"
+              style={{ fontFamily: 'inherit', textShadow: '0 1px 3px rgba(0,0,0,0.2)' }}>
+              <span className="text-2xl">👨‍🏫</span>
+              <span>教师端</span>
+              <span className="text-[9px] text-white/40 font-normal tracking-[0.1em]">管理 · 社区 · AI</span>
+            </a>
+            <a href="/community/social" onClick={(e) => handleNav(e, '/community/social')}
+              className="inline-flex flex-col items-center gap-1.5 px-8 py-3 bg-white/12 text-white text-[13px] font-semibold tracking-wider rounded-[22px] no-underline shadow-[0_4px_18px_rgba(0,0,0,0.15)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/20 hover:shadow-[0_8px_28px_rgba(0,0,0,0.25)] border border-white/10 cursor-pointer"
+              style={{ fontFamily: 'inherit', textShadow: '0 1px 3px rgba(0,0,0,0.2)' }}>
+              <span className="text-2xl">🧒</span>
+              <span>学生端</span>
+              <span className="text-[9px] text-white/40 font-normal tracking-[0.1em]">交友 · 创作 · 成长</span>
+            </a>
           </div>
-          <button onClick={handleCTA} className="inline-flex items-center gap-2 px-8 py-2.5 bg-[#f0c060] text-[#3d2e1a] text-[13px] font-semibold tracking-wider rounded-[22px] no-underline shadow-[0_4px_18px_rgba(0,0,0,0.22)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_8px_28px_rgba(0,0,0,0.35)] hover:bg-[#f4c870] border-none cursor-pointer" style={{ fontFamily: 'inherit' }}>开始记录 →</button>
+          <button onClick={handleCTA} className="inline-flex items-center gap-2 px-6 py-2 bg-transparent text-white/50 text-[11px] tracking-wider rounded-[22px] no-underline transition-all duration-300 hover:text-white/80 border border-white/15 hover:border-white/25 cursor-pointer" style={{ fontFamily: 'inherit', textShadow: '0 1px 3px rgba(0,0,0,0.15)' }}>或直接开始 →</button>
         </div>
       </div>
 
