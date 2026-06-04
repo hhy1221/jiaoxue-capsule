@@ -3,14 +3,16 @@
 import InnerLayout from '@/components/layout/InnerLayout'
 import { QUESTIONS } from '@/lib/community-data'
 import { SUBJECT_LABELS, SUBJECT_EMOJIS, QuestionSubject } from '@/types'
-import { useState, useMemo } from 'react'
+import { useState, useMemo, Suspense } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { Search, MessageCircle, Eye, ThumbsUp, CheckCircle, Clock, User, Filter, MapPin, ChevronDown, ChevronUp } from 'lucide-react'
 import AuthorBadge from '@/components/community/AuthorBadge'
 
 const REGIONS = ['全部','西南','西北','华东','华中','华南','东北']
 
-export default function QuestionsPage() {
-  const [search, setSearch] = useState('')
+function QuestionsContent() {
+  const searchParams = useSearchParams()
+  const [search, setSearch] = useState(searchParams?.get('search') || '')
   const [subject, setSubject] = useState<string>('all')
   const [region, setRegion] = useState('全部')
   const [status, setStatus] = useState<string>('all')
@@ -218,4 +220,16 @@ export default function QuestionsPage() {
       )}
     </div>
   </InnerLayout>)
+}
+
+export default function QuestionsPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="handwriting text-[15px]" style={{color:'var(--faded)'}}>加载中...</p>
+      </div>
+    }>
+      <QuestionsContent />
+    </Suspense>
+  )
 }

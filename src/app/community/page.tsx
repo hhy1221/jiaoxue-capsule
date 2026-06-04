@@ -118,7 +118,7 @@ export default function CommunityPage() {
         <div className="picture-book-card p-4" style={{transform:'rotate(-0.03deg)'}}>
           <h3 className="text-[13px] font-semibold mb-3 text-[var(--ink)] flex items-center gap-1.5" style={{fontFamily:'var(--font-serif)'}}><TrendingUp size={13} style={{color:'#6baed6'}}/> 热门话题</h3>
           <div className="flex flex-wrap gap-1.5">
-            {['课堂管理','留守儿童','低成本教学','游戏教学','写作指导','心理辅导','短期支教','文化传承','物资互助','英语启蒙','高原支教','少数民族教育','支教队鉴别','手机管理'].map(t=>(<Link key={t} href="/community/questions"
+            {['课堂管理','留守儿童','低成本教学','游戏教学','写作指导','心理辅导','短期支教','文化传承','物资互助','英语启蒙','高原支教','少数民族教育','支教队鉴别','手机管理'].map(t=>(<Link key={t} href={`/community/questions?search=${encodeURIComponent(t)}`}
               className="no-underline text-[10px] px-2.5 py-1 rounded-full transition-all hover:-translate-y-0.5"
               style={{background:'rgba(200,160,120,0.06)',color:'var(--ink-soft)',border:'1px solid rgba(200,160,120,0.12)'}}>#{t}</Link>))}</div></div>
 
