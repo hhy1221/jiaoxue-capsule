@@ -15,6 +15,7 @@ const NAV_GROUPS: NavGroup[] = [
   { label: '核心', items: [
     { href: '/', label: '首页', icon: '🏠', exact: true },
     { href: '/dashboard', label: '仪表盘', icon: '📊' },
+    { href: '/journal', label: '成长日志', icon: '📖' },
   ]},
   { label: '支教社区', items: [
     { href: '/community', label: '社区首页', icon: '🌐', exact: true },
