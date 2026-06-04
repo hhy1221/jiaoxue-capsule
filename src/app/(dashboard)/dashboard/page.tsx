@@ -3,7 +3,7 @@ import { MOCK_DASHBOARD, MOCK_NOTIFICATIONS, MOCK_STUDENTS } from '@/lib/mock-da
 import Link from 'next/link'
 import { TrendingUp, Bell, Calendar, Users, BookOpen, Camera, PenLine, Sparkles } from 'lucide-react'
 import CountUp from '@/components/animations/CountUp'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useMemo } from 'react'
 
 const QUICK_ACTIONS=[
   {e:'👧',l:'新建学生',h:'/students'},{e:'📝',l:'写评语',h:'/students'},
@@ -11,12 +11,15 @@ const QUICK_ACTIONS=[
   {e:'💌',l:'笔友',h:'/penpal-square'},{e:'🌳',l:'树洞',h:'/ai-workshop/treehole'},
 ]
 
-const STATS=[{icon:Users,label:'学生',value:0,color:'#c8862e',bg:'rgba(200,134,46,0.08)'},{icon:PenLine,label:'评语',value:0,color:'#7a9a5a',bg:'rgba(122,154,90,0.08)'},{icon:Camera,label:'照片',value:0,color:'#6baed6',bg:'rgba(107,174,214,0.08)'},{icon:BookOpen,label:'课程',value:0,color:'#d4855e',bg:'rgba(212,133,94,0.08)'}]
-
 export default function DashboardPage() {
-  const d=MOCK_DASHBOARD
-  STATS[0].value=d.studentCount;STATS[1].value=d.diaryCount;STATS[2].value=d.photoCount;STATS[3].value=d.classCount
-  const maxTag=Math.max(...d.tagDistribution.map(t=>t.count))
+  const d = MOCK_DASHBOARD
+  const stats = useMemo(() => [
+    { icon: Users, label: '学生', value: d.studentCount, color: '#c8862e', bg: 'rgba(200,134,46,0.08)' },
+    { icon: PenLine, label: '评语', value: d.diaryCount, color: '#7a9a5a', bg: 'rgba(122,154,90,0.08)' },
+    { icon: Camera, label: '照片', value: d.photoCount, color: '#6baed6', bg: 'rgba(107,174,214,0.08)' },
+    { icon: BookOpen, label: '课程', value: d.classCount, color: '#d4855e', bg: 'rgba(212,133,94,0.08)' },
+  ], [d.studentCount, d.diaryCount, d.photoCount, d.classCount])
+  const maxTag = useMemo(() => Math.max(...d.tagDistribution.map(t => t.count)), [d.tagDistribution])
 
   // 标签条藤蔓生长
   const barRefs = useRef<(HTMLDivElement|null)[]>([])
@@ -46,7 +49,7 @@ export default function DashboardPage() {
 
     {/* Stats row */}
     <div className="grid grid-cols-5 gap-4 mb-6 max-lg:grid-cols-3 max-sm:grid-cols-2">
-      {STATS.map((s,i)=>(<div key={s.label} className="picture-book-card p-4 flex items-center gap-4 cursor-default hover:-translate-y-1 hover:shadow-md transition-all duration-300" style={{transform:`rotate(${i%2===0?'-0.2deg':'0.15deg'})`}}>
+      {stats.map((s,i)=>(<div key={s.label} className="picture-book-card p-4 flex items-center gap-4 cursor-default hover:-translate-y-1 hover:shadow-md transition-all duration-300" style={{transform:`rotate(${i%2===0?'-0.2deg':'0.15deg'})`}}>
         <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{background:s.bg,color:s.color}}><s.icon size={22}/></div>
         <div><p className="text-[28px] font-bold" style={{fontFamily:'var(--font-serif)',color:'var(--ink)'}}><CountUp target={s.value} style={{color:'var(--ink)'}} /></p><p className="text-[11px] tracking-[0.06em]" style={{color:'var(--faded)'}}>{s.label}</p></div>
       </div>))}

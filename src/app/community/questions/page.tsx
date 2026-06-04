@@ -5,6 +5,7 @@ import { QUESTIONS } from '@/lib/community-data'
 import { SUBJECT_LABELS, SUBJECT_EMOJIS, QuestionSubject } from '@/types'
 import { useState, useMemo } from 'react'
 import { Search, MessageCircle, Eye, ThumbsUp, CheckCircle, Clock, User, Filter, MapPin, ChevronDown, ChevronUp } from 'lucide-react'
+import AuthorBadge from '@/components/community/AuthorBadge'
 
 const REGIONS = ['全部','西南','西北','华东','华中','华南','东北']
 
@@ -135,13 +136,7 @@ export default function QuestionsPage() {
             {/* 作者 + 互动 */}
             <div className="flex items-center justify-between text-[11px]" style={{color:'var(--faded)'}}>
               <div className="flex items-center gap-2">
-                {typeof q.author.avatar==='string'&&q.author.avatar.includes('/')?(
-                  <div className="w-7 h-7 rounded-full overflow-hidden flex-shrink-0" style={{border:'1.5px solid #fff',outline:'1px solid rgba(180,150,120,0.25)',boxShadow:'0 1px 3px rgba(0,0,0,0.04)'}}>
-                    <img src={q.author.avatar} alt="" className="w-full h-full object-cover"/>
-                  </div>
-                ):<span className="text-sm">{q.author.avatar}</span>}
-                <span className="font-medium text-[var(--ink-soft)]">{q.author.name}</span>
-                {q.author.verified&&<CheckCircle size={10} style={{color:'#4a8a4a'}}/>}
+                <AuthorBadge author={q.author} size="xs" />
                 <span className="flex items-center gap-1"><MapPin size={10}/> {q.region}</span>
                 <span>{q.createdAt}</span>
               </div>
@@ -167,15 +162,7 @@ export default function QuestionsPage() {
             }}>
               {/* 回答者 */}
               <div className="flex items-center gap-2.5 mb-3">
-                <div className="w-8 h-8 rounded-full flex items-center justify-center text-sm flex-shrink-0"
-                  style={{background:'rgba(200,160,120,0.1)',color:'var(--ink-soft)',border:'1.5px solid rgba(200,160,120,0.15)'}}>{a.author.avatar}</div>
-                <div>
-                  <p className="text-[12px] font-semibold text-[var(--ink)] flex items-center gap-1">
-                    {a.author.name}
-                    {a.author.verified&&<span className="text-[8px] px-1 py-0 rounded-full" style={{background:'rgba(74,180,74,0.1)',color:'#4a8a4a'}}>✓</span>}
-                  </p>
-                  <p className="text-[9px]" style={{color:'var(--faded)'}}>{a.author.badge}</p>
-                </div>
+                <AuthorBadge author={a.author} size="sm" />
                 <div className="flex items-center gap-2 ml-auto">
                   {a.isAccepted&&<span className="text-[10px] px-2 py-0.5 rounded-full flex items-center gap-1"
                     style={{background:'rgba(122,180,90,0.12)',color:'#5a8a3a',border:'1px solid rgba(122,180,90,0.25)'}}>

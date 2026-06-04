@@ -4,6 +4,7 @@ import InnerLayout from '@/components/layout/InnerLayout'
 import { STORIES } from '@/lib/community-data'
 import { useState, useMemo } from 'react'
 import { Heart, MessageCircle, MapPin, Clock, Eye, Share2, Search, TrendingUp, Flame, ChevronDown, ChevronUp, Filter } from 'lucide-react'
+import AuthorBadge from '@/components/community/AuthorBadge'
 
 export default function StoriesPage() {
   const [search, setSearch] = useState('')
@@ -99,11 +100,7 @@ export default function StoriesPage() {
 
                 <div className="flex items-center justify-between mt-4 pt-4" style={{borderTop:'1px solid rgba(200,180,160,0.1)'}}>
                   <div className="flex items-center gap-2.5">
-                    {typeof s.author.avatar==='string'&&s.author.avatar.includes('/')?(
-                      <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0" style={{border:'2px solid #fff',outline:'1px solid rgba(180,150,120,0.3)',boxShadow:'0 2px 6px rgba(100,70,40,0.08)'}}>
-                        <img src={s.author.avatar} alt="" className="w-full h-full object-cover"/></div>
-                    ):<span className="text-lg">{s.author.avatar}</span>}
-                    <div><p className="text-[11px] font-semibold text-[var(--ink)]">{s.author.name}{s.author.verified&&<span className="text-[8px] text-green-600 ml-1">✓</span>}</p><p className="text-[9px]" style={{color:'var(--faded)'}}>{s.author.badge}</p></div>
+                    <AuthorBadge author={s.author} size="sm" />
                   </div>
                   <div className="flex items-center gap-3">
                     <button onClick={(e)=>{e.stopPropagation();setLiked(prev=>{const n=new Set(prev);n.has(s.id)?n.delete(s.id):n.add(s.id);return n})}}
@@ -117,8 +114,8 @@ export default function StoriesPage() {
                 {s.comments.length>0&&(expanded||s.comments.length<=2)&&(
                   <div className="mt-4 pt-4 space-y-2.5" style={{borderTop:'1px solid rgba(200,180,160,0.08)'}}>
                     {s.comments.map(c=>(<div key={c.id} className="flex gap-2 text-[11px]">
-                      <span className="w-5 h-5 rounded-full flex items-center justify-center text-[9px] flex-shrink-0" style={{background:'rgba(200,160,120,0.1)',color:'var(--ink-soft)'}}>{c.author.avatar}</span>
-                      <div><span className="font-semibold text-[var(--ink)]">{c.author.name}</span>{c.author.verified&&<span className="text-[7px] text-green-600 ml-0.5">✓</span>}<span className="ml-1.5" style={{color:'var(--ink-soft)'}}>{c.content}</span><span className="text-[9px] ml-1.5" style={{color:'var(--faded)'}}>{c.createdAt}</span></div>
+                      <AuthorBadge author={c.author} size="xs" showBadge={false} />
+                      <div><span className="ml-0.5" style={{color:'var(--ink-soft)'}}>{c.content}</span><span className="text-[9px] ml-1.5" style={{color:'var(--faded)'}}>{c.createdAt}</span></div>
                     </div>))}
                   </div>
                 )}
