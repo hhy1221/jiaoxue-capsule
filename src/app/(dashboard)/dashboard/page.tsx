@@ -1,150 +1,227 @@
 'use client'
-import { MOCK_DASHBOARD, MOCK_NOTIFICATIONS, MOCK_STUDENTS } from '@/lib/mock-data'
+import { MOCK_STUDENTS } from '@/lib/mock-data'
+import { JOURNAL_ENTRIES } from '@/lib/journal-data'
 import Link from 'next/link'
-import { TrendingUp, Bell, Calendar, Users, BookOpen, Camera, PenLine, Sparkles } from 'lucide-react'
-import CountUp from '@/components/animations/CountUp'
-import { useEffect, useRef, useMemo } from 'react'
+import { useState, useMemo, useEffect, useRef } from 'react'
+import { Calendar, Clock, Users, BookOpen, PenLine, Camera, MessageCircle, MapPin, ChevronRight, Plus, Bell, Sparkles, ArrowRight, TrendingUp, Zap } from 'lucide-react'
 
-const QUICK_ACTIONS=[
-  {e:'👧',l:'新建学生',h:'/students'},{e:'📝',l:'写评语',h:'/students'},
-  {e:'📅',l:'课表',h:'/schedule'},{e:'✨',l:'AI工坊',h:'/ai-workshop'},
-  {e:'💌',l:'笔友',h:'/penpal-square'},{e:'🌳',l:'树洞',h:'/ai-workshop/treehole'},
+const TODAY_DAY = 5 // 模拟今天是 Day 5
+
+// 模拟今日课表 — 来自 schedule 数据
+const TODAY_CLASSES = [
+  { time:'7:00–8:00',name:'起床+早餐',emoji:'🌅',type:'生活'},
+  { time:'8:00–9:00',name:'碳足迹侦探营（上）',emoji:'🌍',teacher:'周老师',location:'教室B',type:'智育'},
+  { time:'9:15–10:15',name:'数学游戏——数字接龙',emoji:'🧮',teacher:'黄老师',location:'教室A',type:'智育'},
+  { time:'10:30–11:30',name:'家乡的叶子——茶叶与茶文化',emoji:'🍵',teacher:'周老师',location:'多功能厅',type:'劳育'},
+  { time:'11:30–13:30',name:'午休',emoji:'🍱',type:'生活'},
+  { time:'14:30–15:30',name:'创意手工——纸箱恐龙制作',emoji:'🦕',teacher:'黄老师',location:'教室A',type:'美育'},
+  { time:'15:45–16:45',name:'体育课',emoji:'⚽',teacher:'体育老师',location:'操场',type:'体育'},
+  { time:'17:00–18:00',name:'自习/作业辅导',emoji:'📝',teacher:'黄老师',location:'教室A',type:'智育'},
+]
+
+// 模拟最近的队伍动态
+const RECENT_ACTIVITIES = [
+  { student:'刘小宇',avatar:'🌟',action:'提交了纸箱恐龙作品',time:'30分钟前',type:'作品'},
+  { student:'浩然',avatar:'🚀',action:'在课堂上主动担任小组长',time:'1小时前',type:'课堂'},
+  { student:'小雨',avatar:'🌻',action:'画了一幅向日葵并贴在了走廊画廊',time:'2小时前',type:'作品'},
+  { student:'大勇',avatar:'🦁',action:'修好了教室里的风扇',time:'3小时前',type:'其他'},
+  { student:'黄老师',avatar:'👨',action:'写下了今天碳足迹课的反思',time:'4小时前',type:'日志'},
+]
+
+// 待办提醒
+const REMINDERS = [
+  { text:'为小宇写评语（上次是3天前）',urgent:true },
+  { text:'准备明天赵一曼红色文化课的课件',urgent:false },
+  { text:'给欣怡的家长发学习反馈',urgent:false },
+  { text:'更新浩然的成长档案——他最近进步很大',urgent:true },
 ]
 
 export default function DashboardPage() {
-  const d = MOCK_DASHBOARD
-  const stats = useMemo(() => [
-    { icon: Users, label: '学生', value: d.studentCount, color: '#c8862e', bg: 'rgba(200,134,46,0.08)' },
-    { icon: PenLine, label: '评语', value: d.diaryCount, color: '#7a9a5a', bg: 'rgba(122,154,90,0.08)' },
-    { icon: Camera, label: '照片', value: d.photoCount, color: '#6baed6', bg: 'rgba(107,174,214,0.08)' },
-    { icon: BookOpen, label: '课程', value: d.classCount, color: '#d4855e', bg: 'rgba(212,133,94,0.08)' },
-  ], [d.studentCount, d.diaryCount, d.photoCount, d.classCount])
-  const maxTag = useMemo(() => Math.max(...d.tagDistribution.map(t => t.count)), [d.tagDistribution])
+  const [reminders, setReminders] = useState(REMINDERS)
+  const doneReminder = (i:number) => setReminders(p=>p.filter((_,idx)=>idx!==i))
 
-  // 标签条藤蔓生长
-  const barRefs = useRef<(HTMLDivElement|null)[]>([])
-  useEffect(() => {
-    const bars = barRefs.current.filter(Boolean) as HTMLDivElement[]
-    bars.forEach((bar, i) => {
-      const targetWidth = bar.dataset.width || '0%'
-      // 初始清零
-      bar.style.transition = 'none'
-      bar.style.width = '0%'
-      void bar.offsetHeight
-      // 生长动画
-      setTimeout(() => {
-        bar.style.transition = 'width 0.7s cubic-bezier(0.16,1,0.3,1)'
-        bar.style.width = targetWidth
-      }, 300 + i * 120)
-    })
-  }, [])
-  return (<>
-    <header className="flex items-center justify-between pb-[22px] mb-5 flex-wrap gap-3 relative" style={{borderBottom:'1.5px solid rgba(180,160,130,0.25)'}}>
-      <div>
-        <h1 className="text-[22px] font-semibold tracking-[0.03em] text-[var(--ink)]" style={{fontFamily:'var(--font-serif)'}}>📊 仪表盘</h1>
-        <p className="text-[12px] mt-0.5 tracking-[0.06em]" style={{color:'var(--faded)'}}>全国支教数据总览 · 多队协作 · 实时更新</p>
-      </div>
-      <div className="absolute -bottom-[7px] left-1/2 -translate-x-1/2 text-[7px] tracking-[7px] whitespace-nowrap" style={{color:'rgba(180,160,130,0.5)'}}>· · · · · · · · · · · ·</div>
-    </header>
+  // CountUP refs
+  const statRefs = useRef<(HTMLDivElement|null)[]>([])
+  const [visible, setVisible] = useState(false)
+  useEffect(()=>{setVisible(true)},[])
 
-    {/* Stats row */}
-    <div className="grid grid-cols-5 gap-4 mb-6 max-lg:grid-cols-3 max-sm:grid-cols-2">
-      {stats.map((s,i)=>(<div key={s.label} className="picture-book-card p-4 flex items-center gap-4 cursor-default hover:-translate-y-1 hover:shadow-md transition-all duration-300" style={{transform:`rotate(${i%2===0?'-0.2deg':'0.15deg'})`}}>
-        <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{background:s.bg,color:s.color}}><s.icon size={22}/></div>
-        <div><p className="text-[28px] font-bold" style={{fontFamily:'var(--font-serif)',color:'var(--ink)'}}><CountUp target={s.value} style={{color:'var(--ink)'}} /></p><p className="text-[11px] tracking-[0.06em]" style={{color:'var(--faded)'}}>{s.label}</p></div>
-      </div>))}
-      <div className="picture-book-card p-4 flex items-center gap-4 cursor-default hover:-translate-y-1 hover:shadow-md transition-all duration-300" style={{transform:'rotate(-0.15deg)',borderColor:'rgba(122,180,90,0.25)'}}>
-        <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{background:'rgba(122,180,90,0.08)',color:'#6aaa50'}}><TrendingUp size={22}/></div>
-        <div><p className="text-[28px] font-bold text-green-600" style={{fontFamily:'var(--font-serif)'}}>↑<CountUp target={d.activeTrend} suffix="%" style={{color:'#6aaa50'}} /></p><p className="text-[11px] tracking-[0.06em]" style={{color:'var(--faded)'}}>活跃度</p></div>
-      </div>
-    </div>
+  const stats = [
+    { icon:Users,label:'本队学生',value:MOCK_STUDENTS.length,color:'#c8862e',bg:'rgba(200,134,46,0.08)' },
+    { icon:BookOpen,label:'今日课程',value:'8节',color:'#5a9ac0',bg:'rgba(90,154,192,0.08)' },
+    { icon:PenLine,label:'成长日志',value:JOURNAL_ENTRIES.length+'篇',color:'#7a9a5a',bg:'rgba(122,154,90,0.08)' },
+    { icon:Camera,label:'课堂照片',value:'342',color:'#6baed6',bg:'rgba(107,174,214,0.08)' },
+  ]
 
-    {/* Main grid */}
-    <div className="grid grid-cols-[1.5fr_1fr] gap-5 max-lg:grid-cols-1 mb-6">
-      {/* Tag distribution — 底部彩色标签云填充空白 */}
-      <div className="picture-book-card p-6 flex flex-col" style={{transform:'rotate(-0.12deg)'}}>
-        <div className="flex items-center justify-between mb-5">
-          <h3 className="text-[16px] font-semibold tracking-[0.04em] text-[var(--ink)]" style={{fontFamily:'var(--font-serif)'}}>🏷 标签分布</h3>
-          <span className="text-[10px] tracking-[0.08em] px-2 py-0.5 rounded-full" style={{background:'rgba(200,160,120,0.08)',color:'var(--faded)',border:'1px solid rgba(200,160,120,0.12)'}}>{d.tagDistribution.length}种标签</span>
+  const now = new Date()
+  const currentHour = now.getHours()
+  const currentMinute = now.getMinutes()
+
+  return (
+    <>
+      <style>{`
+        @keyframes dashFadeUp { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+        @keyframes pulseDot { 0%,100%{box-shadow:0 0 0 0 rgba(200,134,46,0.4)} 50%{box-shadow:0 0 0 8px rgba(200,134,46,0)} }
+        .dash-card { animation:dashFadeUp 0.45s cubic-bezier(0.22,0.61,0.36,1) both; }
+        .live-dot { animation:pulseDot 2s infinite; }
+      `}</style>
+
+      {/* Header */}
+      <header className="flex items-center justify-between pb-[22px] mb-5 flex-wrap gap-3 relative" style={{borderBottom:'1.5px solid rgba(180,160,130,0.25)'}}>
+        <div>
+          <h1 className="text-[22px] font-semibold tracking-[0.03em] text-[var(--ink)]" style={{fontFamily:'var(--font-serif)'}}>📊 仪表盘</h1>
+          <p className="text-[12px] mt-0.5 tracking-[0.04em]" style={{color:'var(--faded)'}}>
+            凡星支教队 · 夏令营 Day {TODAY_DAY} · {['日','一','二','三','四','五','六'][new Date().getDay()]}曜日
+          </p>
         </div>
-        <div className="space-y-3.5 flex-1">
-          {d.tagDistribution.map((t,i)=>(<div key={t.name} className="flex items-center gap-3 group cursor-default">
-            <span className="text-[12px] w-16 flex-shrink-0 text-right font-semibold text-[var(--ink-soft)]">{t.name}</span>
-            <div className="flex-1 h-7 rounded-full overflow-hidden relative" style={{background:'rgba(210,195,170,0.10)'}}>
-              <div
-                ref={el => { barRefs.current[i] = el }}
-                data-width={`${(t.count/maxTag)*100}%`}
-                className="h-full rounded-full group-hover:brightness-110"
-                style={{
-                  background: `linear-gradient(90deg,rgba(200,140,80,${0.25+i*0.06}),rgba(200,140,80,${0.5+i*0.08}))`,
-                  width: `${(t.count/maxTag)*100}%`,
-                }}
-              />
-              <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[10px] font-semibold text-[var(--ink)] whitespace-nowrap">{t.count}人</span>
+        <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full" style={{background:'rgba(200,160,120,0.08)',border:'1px solid rgba(200,160,120,0.15)'}}>
+            <span className="w-2 h-2 rounded-full live-dot" style={{background:'var(--primary-skin)'}}/>
+            <span className="text-[11px] font-medium" style={{color:'var(--primary-skin)'}}>工作中</span>
+          </div>
+        </div>
+        <div className="absolute -bottom-[7px] left-1/2 -translate-x-1/2 text-[7px] tracking-[7px] whitespace-nowrap" style={{color:'rgba(180,160,130,0.5)'}}>· · · · · · · · · · · ·</div>
+      </header>
+
+      <div className="grid grid-cols-[1fr_300px] gap-5 max-lg:grid-cols-1 mb-6">
+        {/* ═══ 左列 ═══ */}
+        <div className="space-y-4">
+          {/* ═══ 今日课表 — 核心模块 ═══ */}
+          <div className="picture-book-card p-0 overflow-hidden dash-card" style={{animationDelay:'0.05s',transform:'rotate(-0.06deg)'}}>
+            <div className="flex items-center justify-between p-4" style={{borderBottom:'1px solid rgba(200,180,160,0.12)'}}>
+              <h3 className="text-[15px] font-semibold text-[var(--ink)] flex items-center gap-2" style={{fontFamily:'var(--font-serif)'}}>
+                <Calendar size={15} style={{color:'#c8862e'}}/> 今日课表
+              </h3>
+              <Link href="/schedule" className="text-[10px] no-underline flex items-center gap-0.5" style={{color:'var(--faded)'}}>
+                完整课表 <ChevronRight size={10}/>
+              </Link>
             </div>
-          </div>))}
-        </div>
-        {/* 底部彩色标签云 — 填满空白 */}
-        <div className="flex flex-wrap gap-1.5 mt-4 pt-4 justify-center" style={{borderTop:'1px solid rgba(200,180,160,0.12)'}}>
-          {d.tagDistribution.map((t,i)=>{
-            const cs = ['#d4a853','#e07050','#6aaa60','#5a98cc','#b078a8','#c0a070']
-            const c = cs[i % cs.length]
-            return (<span key={t.name} className="text-[10px] px-2.5 py-1 rounded-full"
-              style={{background:`${c}10`,color:c,border:`1px solid ${c}25`,transform:`rotate(${(i%3-1)*1.2}deg)`}}>{t.name} · {t.count}</span>)
-          })}
-        </div>
-      </div>
+            <div className="p-3 space-y-0.5">
+              {TODAY_CLASSES.map((c,i)=>{
+                const timeParts = c.time.split('–')
+                const startHour = parseInt(timeParts[0].split(':')[0])
+                const isCurrent = startHour === currentHour // 简化的"当前课程"判断
+                const isPast = startHour < currentHour
+                const isLife = c.type === '生活'
+                return (
+                  <div key={i} className="flex items-center gap-3 p-2 rounded-lg transition-colors"
+                    style={{
+                      background:isCurrent?'rgba(200,160,110,0.12)':isLife?'rgba(245,240,230,0.25)':'transparent',
+                      opacity:isPast&&!isCurrent?0.5:1,
+                    }}>
+                    <span className="text-base w-7 text-center">{c.emoji}</span>
+                    <span className="w-[100px] text-[10px] font-medium flex-shrink-0" style={{color:isCurrent?'var(--primary-skin)':'var(--faded)'}}>
+                      {c.time}
+                      {isCurrent && <span className="ml-1 w-1.5 h-1.5 rounded-full inline-block" style={{background:'var(--primary-skin)'}}/>}
+                    </span>
+                    <span className="text-[11px] font-medium text-[var(--ink-soft)] flex-1">{c.name}</span>
+                    {c.teacher && <span className="text-[9px] flex-shrink-0" style={{color:'var(--faded)'}}>{c.teacher}</span>}
+                    {c.type !== '生活' && (
+                      <span className="text-[8px] px-1.5 py-0.5 rounded-full flex-shrink-0" style={{background:'rgba(200,160,120,0.06)',color:'var(--faded)'}}>{c.type}</span>
+                    )}
+                  </div>
+                )
+              })}
+            </div>
+          </div>
 
-      {/* Right column: upcoming + quick actions */}
-      <div className="space-y-4">
-        <div className="picture-book-card p-5" style={{transform:'rotate(0.1deg)'}}>
-          <h3 className="text-[16px] font-semibold tracking-[0.04em] mb-3 text-[var(--ink)]" style={{fontFamily:'var(--font-serif)'}}>⏰ 待上课提醒</h3>
-          {d.upcomingClasses.map((c,i)=>(<div key={i} className="flex items-center gap-3 py-2.5 last:border-0" style={{borderBottom:i<d.upcomingClasses.length-1?'1px solid rgba(200,180,160,0.1)':'none'}}>
-            <Calendar size={15} style={{color:'var(--faded)'}}/>
-            <div><p className="text-[13px] font-medium text-[var(--ink)]">{c.title}</p><p className="text-[11px]" style={{color:'var(--faded)'}}>{c.time}</p></div>
-          </div>))}
-          <Link href="/schedule" className="text-[12px] mt-2 inline-block no-underline hover:underline handwriting" style={{color:'var(--primary-skin)'}}>查看全部课表 →</Link>
+          {/* ═══ 统计卡片行 ═══ */}
+          <div className="grid grid-cols-4 gap-3 max-md:grid-cols-2">
+            {stats.map((s,i)=>(
+              <div key={s.label} ref={el=>{statRefs.current[i]=el}}
+                className="picture-book-card p-4 flex items-center gap-3 dash-card hover:-translate-y-1 hover:shadow-md transition-all duration-300"
+                style={{animationDelay:`${0.15+i*0.08}s`,transform:`rotate(${i%2===0?'-0.2deg':'0.15deg'})`}}>
+                <div className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0" style={{background:s.bg,color:s.color}}>
+                  <s.icon size={18}/>
+                </div>
+                <div>
+                  <p className="text-[20px] font-bold text-[var(--ink)]" style={{fontFamily:'var(--font-serif)'}}>{s.value}</p>
+                  <p className="text-[10px] tracking-[0.04em]" style={{color:'var(--faded)'}}>{s.label}</p>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
 
-        <div className="picture-book-card p-5" style={{transform:'rotate(-0.08deg)'}}>
-          <h3 className="text-[16px] font-semibold tracking-[0.04em] mb-3 text-[var(--ink)]" style={{fontFamily:'var(--font-serif)'}}>🚀 快捷操作</h3>
-          <div className="grid grid-cols-2 gap-2">
-            {QUICK_ACTIONS.map(a=>(<Link key={a.l} href={a.h} className="flex items-center gap-2.5 p-2.5 rounded-md text-[12px] no-underline transition-all hover:-translate-y-0.5 hover:shadow-sm" style={{color:'var(--ink-soft)',border:'1px solid rgba(200,180,160,0.12)',background:'rgba(245,240,230,0.25)'}}>
-              <span className="text-lg w-5 text-center">{a.e}</span>{a.l}
-            </Link>))}
+        {/* ═══ 右列 ═══ */}
+        <div className="space-y-4">
+          {/* ── 待办提醒 ── */}
+          <div className="picture-book-card p-4 dash-card" style={{animationDelay:'0.2s',transform:'rotate(0.06deg)',borderLeft:'4px solid #d4855e'}}>
+            <h3 className="text-[13px] font-semibold mb-3 text-[var(--ink)] flex items-center gap-1.5" style={{fontFamily:'var(--font-serif)'}}>
+              <Bell size={12} style={{color:'#d4855e'}}/> 待办提醒
+            </h3>
+            <div className="space-y-1.5">
+              {reminders.length === 0 ? (
+                <p className="text-[10px] text-center py-3 handwriting" style={{color:'var(--faded)'}}>全部完成，太棒了！🎉</p>
+              ) : (
+                reminders.map((r,i)=>(
+                  <div key={i} className="flex items-center gap-2 p-2 rounded-lg cursor-pointer hover:bg-[rgba(200,160,120,0.05)] transition-colors"
+                    onClick={()=>doneReminder(i)}>
+                    <div className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 text-[8px]"
+                      style={{background:r.urgent?'rgba(212,133,94,0.12)':'rgba(200,180,160,0.08)',color:r.urgent?'#d4855e':'var(--faded)',border:`1px solid ${r.urgent?'rgba(212,133,94,0.25)':'rgba(200,180,160,0.15)'}`}}>
+                      {r.urgent?'!':'·'}
+                    </div>
+                    <span className="text-[10px] flex-1 line-clamp-1" style={{color:'var(--ink-soft)',textDecoration:'none'}}>{r.text}</span>
+                    <span className="text-[8px] flex-shrink-0" style={{color:'var(--faded)'}}>点击完成</span>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+
+          {/* ── 快捷操作 ── */}
+          <div className="picture-book-card p-4 dash-card" style={{animationDelay:'0.25s',transform:'rotate(-0.05deg)'}}>
+            <h3 className="text-[13px] font-semibold mb-3 text-[var(--ink)] flex items-center gap-1.5" style={{fontFamily:'var(--font-serif)'}}>
+              <Zap size={12} style={{color:'var(--primary-skin)'}}/> 快捷操作
+            </h3>
+            <div className="grid grid-cols-2 gap-1.5">
+              {[
+                {e:'👧',l:'新建学生档案',h:'/students'},
+                {e:'✏️',l:'写课堂评语',h:'/students'},
+                {e:'📖',l:'记录成长日志',h:'/journal'},
+                {e:'📅',l:'查看完整课表',h:'/schedule'},
+                {e:'✨',l:'AI 工坊',h:'/ai-workshop'},
+                {e:'💌',l:'写临别信',h:'/letters'},
+              ].map(a=>(
+                <Link key={a.l} href={a.h} className="flex items-center gap-2 p-2 rounded-md no-underline transition-all hover:-translate-y-0.5 hover:shadow-sm text-[10px]"
+                  style={{color:'var(--ink-soft)',border:'1px solid rgba(200,180,160,0.12)',background:'rgba(245,240,230,0.25)'}}>
+                  <span className="text-sm">{a.e}</span>{a.l}
+                </Link>
+              ))}
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
-    {/* Recent diaries */}
-    <div className="picture-book-card p-6 mb-6" style={{transform:'rotate(0.08deg)'}}>
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="text-[16px] font-semibold tracking-[0.04em] text-[var(--ink)]" style={{fontFamily:'var(--font-serif)'}}>📝 最近评语</h3>
-        <Link href="/students" className="text-[12px] no-underline hover:underline handwriting" style={{color:'var(--primary-skin)'}}>查看全部 →</Link>
+      {/* ═══ 最近动态 ═══ */}
+      <div className="picture-book-card p-5 dash-card" style={{animationDelay:'0.3s',transform:'rotate(0.04deg)'}}>
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-[15px] font-semibold text-[var(--ink)] flex items-center gap-2" style={{fontFamily:'var(--font-serif)'}}>
+            <TrendingUp size={14} style={{color:'#7a9a5a'}}/> 最近动态
+          </h3>
+          <Link href="/journal" className="text-[10px] no-underline flex items-center gap-0.5" style={{color:'var(--faded)'}}>
+            查看全部 <ChevronRight size={10}/>
+          </Link>
+        </div>
+        <div className="flex gap-4 overflow-x-auto" style={{scrollbarWidth:'thin'}}>
+          {RECENT_ACTIVITIES.map((a,i)=>(
+            <div key={i} className="flex-shrink-0 p-3.5 rounded-xl min-w-[200px]"
+              style={{background:'rgba(245,240,230,0.3)',border:'1px solid rgba(200,180,160,0.1)'}}>
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-7 h-7 rounded-full flex items-center justify-center text-sm flex-shrink-0"
+                  style={{background:'linear-gradient(135deg,rgba(200,160,120,0.12),rgba(180,140,100,0.06))',border:'1.5px solid rgba(200,160,120,0.15)'}}>
+                  {a.avatar}
+                </div>
+                <span className="text-[11px] font-semibold text-[var(--ink)]">{a.student}</span>
+              </div>
+              <p className="text-[10px] leading-relaxed mb-1.5" style={{color:'var(--ink-soft)'}}>{a.action}</p>
+              <div className="flex items-center justify-between text-[8px]" style={{color:'var(--faded)'}}>
+                <span>{a.time}</span>
+                <span className="px-1.5 py-0.5 rounded-full" style={{background:'rgba(200,180,160,0.06)'}}>{a.type}</span>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
-      <div className="space-y-3">
-        {d.recentDiaries.map((rd,i)=>(<div key={i} className="flex items-start gap-3 p-3.5 rounded-md transition-colors hover:shadow-sm cursor-default" style={{background:'rgba(245,240,230,0.3)',border:'1px solid rgba(200,180,160,0.08)'}}>
-          {(() => { const stu = MOCK_STUDENTS.find(s => s.name === rd.studentName); return stu ? <div className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0 mt-0.5" style={{boxShadow:'0 2px 6px rgba(100,70,40,0.1)',border:'2px solid #fff',outline:'1px solid rgba(180,150,120,0.35)'}}><img src={stu.photo} alt={stu.name} className="w-full h-full object-cover"/></div> : <div className="w-10 h-10 rounded-full flex items-center justify-center text-sm flex-shrink-0 mt-0.5" style={{background:'rgba(200,160,120,0.1)',color:'var(--ink-soft)',border:'1.5px solid rgba(200,160,120,0.12)'}}>{rd.studentName[0]}</div> })()}
-          <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-2 mb-0.5"><span className="text-[13px] font-semibold text-[var(--ink)]">{rd.studentName}</span><span className="text-[11px]" style={{color:'var(--faded)'}}>{rd.timeAgo}</span></div>
-            <p className="text-[13px] leading-relaxed line-clamp-2" style={{color:'var(--ink-soft)'}}>{rd.content}</p>
-          </div>
-          <span className="text-[10px] px-2 py-0.5 rounded-full flex-shrink-0 mt-1" style={{background:'rgba(122,154,90,0.08)',color:'#6a8a4a',border:'1px solid rgba(122,154,90,0.12)'}}>查看</span>
-        </div>))}
-      </div>
-    </div>
-
-    {/* Notifications */}
-    <div className="picture-book-card p-6" style={{transform:'rotate(-0.06deg)'}}>
-      <h3 className="text-[16px] font-semibold tracking-[0.04em] mb-4 text-[var(--ink)] flex items-center gap-2" style={{fontFamily:'var(--font-serif)'}}><Bell size={16} style={{color:'var(--faded)'}}/>通知</h3>
-      <div className="space-y-2">
-        {MOCK_NOTIFICATIONS.map(n=>(<div key={n.id} className="flex items-start gap-3 p-3 rounded-md transition-colors" style={{background:n.read?'rgba(245,240,230,0.15)':'rgba(240,225,190,0.25)',border:`1px solid ${n.read?'rgba(200,180,160,0.08)':'rgba(200,160,100,0.15)'}`,opacity:n.read?0.55:1}}>
-          <span className="picture-book-tag mt-0.5 text-[9px] px-1.5 py-0.5 flex-shrink-0" style={{background:n.type==='success'?'rgba(180,210,160,0.12)':n.type==='warning'?'rgba(240,210,140,0.12)':'rgba(200,190,180,0.12)',border:`1px solid ${n.type==='success'?'rgba(140,180,120,0.25)':n.type==='warning'?'rgba(200,170,100,0.25)':'rgba(180,160,140,0.25)'}`}}>{n.type==='success'?'✓':n.type==='warning'?'⚠':'ℹ'}</span>
-          <div className="flex-1"><p className="text-[13px] font-medium text-[var(--ink)]">{n.title}</p><p className="text-[12px] mt-0.5" style={{color:'var(--ink-faint)'}}>{n.content} · {n.createdAt}</p></div>
-          {!n.read&&<span className="w-2 h-2 rounded-full flex-shrink-0 mt-1.5" style={{background:'var(--primary-skin)'}}/>}
-        </div>))}
-      </div>
-    </div>
-  </>)
+    </>
+  )
 }

@@ -12,10 +12,15 @@ interface NavItem { href: string; label: string; icon: string; exact?: boolean; 
 interface NavGroup { label: string; items: NavItem[] }
 
 const NAV_GROUPS: NavGroup[] = [
-  { label: '核心', items: [
+  { label: '我的队伍', items: [
     { href: '/', label: '首页', icon: '🏠', exact: true },
     { href: '/dashboard', label: '仪表盘', icon: '📊' },
     { href: '/journal', label: '成长日志', icon: '📖' },
+    { href: '/students', label: '学生档案', icon: '📝' },
+    { href: '/schedule', label: '课表管理', icon: '📅' },
+    { href: '/classroom', label: '课堂', icon: '🏫' },
+    { href: '/letters', label: '临别信', icon: '✉️' },
+    { href: '/messages', label: '消息中心', icon: '💬', badge: 2 },
   ]},
   { label: '支教社区', items: [
     { href: '/community', label: '社区首页', icon: '🌐', exact: true },
@@ -26,26 +31,17 @@ const NAV_GROUPS: NavGroup[] = [
     { href: '/community/recruit', label: '招募广场', icon: '🌟' },
     { href: '/community/social', label: '蒲公英', icon: '🌬' },
   ]},
-  { label: '支教工作', items: [
-    { href: '/students', label: '学生档案', icon: '📝' },
-    { href: '/schedule', label: '课表管理', icon: '📅' },
-    { href: '/classroom', label: '课堂', icon: '🏫' },
-    { href: '/letters', label: '临别信', icon: '✉️' },
-    { href: '/messages', label: '消息中心', icon: '💬', badge: 2 },
-  ]},
   { label: 'AI 创意', items: [
     { href: '/ai-workshop', label: 'AI 工坊', icon: '✨' },
     { href: '/penpal-square', label: '笔友广场', icon: '💌' },
     { href: '/growth-video', label: '成长视频', icon: '🎬' },
   ]},
-  { label: '资源与团队', items: [
+  { label: '其他', items: [
     { href: '/gallery', label: '相册', icon: '📷' },
     { href: '/members', label: '成员', icon: '👥' },
     { href: '/announcements', label: '公告', icon: '📢' },
     { href: '/resources', label: '资源库', icon: '📚' },
     { href: '/reviews', label: '评价', icon: '⭐' },
-  ]},
-  { label: '其他', items: [
     { href: '/community/profile', label: '我的主页', icon: '🏠' },
     { href: '/settings', label: '设置', icon: '⚙️' },
   ]},
