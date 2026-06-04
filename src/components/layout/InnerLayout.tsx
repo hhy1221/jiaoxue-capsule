@@ -1,6 +1,7 @@
 'use client'
 
 import Sidebar from './Sidebar'
+import BackToTop from '../ui/BackToTop'
 import { useEffect, useRef } from 'react'
 import { usePathname } from 'next/navigation'
 
@@ -122,6 +123,7 @@ export default function InnerLayout({ children }: { children: React.ReactNode })
           {children}
         </div>
       </main>
+      <BackToTop />
     </>
   )
 }
