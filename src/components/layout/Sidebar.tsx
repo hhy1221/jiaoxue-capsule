@@ -37,6 +37,7 @@ const NAV_GROUPS: NavGroup[] = [
     { href: '/growth-video', label: '成长视频', icon: '🎬' },
   ]},
   { label: '其他', items: [
+    { href: '/student', label: '学生端视角', icon: '🧒' },
     { href: '/gallery', label: '相册', icon: '📷' },
     { href: '/members', label: '成员', icon: '👥' },
     { href: '/announcements', label: '公告', icon: '📢' },
