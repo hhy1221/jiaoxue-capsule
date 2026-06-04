@@ -23,7 +23,7 @@ const NAV_GROUPS: NavGroup[] = [
     { href: '/community/match', label: '寻找队伍', icon: '🔗' },
     { href: '/community/stories', label: '支教故事', icon: '📸' },
     { href: '/community/recruit', label: '招募广场', icon: '🌟' },
-    { href: '/community/social', label: '学生天地', icon: '👦' },
+    { href: '/community/social', label: '蒲公英', icon: '🌬' },
   ]},
   { label: '支教工作', items: [
     { href: '/students', label: '学生档案', icon: '📝' },

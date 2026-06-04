@@ -209,3 +209,33 @@ export interface CommunityProfile {
   localNeeds?: { title: string; description: string; contactInfo: string; deadline?: string }[]
   stats: { questionsAnswered: number; resourcesShared: number; storiesWritten: number; recruitsPosted: number; joinedAt: string }
 }
+
+// ═══════════════════════════════════════
+// 蒲公英 · 学生轻社交平台
+// ═══════════════════════════════════════
+export interface StudentFriend {
+  studentId: string; studentName: string; studentAvatar: string
+  grade: string; school: string; interestGroup: string
+  addedAt: string; lastActive?: string
+}
+export interface FriendRequest {
+  id: string; from: { id: string; name: string; avatar: string; grade: string; school: string }
+  to: string; interestGroup: string; message: string; status: 'pending' | 'accepted' | 'declined'; createdAt: string
+}
+export interface StudentChatMessage {
+  id: string; conversationId: string; senderId: string; senderName: string
+  content: string; createdAt: string
+}
+export interface StudentConversation {
+  id: string; type: 'direct' | 'group'
+  name: string; avatar: string // group name+icon, or friend name+avatar
+  participants: { id: string; name: string; avatar: string }[]
+  lastMessage: string; lastMessageAt: string
+  messages: StudentChatMessage[]
+  // group-specific
+  interestGroup?: string; groupDescription?: string; createdBy?: string
+}
+export interface StudentDiscovery {
+  id: string; name: string; avatar: string; grade: string; school: string
+  interestGroups: string[]; recentPost: string; alreadyFriend: boolean; requestSent: boolean
+}
