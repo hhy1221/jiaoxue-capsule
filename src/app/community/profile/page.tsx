@@ -5,10 +5,10 @@ import {
   MapPin, Edit3, Heart, BookOpen, Star, FileText, Send, Calendar, Clock,
   CheckCircle, Users, Megaphone, Award, Plus, X, Sparkles, Globe,
 } from 'lucide-react'
-import { CommunityIdentity, IDENTITY_LABELS } from '@/types'
+import { CommunityIdentity, IDENTITY_LABELS, CommunityProfile } from '@/types'
 
 // ── 当前用户模拟数据（黄寒阳）──
-const MOCK_PROFILE = {
+const MOCK_PROFILE: CommunityProfile = {
   id: 'u1', name: '黄寒阳', avatar: '🌱',
   identity: 'team_leader' as CommunityIdentity, verified: true,
   location: '四川宜宾筠连县', organization: '电子科技大学 · 凡星支教队', badge: '凡星支教队·队长',
@@ -56,7 +56,8 @@ export default function ProfilePage() {
   const saveBio = () => { setProfile(p => ({ ...p, bio: bioDraft })); setEditBio(false) }
   const addNeed = () => {
     if (!needTitle.trim() || !needDesc.trim()) return
-    setProfile(p => ({ ...p, localNeeds: [...(p.localNeeds || []), { title: needTitle.trim(), description: needDesc.trim(), contactInfo: needContact.trim() || '请私信联系', deadline: needDeadline.trim() || undefined }] }))
+    const newNeed = { title: needTitle.trim(), description: needDesc.trim(), contactInfo: needContact.trim() || '请私信联系', deadline: needDeadline.trim() || undefined } as const
+    setProfile(p => ({ ...p, localNeeds: [...(p.localNeeds || []), newNeed] }))
     setNeedTitle(''); setNeedDesc(''); setNeedContact(''); setNeedDeadline(''); setShowNeedForm(false)
   }
   const removeNeed = (i: number) => setProfile(p => ({ ...p, localNeeds: (p.localNeeds || []).filter((_, idx) => idx !== i) }))

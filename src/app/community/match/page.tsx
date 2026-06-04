@@ -48,8 +48,8 @@ export default function MatchPage() {
   }, [mySkills, mySubjects, myRegion])
 
   const renderTeamCard = (team: typeof matches[0], i: number) => {
-    const urgencyColor = team.recruitmentStatus === 'urgent' ? '#d4855e' : 'open' ? '#7a9a5a' : 'var(--faded)'
-    const urgencyLabel = team.recruitmentStatus === 'urgent' ? '🔥急招' : 'open' ? '招募中' : '已满'
+    const urgencyColor = team.recruitmentStatus === 'urgent' ? '#d4855e' : team.recruitmentStatus === 'open' ? '#7a9a5a' : 'var(--faded)'
+    const urgencyLabel = team.recruitmentStatus === 'urgent' ? '🔥急招' : team.recruitmentStatus === 'open' ? '招募中' : '已满'
     return (
       <div key={team.id} className="picture-book-card p-5 hover:shadow-md transition-all duration-300"
         style={{ transform: `rotate(${i % 2 === 0 ? '-0.06deg' : '0.04deg'})`, borderLeft: `4px solid ${i === 0 ? '#e08050' : i === 1 ? '#d4a040' : 'rgba(200,180,160,0.3)'}` }}>
