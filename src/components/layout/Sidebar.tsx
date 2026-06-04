@@ -45,6 +45,7 @@ const NAV_GROUPS: NavGroup[] = [
     { href: '/reviews', label: '评价', icon: '⭐' },
   ]},
   { label: '其他', items: [
+    { href: '/community/profile', label: '我的主页', icon: '🏠' },
     { href: '/settings', label: '设置', icon: '⚙️' },
   ]},
 ]

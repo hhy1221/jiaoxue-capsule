@@ -193,5 +193,19 @@ export interface ContributorBadge {
 }
 export interface ContributorRank {
   rank: number; author: CommunityAuthor; score: number; badges: ContributorBadge[]
-  highlights: string[] // "回答了23个问题", "上传了15份教案", "帮助了300+名老师"
+  highlights: string[]
+}
+
+// ── 个人主页 ──
+export type CommunityIdentity = 'teacher' | 'volunteer' | 'team_leader' | 'local_official' | 'school' | 'expert' | 'organization'
+export const IDENTITY_LABELS: Record<CommunityIdentity, string> = {
+  teacher: '一线教师', volunteer: '志愿者', team_leader: '支教队长', local_official: '地方团委/村支书',
+  school: '学校代表', expert: '教育专家', organization: '公益组织',
+}
+export interface CommunityProfile {
+  id: string; name: string; avatar: string; identity: CommunityIdentity; verified: boolean
+  location: string; organization?: string; badge?: string
+  bio: string; tags: string[]; skills: string[]; interests: string[]
+  localNeeds?: { title: string; description: string; contactInfo: string; deadline?: string }[]
+  stats: { questionsAnswered: number; resourcesShared: number; storiesWritten: number; recruitsPosted: number; joinedAt: string }
 }
