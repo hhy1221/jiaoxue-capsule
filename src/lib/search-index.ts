@@ -64,6 +64,14 @@ const PAGE_INDEX: SearchResult[] = [
   { id:'nav-announcements',kind:'page',title:'公告',subtitle:'队伍通知',icon:'📢',href:'/announcements',tags:['公告','通知'],priority:62 },
   { id:'nav-reviews',kind:'page',title:'评价',subtitle:'互评互促',icon:'⭐',href:'/reviews',tags:['评价','评分','反馈'],priority:60 },
   { id:'nav-settings',kind:'page',title:'设置',subtitle:'队伍设置 · 系统配置',icon:'⚙️',href:'/settings',tags:['设置','配置'],priority:58 },
+  // 学生端
+  { id:'nav-student',kind:'page',title:'学生端首页',subtitle:'今日课程 · 好友在线 · 快捷入口',icon:'🧒',href:'/student',tags:['学生','孩子','学习'],priority:79 },
+  { id:'nav-student-class',kind:'page',title:'今日课堂',subtitle:'查看课表 · 给老师打分',icon:'📖',href:'/student/class',tags:['课堂','课程','打分'],priority:77 },
+  { id:'nav-student-journal',kind:'page',title:'成长日志（学生）',subtitle:'回顾每节课 · 记录感受',icon:'🌱',href:'/student/journal',tags:['日志','感受','记录'],priority:75 },
+  { id:'nav-student-works',kind:'page',title:'我的作品',subtitle:'分享创作 · 展示才华',icon:'🎨',href:'/student/works',tags:['作品','创作','分享'],priority:73 },
+  { id:'nav-student-chat',kind:'page',title:'聊天（学生）',subtitle:'和好朋友们聊天',icon:'💬',href:'/student/chat',tags:['聊天','好友','消息'],priority:71 },
+  { id:'nav-student-contact',kind:'page',title:'联系老师',subtitle:'给老师发消息',icon:'✉️',href:'/student/contact',tags:['老师','联系','提问'],priority:69 },
+  { id:'nav-student-assign',kind:'page',title:'我的作业',subtitle:'查看和提交作业',icon:'📝',href:'/student/assignments',tags:['作业','提交','任务'],priority:67 },
 ]
 
 // ═══════════════════════════════════════

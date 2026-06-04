@@ -84,7 +84,7 @@ export default function MatchPage() {
         </div>
         <div className="flex items-center justify-between pt-3" style={{ borderTop: '1px solid rgba(200,180,160,0.1)' }}>
           <div className="flex items-center gap-2 text-[10px]" style={{ color: 'var(--faded)' }}><BookOpen size={10} /> {team.subjects.slice(0, 3).join('、')}{team.subjects.length > 3 ? '…' : ''}</div>
-          <button className="picture-book-btn primary flex items-center gap-1" style={{ fontSize: 10, padding: '4px 12px' }}>联系队伍 <ArrowRight size={10} /></button>
+          <button onClick={() => alert(`联系方式：${team.contactInfo}`)} className="picture-book-btn primary flex items-center gap-1" style={{ fontSize: 10, padding: '4px 12px' }}>联系队伍 <ArrowRight size={10} /></button>
         </div>
       </div>
     )

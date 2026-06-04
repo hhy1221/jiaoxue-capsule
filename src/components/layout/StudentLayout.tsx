@@ -14,6 +14,7 @@ const NAV_ITEMS = [
   { href: '/student/class', label: '今日课堂', icon: '📖' },
   { href: '/student/journal', label: '成长日志', icon: '🌱' },
   { href: '/student/works', label: '我的作品', icon: '🎨' },
+  { href: '/student/assignments', label: '作业', icon: '📝' },
   { href: '/student/chat', label: '聊天', icon: '💬', badge: 2 },
   { href: '/student/contact', label: '联系老师', icon: '✉️' },
 ]
