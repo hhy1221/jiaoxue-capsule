@@ -87,6 +87,12 @@ export default function CommunityPage() {
           ))}</div>
 
         {/* 双列信息流 — 硬控左右列：左[0]=恐龙图，右[1]=女孩的信 */}
+        {leftCol.length === 0 && rightCol.length === 0 ? (
+          <div className="text-center py-16 col-span-2" style={{color:'var(--faded)'}}>
+            <p className="text-5xl mb-3 opacity-25">📭</p>
+            <p className="handwriting text-[15px]">该分类暂无内容</p>
+          </div>
+        ) : (
         <div className="grid grid-cols-2 gap-4 max-md:grid-cols-1">
           <div className="flex flex-col gap-4">
             {leftCol.map(item => {
@@ -101,8 +107,9 @@ export default function CommunityPage() {
               if (item.type === 'question') return <QuestionCardMini key={item.data.id} q={item.data as typeof QUESTIONS[0]} />
               return <RecruitCardMini key={item.data.id} r={item.data as typeof RECRUITS[0]} />
             })}
-          </div>
+            </div>
         </div>
+        )}
       </div>
 
       {/* 右栏 */}
