@@ -34,29 +34,29 @@ export default function StoriesPage() {
       <p className="text-[13px]" style={{color:'var(--faded)'}}>{STORIES.length} 篇温暖记录 · {locations.length} 个支教地 · ❤️ {totalLikes} 个赞 · 💬 {totalComments} 条评论</p>
     </header>
 
+    {/* 搜索 + 排序 — 提至网格外，使左右列上沿对齐 */}
+    <div className="flex items-center gap-3 mb-5 flex-wrap">
+      <div className="relative flex-1 min-w-[200px]">
+        <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" style={{color:'var(--faded)',opacity:0.4}}/>
+        <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="搜索故事、地点或标签…"
+          className="w-full pl-10 pr-4 py-2.5 rounded-2xl text-[13px] outline-none"
+          style={{border:'1.5px solid rgba(200,180,160,0.2)',background:'var(--surface)',color:'var(--ink)',fontFamily:'inherit'}}/>
+      </div>
+      <div className="flex gap-1">
+        {[{k:'latest',l:'最新'},{k:'hot',l:'最热'}].map(t=>{
+          const isActive = sortBy===t.k
+          return (<button key={t.k} onClick={()=>setSortBy(t.k as 'latest'|'hot')}
+            className="px-4 py-1.5 rounded-full text-[11px] border-none cursor-pointer transition-all"
+            style={{background:isActive?'linear-gradient(135deg,#9b7a4a,#7a5a3a)':'var(--surface)',color:isActive?'#fff':'var(--faded)',fontWeight:isActive?600:400,fontFamily:'inherit',border:`1.5px solid ${isActive?'transparent':'rgba(200,180,160,0.18)'}`}}>
+            {t.k==='hot'?<span><Flame size={11}/> {t.l}</span>:t.l}
+          </button>)
+        })}
+      </div>
+    </div>
+
     <div className="grid grid-cols-[1fr_320px] gap-6 max-lg:grid-cols-1">
       {/* ═══ 左：故事列表 ═══ */}
       <div>
-        {/* 搜索 + 排序 */}
-        <div className="flex items-center gap-3 mb-5 flex-wrap">
-          <div className="relative flex-1 min-w-[200px]">
-            <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" style={{color:'var(--faded)',opacity:0.4}}/>
-            <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="搜索故事、地点或标签…"
-              className="w-full pl-10 pr-4 py-2.5 rounded-2xl text-[13px] outline-none"
-              style={{border:'1.5px solid rgba(200,180,160,0.2)',background:'var(--surface)',color:'var(--ink)',fontFamily:'inherit'}}/>
-          </div>
-          <div className="flex gap-1">
-            {[{k:'latest',l:'最新'},{k:'hot',l:'最热'}].map(t=>{
-              const isActive = sortBy===t.k
-              return (<button key={t.k} onClick={()=>setSortBy(t.k as 'latest'|'hot')}
-                className="px-4 py-1.5 rounded-full text-[11px] border-none cursor-pointer transition-all"
-                style={{background:isActive?'linear-gradient(135deg,#9b7a4a,#7a5a3a)':'var(--surface)',color:isActive?'#fff':'var(--faded)',fontWeight:isActive?600:400,fontFamily:'inherit',border:`1.5px solid ${isActive?'transparent':'rgba(200,180,160,0.18)'}`}}>
-                {t.k==='hot'?<span><Flame size={11}/> {t.l}</span>:t.l}
-              </button>)
-            })}
-          </div>
-        </div>
-
         {/* 故事列表 */}
         <div className="space-y-5">
           {filtered.map((s,idx)=>{
