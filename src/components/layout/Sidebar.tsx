@@ -221,6 +221,24 @@ export default function Sidebar() {
           ribbonRef.current.style.height = `${pos.height * 0.6}px`
           ribbonRef.current.style.opacity = '1'
         }
+        // ═══ 自动滚动到可见位置 — 防止靠下的菜单项被遮挡 ═══
+        const nav = navRef.current
+        const activeEl = nav?.querySelector(`[data-nav-href="${href}"]`)
+        if (activeEl && nav) {
+          const navRect = nav.getBoundingClientRect()
+          const elRect = activeEl.getBoundingClientRect()
+          // 如果激活项一半以上在可见区域外，才滚动
+          const elCenter = elRect.top + elRect.height / 2
+          const navCenter = navRect.top + navRect.height / 2
+          const isAbove = elRect.bottom < navRect.top + elRect.height * 0.6
+          const isBelow = elRect.top > navRect.bottom - elRect.height * 0.6
+          if (isAbove || isBelow) {
+            nav.scrollTo({
+              top: nav.scrollTop + elCenter - navCenter,
+              behavior: 'smooth',
+            })
+          }
+        }
       })
     }
   }, [pathname])
