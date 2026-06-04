@@ -179,7 +179,6 @@ export default function SchedulePage() {
     const has = cell && cell !== ''; const cat = has ? classifyCourse(cell) : null; const cfg = cat ? WUYU_CONFIG[cat] : null
     if (isEdit) return (<td className="p-0 border relative" style={{ borderColor: tt.border }}><textarea ref={inpRef} value={editVal} onChange={e => setEditVal(e.target.value)} onBlur={saveEdit} onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) saveEdit(); if (e.key === 'Escape') setEditing(null) }} className="w-full min-h-[32px] p-2 border-none outline-none resize-y text-[11px] text-center" style={{ background: '#fff', color: 'var(--ink)', border: '2px dashed var(--primary-skin)', fontFamily: 'inherit' }} autoFocus /></td>)
     return (<td onClick={() => toggleSel(ri, ci)} onDoubleClick={() => startEdit(ri, ci)} rowSpan={rowspan || 1} className={'p-2 text-center border align-middle cursor-pointer relative overflow-hidden transition-all duration-200 hover:scale-105 hover:z-10 hover:shadow-lg' + (isSel ? ' ring-2 ring-[var(--primary-skin)]' : '')} style={{ background: isSel ? 'rgba(200,160,120,0.18)' : cfg ? cfg.lightBg : tt.cellBg, borderColor: isSel ? 'var(--primary-skin)' : cfg ? cfg.borderColor : tt.border, borderLeft: cfg ? `4px solid ${cfg.color}` : undefined, fontSize: 11, fontWeight: has ? 600 : 400, transform: isSel ? 'scale(1.03)' : undefined }}>
-      {cfg && !isSel && (<div className="absolute top-1 right-1 w-2 h-2 rounded-full" style={{ background: cfg.color, opacity: 0.5 }} />)}
       {has ? hl(cell) : <span className="opacity-25">—</span>}
     </td>)
   }
