@@ -19,6 +19,8 @@ const NAV_GROUPS: NavGroup[] = [
   { label: '支教社区', items: [
     { href: '/community', label: '社区首页', icon: '🌐', exact: true },
     { href: '/community/questions', label: '教学问答', icon: '📚' },
+    { href: '/community/resources', label: '资源广场', icon: '📦' },
+    { href: '/community/match', label: '寻找队伍', icon: '🔗' },
     { href: '/community/stories', label: '支教故事', icon: '📸' },
     { href: '/community/recruit', label: '招募广场', icon: '🌟' },
     { href: '/community/social', label: '学生天地', icon: '👦' },

@@ -5,6 +5,7 @@
 import {
   CommunityQuestion, CommunityRecruit, CommunityStory,
   StudentSocialPost, InterestGroup, OfficialAccount,
+  CommunityResource, TeamProfile, ContributorRank, ContributorBadge,
 } from '@/types'
 
 // ── 社区图片路径映射 ──

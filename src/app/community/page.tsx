@@ -1,6 +1,7 @@
 'use client'
 import InnerLayout from '@/components/layout/InnerLayout'
 import { QUESTIONS, STORIES, RECRUITS, OFFICIAL_ACCOUNTS } from '@/lib/community-data'
+import { CONTRIBUTOR_RANKINGS } from '@/lib/community-resources'
 import Link from 'next/link'
 import { useState, useMemo } from 'react'
 import { Heart, MessageCircle, Eye, MapPin, Clock, ArrowRight, BookOpen, Users, Star, CheckCircle, Calendar, ThumbsUp, TrendingUp, Flame, Award } from 'lucide-react'
@@ -133,6 +134,26 @@ export default function CommunityPage() {
           <h3 className="text-[13px] font-semibold mb-3 text-[var(--ink)] flex items-center gap-1.5" style={{fontFamily:'var(--font-serif)'}}><Star size={13} style={{color:'#d4a853'}}/> 认证组织</h3>
           <div className="space-y-2">{OFFICIAL_ACCOUNTS.slice(0,6).map(oa=>(<div key={oa.id} className="flex items-center gap-2.5">
             <span className="text-base w-6 text-center">{oa.avatar}</span><div className="flex-1 min-w-0"><p className="text-[11px] font-semibold text-[var(--ink)] flex items-center gap-1">{oa.name}{oa.verified&&<CheckCircle size={9} style={{color:'#4a8a4a'}}/>}</p><p className="text-[9px] truncate" style={{color:'var(--faded)'}}>{oa.location}</p></div></div>))}</div></div>
+
+        {/* ── 贡献者排行榜 ── */}
+        <div className="picture-book-card p-4" style={{transform:'rotate(-0.04deg)'}}>
+          <h3 className="text-[13px] font-semibold mb-3 text-[var(--ink)] flex items-center gap-1.5" style={{fontFamily:'var(--font-serif)'}}><Award size={13} style={{color:'#e08050'}}/> 贡献榜</h3>
+          <div className="space-y-1.5">
+            {CONTRIBUTOR_RANKINGS.slice(0,5).map((cr, i) => (
+              <div key={cr.rank} className="flex items-center gap-2.5 py-1.5" style={{borderBottom:i<4?'1px solid rgba(200,180,160,0.06)':'none'}}>
+                <span className="text-[14px] font-bold flex-shrink-0 w-5 text-center" style={{color:i===0?'#e08050':i===1?'#d4a040':i===2?'#b89860':'var(--faded)',fontFamily:'var(--font-serif)'}}>{cr.rank}</span>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-1">
+                    <span className="text-[11px] font-semibold text-[var(--ink)]">{cr.author.name}</span>
+                    {cr.badges.slice(0,2).map(b=><span key={b.id} className="text-[10px]" title={b.name}>{b.emoji}</span>)}
+                  </div>
+                  <p className="text-[9px] line-clamp-1" style={{color:'var(--faded)'}}>{cr.highlights[0]}</p>
+                </div>
+                <span className="text-[10px] font-bold flex-shrink-0" style={{color:'var(--primary-skin)'}}>{cr.score}</span>
+              </div>
+            ))}
+          </div>
+        </div>
 
         <div className="p-5 rounded-lg text-center" style={{background:'linear-gradient(135deg,rgba(245,238,220,0.5),rgba(240,225,210,0.3))',border:'1.5px solid rgba(200,180,160,0.15)'}}>
           <p className="handwriting text-[16px] tracking-[0.04em]" style={{color:'var(--ink-soft)'}}>让知识跨越山海<br/>让温暖传遍乡村 🌍</p>

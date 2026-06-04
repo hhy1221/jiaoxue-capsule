@@ -150,3 +150,48 @@ export interface InterestGroup {
 export interface OfficialAccount {
   id: string; name: string; avatar: string; type: 'team' | 'school' | 'govt'; verified: boolean; description: string; memberCount: number; location: string; activeSince: string
 }
+
+// ═══════════════════════════════════════
+// 教学资源广场 v5
+// ═══════════════════════════════════════
+export type ResourceCategory = 'lesson_plan' | 'worksheet' | 'ppt' | 'activity' | 'assessment' | 'handbook' | 'video' | 'other'
+export type ResourceGrade = 'preschool' | 'grade1-2' | 'grade3-4' | 'grade5-6' | 'junior' | 'all'
+export const RESOURCE_CATEGORIES: Record<ResourceCategory, { label: string; emoji: string; color: string }> = {
+  lesson_plan: { label: '教案', emoji: '📖', color: '#d4855e' },
+  worksheet: { label: '练习题', emoji: '📝', color: '#7a9a5a' },
+  ppt: { label: '课件PPT', emoji: '📊', color: '#6baed6' },
+  activity: { label: '活动方案', emoji: '🎯', color: '#e8a040' },
+  assessment: { label: '评估工具', emoji: '📋', color: '#a78bfa' },
+  handbook: { label: '教师手册', emoji: '📕', color: '#e06060' },
+  video: { label: '教学视频', emoji: '🎬', color: '#9880c8' },
+  other: { label: '其他', emoji: '📎', color: '#8b7d6b' },
+}
+export const GRADE_LABELS: Record<ResourceGrade, string> = {
+  preschool: '学前班', 'grade1-2': '1-2年级', 'grade3-4': '3-4年级', 'grade5-6': '5-6年级', junior: '初中', all: '全年级',
+}
+export interface CommunityResource {
+  id: string; title: string; description: string; category: ResourceCategory; grade: ResourceGrade; subject: string
+  fileType: string; fileSize: string; downloads: number; rating: number; author: CommunityAuthor
+  teamName: string; location: string; tags: string[]; createdAt: string; featured?: boolean
+}
+
+// ── 智能匹配 ──
+export interface TeamProfile {
+  id: string; name: string; logo: string; location: string; duration: string; teamSize: number
+  subjects: string[]; description: string; recruitmentStatus: 'open' | 'urgent' | 'closed'
+  skillsNeeded: string[]; contactInfo: string; matchScore?: number; matchReasons?: string[]
+}
+export interface VolunteerProfile {
+  id: string; name: string; avatar: string; location: string; available: string; skills: string[]
+  preferredGrades: ResourceGrade[]; preferredSubjects: string[]; experience: string; bio: string
+}
+
+// ── 影响力体系 ──
+export interface ContributorBadge {
+  id: string; name: string; emoji: string; description: string; tier: 'bronze' | 'silver' | 'gold' | 'diamond'
+  condition: string
+}
+export interface ContributorRank {
+  rank: number; author: CommunityAuthor; score: number; badges: ContributorBadge[]
+  highlights: string[] // "回答了23个问题", "上传了15份教案", "帮助了300+名老师"
+}
