@@ -55,10 +55,13 @@ export default function InnerLayout({ children }: { children: React.ReactNode })
     sidebar.style.transition = 'none'
     sidebar.style.transform = 'translateX(-100%)'
     void sidebar.offsetHeight
-    requestAnimationFrame(() => {
-      sidebar.style.transition = 'transform 0.45s cubic-bezier(0.16,1,0.3,1)'
-      sidebar.style.transform = 'translateX(0)'
-    })
+    // 稍慢出场：先停顿 80ms 呼吸感 → 0.75s 缓出滑动
+    setTimeout(() => {
+      requestAnimationFrame(() => {
+        sidebar.style.transition = 'transform 0.75s cubic-bezier(0.22,0.61,0.36,1)'
+        sidebar.style.transform = 'translateX(0)'
+      })
+    }, 80)
   }, [])
 
   // ═══ 卡片入场动画 — pathname 变化时全量触发 ═══
