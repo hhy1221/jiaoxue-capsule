@@ -1,10 +1,11 @@
 'use client'
 import InnerLayout from '@/components/layout/InnerLayout'
 import { Card, CardContent } from '@/components/ui/card'
-import { useState } from 'react'
-import { Mic, Sparkles, Loader2 } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { Mic, Sparkles, Loader2, MicOff } from 'lucide-react'
 import CastingCircle from '@/components/animations/CastingCircle'
 import InkReveal from '@/components/animations/InkReveal'
+import { useSpeechRecognition } from '@/lib/use-speech-recognition'
 
 export default function DiaryAssistPage() {
   const [input, setInput] = useState('')
@@ -12,6 +13,9 @@ export default function DiaryAssistPage() {
   const [result, setResult] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const { isListening, transcript, toggle: toggleMic, browserSupported } = useSpeechRecognition()
+  // 语音转文字实时填入
+  useEffect(() => { if (transcript) setInput(prev => prev + transcript) }, [transcript])
 
   const generate = async () => {
     if (!input.trim()) return
@@ -36,7 +40,12 @@ export default function DiaryAssistPage() {
       </div>
       <textarea value={input} onChange={e=>setInput(e.target.value)} rows={4} className="w-full p-4 rounded-xl border border-[var(--border)] bg-[var(--bg)] text-[14px] text-[var(--text)] resize-none outline-none focus:border-[var(--primary)] transition-colors" placeholder='例: 今天小明主动帮同学搬桌子，还教同桌做数学题' style={{fontFamily:'inherit'}}/>
       <div className="flex gap-3 mt-3 flex-wrap">
-        <button className="flex items-center gap-2 px-3 py-2 rounded-xl border border-[var(--border)] text-[var(--text-secondary)] bg-transparent cursor-pointer hover:bg-[var(--bg)] text-[12px] tracking-wider"><Mic size={14}/>语音输入</button>
+        <button onClick={toggleMic} disabled={!browserSupported}
+          title={!browserSupported ? '当前浏览器不支持语音输入' : '点击开始/停止语音输入'}
+          className={`flex items-center gap-2 px-3 py-2 rounded-xl border text-[12px] tracking-wider cursor-pointer transition-all ${isListening ? 'bg-red-50 border-red-300 text-red-600 animate-pulse' : 'border-[var(--border)] text-[var(--text-secondary)] bg-transparent hover:bg-[var(--bg)]'}`}
+          style={{ fontFamily: 'inherit' }}>
+          {isListening ? <><MicOff size={14}/>停止录音</> : <><Mic size={14}/>语音输入</>}
+        </button>
         <button onClick={generate} disabled={!input.trim()||loading} className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[var(--primary)] text-white border-none cursor-pointer text-[13px] font-medium tracking-wider hover:opacity-90 transition-opacity disabled:opacity-50">
           {loading ? <><Loader2 size={14} className="animate-spin"/> AI 正在生成...</> : <><Sparkles size={14}/>✨ AI 扩写评语</>}
         </button>

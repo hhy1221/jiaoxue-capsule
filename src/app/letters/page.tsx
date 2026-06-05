@@ -6,7 +6,8 @@ import { useToast } from '@/components/animations/Toast'
 import BatchLetterDialog from '@/components/forms/BatchLetterDialog'
 import { JOURNAL_ENTRIES } from '@/lib/journal-data'
 import { useState, useMemo, useRef } from 'react'
-import { Sparkles, Loader2, Download, Copy, RefreshCw } from 'lucide-react'
+import { Sparkles, Loader2, Download, Copy, RefreshCw, Wand2 } from 'lucide-react'
+import { generatePlaceholderImage } from '@/lib/ai/tongyi-image'
 
 const SEARCHABLE_TONES: Record<LetterTone, string> = {
   poetic: '温柔诗意', friendly: '老友絮语', strict: '严师慈言', energetic: '燃系励志', playful: '童趣轻松',
@@ -26,6 +27,9 @@ export default function LettersPage() {
   const [aiLoading, setAiLoading] = useState(false)
   const [aiLetters, setAiLetters] = useState<Record<string, string>>({})
   const [aiError, setAiError] = useState('')
+  const [aiImageUrl, setAiImageUrl] = useState('')
+  const [aiImageLoading, setAiImageLoading] = useState(false)
+  const [aiImageError, setAiImageError] = useState('')
   const lettersRef = useRef(MOCK_LETTERS)
   const { toast } = useToast()
 
@@ -218,9 +222,46 @@ export default function LettersPage() {
                   <div className="flex flex-col gap-6">
                     <div className="text-center handwriting text-[18px] leading-[1.6] py-4" style={{ borderTop: '2px solid rgba(180,150,120,0.2)', borderBottom: '2px solid rgba(180,150,120,0.2)', color: 'var(--primary-skin)', letterSpacing: '0.04em' }}>"你的好奇心和勇气，是你最宝贵的东西。"</div>
                     <div className="bg-white pt-1.5 pb-7 px-1.5 rounded-[2px] relative transform rotate-[1.5deg]" style={{ boxShadow: '0 2px 6px rgba(0,0,0,0.05)' }}>
-                      <div className="w-full h-[100px] rounded-[2px] flex items-center justify-center text-[28px]" style={{ background: 'linear-gradient(135deg, #e8ddd0, #d5c8b0)' }}>{TONE_EMOJIS[selected.tone]}</div>
-                      <p className="absolute bottom-1.5 left-1.5 right-1.5 handwriting text-[10px] text-center" style={{ color: 'var(--ink-soft)' }}>{selected.studentName}的成长印记</p>
+                      {aiImageUrl ? (
+                        <img src={aiImageUrl} alt={`${selected.studentName}的AI插图`} className="w-full h-[120px] rounded-[2px] object-cover" />
+                      ) : aiImageLoading ? (
+                        <div className="w-full h-[100px] rounded-[2px] flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #e8ddd0, #d5c8b0)' }}>
+                          <Loader2 size={20} className="animate-spin" style={{ color: 'var(--faded)' }} />
+                        </div>
+                      ) : (
+                        <div className="w-full h-[100px] rounded-[2px] flex items-center justify-center text-[28px]" style={{ background: 'linear-gradient(135deg, #e8ddd0, #d5c8b0)' }}>{TONE_EMOJIS[selected.tone]}</div>
+                      )}
+                      <p className="absolute bottom-1.5 left-1.5 right-1.5 handwriting text-[10px] text-center" style={{ color: 'var(--ink-soft)' }}>{aiImageUrl ? 'AI DeepSeek · 手绘插图' : `${selected.studentName}的成长印记`}</p>
                     </div>
+                    {/* 🎨 AI插图按钮 */}
+                    <button
+                      onClick={async () => {
+                        if (!student) return
+                        setAiImageLoading(true); setAiImageError('')
+                        try {
+                          const res = await fetch('/api/ai/generate-image', {
+                            method: 'POST', headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ prompt: `一个${student.age}岁的${student.grade}学生，名叫${student.name}，性格${student.personality}，喜欢${student.tags.slice(0,3).join('、')}。在乡村教室里的温暖场景。`, style: 'illustration', n: 1, size: '1024*1024' })
+                          })
+                          const data = await res.json()
+                          if (data.success && data.urls?.length) {
+                            setAiImageUrl(data.urls[0])
+                            toast('AI插图已生成！', 'success')
+                          } else {
+                            // 降级：Canvas 占位图
+                            setAiImageUrl(generatePlaceholderImage(student.name, 'illustration'))
+                            toast('已生成本地插图（API暂不可用）', 'info')
+                          }
+                        } catch {
+                          setAiImageUrl(generatePlaceholderImage(student.name, 'illustration'))
+                          toast('已生成本地插图', 'info')
+                        } finally { setAiImageLoading(false) }
+                      }}
+                      disabled={aiImageLoading}
+                      className="picture-book-btn flex items-center gap-1.5 text-[9px] mt-3 w-full justify-center"
+                      style={{ padding: '4px 10px' }}>
+                      {aiImageLoading ? <><Loader2 size={11} className="animate-spin"/> 生成中...</> : <><Wand2 size={11} /> {aiImageUrl ? '重新生成AI插图' : '🎨 AI生成手绘插图'}</>}
+                    </button>
                     {student && (
                       <div className="rounded p-3.5 text-[10px] leading-[1.8]" style={{ background: 'rgba(245,238,220,0.5)', border: '1px solid rgba(180,150,120,0.18)' }}>
                         <div className="text-[10px] font-semibold tracking-[0.1em] mb-1" style={{ color: 'var(--ink-soft)' }}>📋 学生档案摘要</div>

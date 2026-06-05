@@ -5,6 +5,8 @@ import Link from 'next/link'
 import { Play, Download, Sparkles, CalendarDays } from 'lucide-react'
 import { useToast } from '@/components/animations/Toast'
 import { useState } from 'react'
+import { JOURNAL_ENTRIES } from '@/lib/journal-data'
+import { Loader2 } from 'lucide-react'
 
 const AVATAR_GRADS=['linear-gradient(135deg,#ecdcc8,#ddc8b0,#e4d4c0)','linear-gradient(135deg,#d8e8d4,#c8dcc0,#d4e0cc)','linear-gradient(135deg,#d8dde8,#c8d3e0,#d4dce8)','linear-gradient(135deg,#ecd8c8,#ddc0b0,#e4d0c0)','linear-gradient(135deg,#d8ecd8,#c0d8c0,#d4e8d4)','linear-gradient(135deg,#f0e8d8,#e8dcc0,#ece4d0)','linear-gradient(135deg,#e8d8ec,#dcc0e0,#e4d4e8)','linear-gradient(135deg,#d8ece8,#c0dcd8,#d4e8e4)']
 const COVER_COLORS=['#d4855e','#7a9a5a','#6baed6','#a78bfa','#f0a060','#e06880','#60b8a8','#c0a060']
@@ -17,6 +19,8 @@ const REST = MOCK_STUDENTS.slice(3)
 export default function GrowthVideoPage() {
   const { toast } = useToast()
   const [generating, setGenerating] = useState(false)
+  const [aiScript, setAiScript] = useState<Record<string, string>>({})
+  const [scriptLoading, setScriptLoading] = useState<string | null>(null)
   return(<InnerLayout>
     <header className="flex items-center justify-between pb-[22px] mb-5 flex-wrap gap-3 relative" style={{borderBottom:'1.5px solid rgba(180,160,130,0.25)'}}>
       <div>
@@ -112,9 +116,23 @@ export default function GrowthVideoPage() {
             <div className="flex flex-wrap gap-1 mb-3">
               {s.tags.slice(0,3).map((t,ti)=>(<span key={t} className="text-[9px] px-1.5 py-0.5 rounded" style={{background:`${c}08`,color:'var(--ink-faint)'}}>{t}</span>))}
             </div>
-            <button className="w-full picture-book-btn primary flex items-center justify-center gap-1.5" style={{fontSize:10,padding:'6px 0'}} onClick={()=>toast('正在生成纪念视频…','success')}>
-              <Sparkles size={12}/>生成纪念视频
+            <button className="w-full picture-book-btn primary flex items-center justify-center gap-1.5" style={{fontSize:10,padding:'6px 0'}} onClick={async () => {
+              setScriptLoading(s.id)
+              try {
+                const moments = JOURNAL_ENTRIES.filter(e => e.studentReflections.some(sr => sr.studentName === s.name)).flatMap(e => e.keyMoments.filter(m => m.forLetter).map(m => m.content))
+                const res = await fetch('/api/ai/video-script', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ studentName: s.name, tags: s.tags, personality: s.personality, journalMoments: moments.slice(0, 5) }) })
+                const data = await res.json()
+                if (data.success) { setAiScript(prev => ({ ...prev, [s.id]: data.content })); toast(`${s.name}的视频脚本已生成！`, 'success') }
+              } catch { toast('生成失败', 'error') }
+              finally { setScriptLoading(null) }
+            }} disabled={scriptLoading === s.id}>
+              {scriptLoading === s.id ? <><Loader2 size={12} className="animate-spin"/>生成中...</> : aiScript[s.id] ? '🤖 重新生成脚本' : <><Sparkles size={12}/>🤖 AI生成脚本</>}
             </button>
+            {aiScript[s.id] && (
+              <div className="mt-3 p-3 rounded-lg text-[10px] leading-relaxed max-h-[200px] overflow-y-auto" style={{ background: 'rgba(245,238,220,0.5)', border: '1px solid rgba(200,160,120,0.15)', color: 'var(--ink-soft)' }}>
+                <pre className="whitespace-pre-wrap" style={{ fontFamily: 'var(--font-serif)' }}>{aiScript[s.id].slice(0, 500)}</pre>
+              </div>
+            )}
           </div>)
         })}
       </div>

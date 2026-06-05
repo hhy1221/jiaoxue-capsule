@@ -1,10 +1,11 @@
 'use client'
 import InnerLayout from '@/components/layout/InnerLayout'
 import { Card, CardContent } from '@/components/ui/card'
-import { useState } from 'react'
-import { Sparkles, Loader2, Send } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { Sparkles, Loader2, Send, Mic, MicOff } from 'lucide-react'
 import CastingCircle from '@/components/animations/CastingCircle'
 import InkReveal from '@/components/animations/InkReveal'
+import { useSpeechRecognition } from '@/lib/use-speech-recognition'
 
 export default function TreeholePage() {
   const [message, setMessage] = useState('')
@@ -12,6 +13,8 @@ export default function TreeholePage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [history, setHistory] = useState<{q:string;a:string}[]>([])
+  const { isListening, transcript, toggle: toggleMic, browserSupported } = useSpeechRecognition()
+  useEffect(() => { if (transcript) setMessage(prev => prev + transcript) }, [transcript])
 
   const submit = async () => {
     if (!message.trim()) return
@@ -44,7 +47,13 @@ export default function TreeholePage() {
       {/* 输入区 */}
       <Card className="border-[var(--border)] bg-[var(--surface)] mb-6"><CardContent className="p-6">
         <textarea value={message} onChange={e=>setMessage(e.target.value)} rows={4} placeholder="在这里写下你想说的话…一切都会匿名处理。" className="w-full p-4 rounded-xl border border-[var(--border)] bg-[var(--bg)] text-[14px] text-[var(--text)] resize-none outline-none focus:border-[var(--primary)] transition-colors" style={{fontFamily:'inherit'}}/>
-        <div className="flex justify-end mt-3">
+        <div className="flex justify-between mt-3">
+          <button onClick={toggleMic} disabled={!browserSupported}
+            title={!browserSupported ? '当前浏览器不支持语音输入' : isListening ? '正在听...点击停止' : '🎤 点击开始语音输入'}
+            className={`flex items-center gap-1 px-3 py-2 rounded-xl text-[11px] cursor-pointer transition-all ${isListening ? 'bg-red-50 border border-red-300 text-red-600 animate-pulse' : 'border border-[var(--border)] text-[var(--text-secondary)] bg-transparent hover:bg-[var(--bg)]'}`}
+            style={{ fontFamily: 'inherit' }}>
+            {isListening ? <><MicOff size={13}/>停止</> : <><Mic size={13}/>🎤 语音输入</>}
+          </button>
           <button onClick={submit} disabled={!message.trim()||loading} className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[var(--primary)] text-white border-none cursor-pointer text-[13px] font-medium hover:opacity-90 disabled:opacity-50">
             {loading?<><Loader2 size={14} className="animate-spin"/>树洞倾听中...</>:<><Send size={14}/>投入树洞</>}
           </button>

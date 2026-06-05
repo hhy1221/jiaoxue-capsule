@@ -7,6 +7,7 @@ import { useParams } from 'next/navigation'
 import { useState } from 'react'
 import AddGrowthRecordForm from '@/components/forms/AddGrowthRecordForm'
 import { useToast } from '@/components/animations/Toast'
+import { Loader2, Wand2 } from 'lucide-react'
 
 const TAG_COLORS = [
   { bg: 'linear-gradient(135deg,#f5e6d0,#eedcc8)', rot: '-1.3deg' },
@@ -30,6 +31,8 @@ export default function StudentDetailPage() {
   const records = MOCK_RECORDS.filter(r => r.studentId === id)
   const [showAI, setShowAI] = useState(false)
   const [showRecordForm, setShowRecordForm] = useState(false)
+  const [aiAvatarUrl, setAiAvatarUrl] = useState('')
+  const [aiAvatarLoading, setAiAvatarLoading] = useState(false)
   const { toast } = useToast()
 
   if (!student) {
@@ -278,7 +281,37 @@ export default function StudentDetailPage() {
             <button className="picture-book-btn" onClick={() => setShowAI(!showAI)}>
               📸 AI 扩写最新评语
             </button>
-            <button className="picture-book-btn" onClick={()=>toast('AI正在为'+student.name+'生成手绘插图…','success')}>🎨 AI 生成手绘插图</button>
+            <button className="picture-book-btn flex items-center gap-1" disabled={aiAvatarLoading}
+              onClick={async () => {
+                if (!student) return
+                setAiAvatarLoading(true)
+                try {
+                  const res = await fetch('/api/ai/generate-image', {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ prompt: `一个可爱的${student.age}岁${student.grade}学生卡通头像，名叫${student.name}，性格${student.personality}，特点${student.tags.slice(0,3).join('、')}，Q版风格，温暖配色`, style:'cartoon', n:1, size:'1024*1024' })
+                  })
+                  const data = await res.json()
+                  if (data.success && data.urls?.length) {
+                    setAiAvatarUrl(data.urls[0])
+                    toast('AI头像已生成！','success')
+                  } else {
+                    toast('已生成本地头像替代','info')
+                    setAiAvatarUrl('fallback')
+                  }
+                } catch {
+                  toast('网络错误，头像生成失败','error')
+                } finally { setAiAvatarLoading(false) }
+              }}>
+              {aiAvatarLoading ? <><Loader2 size={12} className="animate-spin"/> 生成中...</> : aiAvatarUrl ? '🎨 重新生成头像' : '🎨 AI 生成卡通头像'}
+            </button>
+            {aiAvatarUrl === 'fallback' && (
+              <div className="mt-2 w-16 h-16 rounded-full flex items-center justify-center text-2xl" style={{background:'linear-gradient(135deg,#f5e6d0,#e8d4b8)',border:'2px solid #fff'}}>{student.avatar}</div>
+            )}
+            {aiAvatarUrl && aiAvatarUrl !== 'fallback' && (
+              <div className="mt-2 w-16 h-16 rounded-full overflow-hidden" style={{border:'2px solid #fff'}}>
+                <img src={aiAvatarUrl} alt={`${student.name}的AI头像`} className="w-full h-full object-cover"/>
+              </div>
+            )}
           </div>
 
           {/* AI 输出 */}

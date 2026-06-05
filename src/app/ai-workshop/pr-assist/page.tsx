@@ -2,7 +2,7 @@
 import InnerLayout from '@/components/layout/InnerLayout'
 import { Card, CardContent } from '@/components/ui/card'
 import { useState } from 'react'
-import { Sparkles, Loader2 } from 'lucide-react'
+import { Sparkles, Loader2, Wand2 } from 'lucide-react'
 import CastingCircle from '@/components/animations/CastingCircle'
 import InkReveal from '@/components/animations/InkReveal'
 
@@ -12,6 +12,8 @@ export default function PRAssistPage() {
   const [result, setResult] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [imageUrl, setImageUrl] = useState('')
+  const [imageLoading, setImageLoading] = useState(false)
 
   const generate = async () => {
     if (!topic.trim()) return
@@ -38,6 +40,6 @@ export default function PRAssistPage() {
       </button>{error&&<p className="text-[12px] text-red-500 mt-2">{error}</p>}</div>
     </CardContent></Card>
     {loading && <Card className="border-[var(--border)] bg-[var(--surface)] mb-4"><CardContent className="p-6"><CastingCircle active={true} label="AI DeepSeek 正在撰写宣传文案…" /></CardContent></Card>}
-    {result && <InkReveal show={!!result}><Card className="border-[var(--border)] bg-[var(--surface)]"><CardContent className="p-6"><div className="flex items-center gap-2 mb-3"><Sparkles size={14} className="text-[var(--primary)]"/><span className="text-[12px] font-semibold text-[var(--primary)] tracking-wider">AI 生成结果</span></div><div className="p-4 rounded-xl bg-[var(--bg)] border border-[var(--border)]"><pre className="text-[13px] text-[var(--text)] leading-relaxed whitespace-pre-wrap" style={{fontFamily:'var(--font-serif)'}}>{result}</pre></div><div className="flex gap-2 mt-3"><button className="px-4 py-2 rounded-xl bg-[var(--primary)] text-white text-[12px] tracking-wider border-none cursor-pointer" onClick={()=>navigator.clipboard.writeText(result)}>复制全部</button><button onClick={generate} className="px-4 py-2 rounded-xl border border-[var(--border)] text-[var(--text-secondary)] text-[12px] tracking-wider bg-transparent cursor-pointer">重新生成</button></div></CardContent></Card></InkReveal>}
+    {result && <InkReveal show={!!result}><Card className="border-[var(--border)] bg-[var(--surface)]"><CardContent className="p-6"><div className="flex items-center gap-2 mb-3"><Sparkles size={14} className="text-[var(--primary)]"/><span className="text-[12px] font-semibold text-[var(--primary)] tracking-wider">AI 生成结果</span></div><div className="p-4 rounded-xl bg-[var(--bg)] border border-[var(--border)]"><pre className="text-[13px] text-[var(--text)] leading-relaxed whitespace-pre-wrap" style={{fontFamily:'var(--font-serif)'}}>{result}</pre></div><div className="flex gap-2 mt-3 flex-wrap"><button className="px-4 py-2 rounded-xl bg-[var(--primary)] text-white text-[12px] tracking-wider border-none cursor-pointer" onClick={()=>navigator.clipboard.writeText(result)}>复制全部</button><button onClick={generate} className="px-4 py-2 rounded-xl border border-[var(--border)] text-[var(--text-secondary)] text-[12px] tracking-wider bg-transparent cursor-pointer">重新生成</button><button onClick={async ()=>{setImageLoading(true);try{const r=await fetch('/api/ai/generate-image',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:`支教活动配图：${topic.slice(0,60)}`})});const d=await r.json();if(d.success&&d.urls?.length)setImageUrl(d.urls[0])}catch{}finally{setImageLoading(false)}}} disabled={imageLoading} className="px-4 py-2 rounded-xl border border-[var(--border)] text-[var(--text-secondary)] text-[12px] tracking-wider bg-transparent cursor-pointer">{imageLoading?<><Loader2 size={13} className="animate-spin"/>生成中</>:<><Wand2 size={13}/> 🖼️AI生成配图</>}</button></div>{imageUrl&&<img src={imageUrl} alt="AI宣传配图" className="mt-3 rounded-xl w-full max-h-[300px] object-cover" style={{border:'2px solid rgba(200,180,160,0.2)'}}/>}</CardContent></Card></InkReveal>}
     </div></InnerLayout>)
 }
