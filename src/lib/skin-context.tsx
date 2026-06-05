@@ -32,21 +32,28 @@ export function SkinProvider({ children }: { children: React.ReactNode }) {
     } catch {}
   }, [])
 
-  // 应用 CSS 变量
+  // 应用 CSS 变量 — 映射到 shadcn 设计 token
   useEffect(() => {
     const root = document.documentElement
     const c = skin.colors
     root.style.setProperty('--bg', c.background)
     root.style.setProperty('--surface', c.surface)
     root.style.setProperty('--surface-hover', c.surfaceHover)
+    root.style.setProperty('--primary-skin', c.primary)
+    root.style.setProperty('--primary-hover-skin', c.primaryHover)
+    root.style.setProperty('--text-skin', c.text)
+    root.style.setProperty('--text-secondary-skin', c.textSecondary)
+    root.style.setProperty('--text-muted-skin', c.textMuted)
+    root.style.setProperty('--border-skin', c.border)
+    root.style.setProperty('--accent1', c.accent1)
+    root.style.setProperty('--accent2', c.accent2)
+    // Also set mapped shadcn tokens
     root.style.setProperty('--primary', c.primary)
     root.style.setProperty('--primary-hover', c.primaryHover)
     root.style.setProperty('--text', c.text)
     root.style.setProperty('--text-secondary', c.textSecondary)
     root.style.setProperty('--text-muted', c.textMuted)
     root.style.setProperty('--border', c.border)
-    root.style.setProperty('--accent1', c.accent1)
-    root.style.setProperty('--accent2', c.accent2)
   }, [skin])
 
   const setSkin = useCallback((newSkin: SkinConfig) => {
