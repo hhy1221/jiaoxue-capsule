@@ -2,14 +2,32 @@
 import StudentLayout from '@/components/layout/StudentLayout'
 import { STUDENT_CONVERSATIONS, MOCK_CURRENT_STUDENT, STUDENT_FRIENDS } from '@/lib/social-data'
 import { useState, useRef, useEffect } from 'react'
-import { Send, Smile, Image, ArrowLeft, Users, Plus, MoreHorizontal } from 'lucide-react'
+import { Send, Smile, Image, ArrowLeft, Users, Plus, MoreHorizontal, X, Check } from 'lucide-react'
 
 export default function StudentChatPage() {
   const [activeConv, setActiveConv] = useState<string | null>(null)
   const [msgInput, setMsgInput] = useState('')
   const [msgs, setMsgs] = useState(STUDENT_CONVERSATIONS)
+  const [showCreateGroup, setShowCreateGroup] = useState(false)
+  const [groupName, setGroupName] = useState('')
+  const [groupInterest, setGroupInterest] = useState('')
+  const [groupDesc, setGroupDesc] = useState('')
   const chatEndRef = useRef<HTMLDivElement>(null)
   const myFriends = STUDENT_FRIENDS[MOCK_CURRENT_STUDENT] || []
+
+  const createGroup = () => {
+    if (!groupName.trim()) return
+    const newGroup = {
+      id:'conv'+Date.now(),type:'group' as const,name:groupName,avatar:'🌟',
+      participants:[{id:MOCK_CURRENT_STUDENT,name:'小宇',avatar:'🌟'},...myFriends.slice(0,3).map(f=>({id:f.studentId,name:f.studentName,avatar:f.studentAvatar}))],
+      lastMessage:'群聊已创建，开始聊天吧！',lastMessageAt:'刚刚',
+      interestGroup:groupInterest||'新群',groupDescription:groupDesc||'大家一起聊天～',
+      messages:[{id:'gm'+Date.now(),conversationId:'new',senderId:MOCK_CURRENT_STUDENT,senderName:'小宇',content:'建群成功！欢迎大家加入～',createdAt:'刚刚'}]
+    }
+    setMsgs(prev=>[newGroup,...prev])
+    setActiveConv(newGroup.id)
+    setShowCreateGroup(false); setGroupName(''); setGroupInterest(''); setGroupDesc('')
+  }
 
   const conv = msgs.find(c => c.id === activeConv)
 
@@ -34,7 +52,7 @@ export default function StudentChatPage() {
         <div className="flex flex-col" style={{ background:'rgba(250,247,240,0.5)',borderRight:'1px solid rgba(200,180,160,0.12)' }}>
           <div className="p-3 flex items-center justify-between" style={{ borderBottom:'1px solid rgba(200,180,160,0.12)' }}>
             <span className="text-[14px] font-bold text-[var(--ink)]" style={{ fontFamily:'var(--font-serif)' }}>消息</span>
-            <button className="bg-transparent border-none cursor-pointer" style={{ color:'var(--faded)' }}><Plus size={16}/></button>
+            <button onClick={() => setShowCreateGroup(true)} className="bg-transparent border-none cursor-pointer" style={{ color:'var(--faded)' }}><Plus size={16}/></button>
           </div>
           <div className="flex-1 overflow-y-auto">
             {msgs.map(c => {
@@ -123,6 +141,26 @@ export default function StudentChatPage() {
           )}
         </div>
       </div>
+      {/* 建群弹窗 */}
+      {showCreateGroup && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center" onClick={()=>setShowCreateGroup(false)}>
+          <div className="absolute inset-0 bg-black/20" />
+          <div className="relative picture-book-card p-6 w-[380px]" onClick={e=>e.stopPropagation()}>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-[15px] font-bold text-[var(--ink)]" style={{fontFamily:'var(--font-serif)'}}>✨ 建新群聊</h3>
+              <button onClick={() => setShowCreateGroup(false)} className="bg-transparent border-none cursor-pointer" style={{color:'var(--faded)'}}><X size={16}/></button>
+            </div>
+            <input value={groupName} onChange={e=>setGroupName(e.target.value)} placeholder="群聊名称（必填）" className="w-full px-4 py-2.5 rounded-xl text-[13px] outline-none mb-3" style={{border:'1.5px solid rgba(200,180,160,0.25)',background:'var(--surface)',color:'var(--ink)',fontFamily:'inherit'}}/>
+            <input value={groupInterest} onChange={e=>setGroupInterest(e.target.value)} placeholder="兴趣小组（选填）" className="w-full px-4 py-2.5 rounded-xl text-[13px] outline-none mb-3" style={{border:'1.5px solid rgba(200,180,160,0.25)',background:'var(--surface)',color:'var(--ink)',fontFamily:'inherit'}}/>
+            <textarea value={groupDesc} onChange={e=>setGroupDesc(e.target.value)} rows={2} placeholder="群聊描述（选填）" className="w-full p-3 rounded-xl text-[12px] outline-none resize-none mb-3" style={{border:'1.5px solid rgba(200,180,160,0.25)',background:'var(--surface)',color:'var(--ink)',fontFamily:'inherit'}}/>
+            <p className="text-[9px] mb-3" style={{color:'var(--faded)'}}>将自动邀请你的好友加入群聊</p>
+            <div className="flex gap-2 justify-end">
+              <button onClick={()=>setShowCreateGroup(false)} className="picture-book-btn" style={{fontSize:11}}>取消</button>
+              <button onClick={createGroup} disabled={!groupName.trim()} className="picture-book-btn primary flex items-center gap-1" style={{fontSize:11,opacity:groupName.trim()?1:0.5}}><Check size={12}/>创建</button>
+            </div>
+          </div>
+        </div>
+      )}
     </StudentLayout>
   )
 }

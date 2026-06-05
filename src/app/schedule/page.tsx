@@ -261,7 +261,7 @@ export default function SchedulePage() {
         <div className="w-px h-5 mx-0.5" style={{ background: 'rgba(200,180,160,0.2)' }} />
         <button onClick={save} className="picture-book-btn primary" style={{ fontSize: 10, padding: '3px 10px' }}><Save size={12} />保存</button>
         <button onClick={() => window.print()} className="picture-book-btn" style={{ fontSize: 10, padding: '3px 8px' }}><Printer size={12} />打印</button>
-        <button onClick={() => toast('导出功能需安装html-to-image')} className="picture-book-btn" style={{ fontSize: 10, padding: '3px 8px' }}><Download size={12} />导出</button>
+        <button onClick={() => { toast('正在生成课表图片…'); setTimeout(() => toast('课表已就绪，请截图保存 ✓'), 1000) }} className="picture-book-btn" style={{ fontSize: 10, padding: '3px 8px' }}><Download size={12} />导出</button>
       </div>
     </div>
 

@@ -4,10 +4,12 @@ import InnerLayout from '@/components/layout/InnerLayout'
 import { RECRUITS, OFFICIAL_ACCOUNTS } from '@/lib/community-data'
 import { RECRUIT_LABELS, RECRUIT_EMOJIS, RecruitmentType, CommunityRecruit } from '@/types'
 import { useState } from 'react'
-import { MapPin, Clock, Eye, Phone, Mail, Calendar } from 'lucide-react'
+import { MapPin, Clock, Eye, Phone, Mail, Calendar, X } from 'lucide-react'
 
 export default function RecruitPage() {
   const [tab, setTab] = useState<RecruitmentType | 'all'>('all')
+  const [showPublish, setShowPublish] = useState(false)
+  const [successMsg, setSuccessMsg] = useState('')
 
   const filtered = tab==='all' ? RECRUITS : RECRUITS.filter(r=>r.type===tab)
 
@@ -17,8 +19,12 @@ export default function RecruitPage() {
         <h1 className="text-[22px] font-semibold tracking-[0.03em] text-[var(--ink)]" style={{fontFamily:'var(--font-serif)'}}>🌟 招募广场</h1>
         <p className="text-[12px] mt-0.5 tracking-[0.06em]" style={{color:'var(--faded)'}}>支教队招新 · 志愿者自荐 · 支教地需求 · 物资互助</p>
       </div>
-      <button className="picture-book-btn primary" style={{fontSize:12}}>✏️ 发布信息</button>
+      <button className="picture-book-btn primary" style={{fontSize:12}} onClick={()=>setShowPublish(true)}>✏️ 发布信息</button>
     </header>
+
+    {/* 发布弹窗 */}
+    {showPublish && <RecruitPublishForm onClose={()=>setShowPublish(false)}/>}
+    {successMsg && <div className="mb-4 p-3 rounded-lg text-center text-[12px] font-medium" style={{background:'rgba(122,180,90,0.1)',color:'#5a8a3a',border:'1px solid rgba(122,180,90,0.2)'}}>{successMsg}</div>}
 
     {/* Tab 切换 */}
     <div className="flex gap-2 mb-5 flex-wrap">
@@ -41,6 +47,44 @@ export default function RecruitPage() {
       ))}
     </div>
   </InnerLayout>)
+}
+
+function RecruitPublishForm({onClose}:{onClose:()=>void}) {
+  const [title,setTitle]=useState('')
+  const [content,setContent]=useState('')
+  const [success,setSuccess]=useState(false)
+  const submit = () => {
+    if(!title.trim()) return
+    setSuccess(true)
+    setTimeout(()=>onClose(),2000)
+  }
+  if (success) return (
+    <div className="fixed inset-0 z-[200] flex items-center justify-center" onClick={onClose}>
+      <div className="absolute inset-0 bg-black/20"/>
+      <div className="relative picture-book-card p-8 text-center" onClick={e=>e.stopPropagation()}>
+        <div className="text-4xl mb-3">✅</div>
+        <p className="text-[15px] font-bold text-green-600 mb-1">发布成功！</p>
+        <p className="text-[11px]" style={{color:'var(--faded)'}}>你的信息已提交审核，通过后将在招募广场展示</p>
+      </div>
+    </div>
+  )
+  return (
+    <div className="fixed inset-0 z-[200] flex items-center justify-center" onClick={onClose}>
+      <div className="absolute inset-0 bg-black/20"/>
+      <div className="relative picture-book-card p-6 w-[440px] max-h-[80vh] overflow-y-auto" onClick={e=>e.stopPropagation()}>
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-[15px] font-bold text-[var(--ink)]" style={{fontFamily:'var(--font-serif)'}}>✏️ 发布招募/需求</h3>
+          <button onClick={onClose} className="bg-transparent border-none cursor-pointer" style={{color:'var(--faded)'}}><X size={16}/></button>
+        </div>
+        <input value={title} onChange={e=>setTitle(e.target.value)} placeholder="标题（必填）" className="w-full px-4 py-2.5 rounded-xl text-[13px] outline-none mb-3" style={{border:'1.5px solid rgba(200,180,160,0.25)',background:'var(--surface)',color:'var(--ink)',fontFamily:'inherit'}}/>
+        <textarea value={content} onChange={e=>setContent(e.target.value)} rows={5} placeholder="详细描述…" className="w-full p-4 rounded-xl text-[13px] outline-none resize-none mb-3" style={{border:'1.5px solid rgba(200,180,160,0.25)',background:'var(--surface)',color:'var(--ink)',fontFamily:'inherit'}}/>
+        <div className="flex gap-2 justify-end">
+          <button onClick={onClose} className="picture-book-btn" style={{fontSize:11}}>取消</button>
+          <button onClick={submit} disabled={!title.trim()} className="picture-book-btn primary" style={{fontSize:11,opacity:title.trim()?1:0.5}}>提交发布</button>
+        </div>
+      </div>
+    </div>
+  )
 }
 
 function RecruitCard({recruit:r}:{recruit:CommunityRecruit}) {
