@@ -2,17 +2,42 @@
 import InnerLayout from '@/components/layout/InnerLayout'
 import { Card, CardContent } from '@/components/ui/card'
 import { useState } from 'react'
-import { Sparkles } from 'lucide-react'
+import { Sparkles, Loader2 } from 'lucide-react'
 import CastingCircle from '@/components/animations/CastingCircle'
-import { useToast } from '@/components/animations/Toast'
-const MOCK_PR = { wechat:'【支教Day5】今天运动会，60个孩子没有一个掉队🏃‍♂️\n\n最感动的瞬间：浩然带着一年级的同学喊口号，嗓子都哑了还在喊——他才10岁，已经像个真正的队长。\n\n配图建议：运动会全景/浩然带队/欣怡跳远\n\n#凡星支教 #夏令营 #乡村教育', pengyouquan:'看到孩子们在操场上奔跑的样子，觉得所有熬夜备课都值了 ❤️ 这个夏天，因为有你们而发光 ✨', xiaohongshu:'📸 支教第5天 · 运动会特辑\n\n🌟今日最佳：浩然童鞋的队长首秀\n💪 60个娃没有一个喊累\n😭 欣怡跑了最后一名但笑到模糊\n\n#支教日记 #凡星支教队 #本地', script:'[0-5秒] 操场全景+孩子们热身\n[5-15秒] 接力赛精彩片段\n[15-25秒] 浩然带队喊口号特写\n[25-30秒] 颁奖+大合影' }
+import InkReveal from '@/components/animations/InkReveal'
+
 export default function PRAssistPage() {
-  const [result, setResult] = useState<typeof MOCK_PR|null>(null)
+  const [topic, setTopic] = useState('')
+  const [highlights, setHighlights] = useState('')
+  const [result, setResult] = useState('')
   const [loading, setLoading] = useState(false)
-  const { toast } = useToast()
+  const [error, setError] = useState('')
+
+  const generate = async () => {
+    if (!topic.trim()) return
+    setLoading(true); setResult(''); setError('')
+    try {
+      const res = await fetch('/api/ai/pr-assist', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ topic: topic.trim(), highlights: highlights.trim(), teamName: '凡星支教队' })
+      })
+      const data = await res.json()
+      if (data.success) setResult(data.content)
+      else setError(data.error || '生成失败')
+    } catch { setError('网络错误') }
+    finally { setLoading(false) }
+  }
+
   return (<InnerLayout>
-    <div className="max-w-3xl"><div className="mb-8"><h1 className="text-[28px] font-bold text-[var(--text)] tracking-wide" style={{fontFamily:"var(--font-serif)"}}>📣 宣传助手</h1><p className="text-[13px] text-[var(--text-muted)] tracking-wider mt-1">一键生成微信推文/朋友圈/小红书/短视频脚本</p></div>
-    <Card className="border-[var(--border)] bg-[var(--surface)] mb-6"><CardContent className="p-6"><button onClick={()=>{setLoading(true);setTimeout(()=>{setResult(MOCK_PR);setLoading(false)},1500)}} disabled={loading} className="flex items-center gap-2 px-6 py-3 rounded-xl bg-[var(--primary)] text-white border-none cursor-pointer text-[14px] font-medium disabled:opacity-50"><Sparkles size={16}/>{loading?'AI 正在生成...':'✨ AI 一键生成全部文案'}</button><p className="text-[12px] text-[var(--text-muted)] mt-3">AI会从照片库+评语库中提取素材，生成适配各平台的宣传文案</p>{loading && <CastingCircle active={true} label="AI 正在分析素材生成文案…" />}</CardContent></Card>
-    {result&&<div className="space-y-4">{[{t:'📱 微信推文',c:result.wechat},{t:'💬 朋友圈',c:result.pengyouquan},{t:'📕 小红书',c:result.xiaohongshu},{t:'🎬 短视频脚本',c:result.script}].map(r=>(<Card key={r.t} className="border-[var(--border)] bg-[var(--surface)]"><CardContent className="p-5"><h3 className="text-[14px] font-semibold text-[var(--text)] mb-3">{r.t}</h3><pre className="text-[12px] text-[var(--text-secondary)] leading-relaxed whitespace-pre-wrap font-sans">{r.c}</pre><button className="mt-3 text-[11px] text-[var(--primary)] bg-transparent border-none cursor-pointer hover:underline" onClick={()=>{navigator.clipboard.writeText(r.c).then(()=>toast('已复制到剪贴板！','success')).catch(()=>toast('复制失败','error'))}}>📋 复制文案</button></CardContent></Card>))}</div>}
+    <div className="max-w-3xl"><div className="mb-8"><h1 className="text-[28px] font-bold text-[var(--text)] tracking-wide" style={{fontFamily:"var(--font-serif)"}}>📣 宣传助手</h1><p className="text-[13px] text-[var(--text-muted)] tracking-wider mt-1">输入活动信息→AI生成微信推文+朋友圈+小红书文案</p></div>
+    <Card className="border-[var(--border)] bg-[var(--surface)] mb-6"><CardContent className="p-6">
+      <input value={topic} onChange={e=>setTopic(e.target.value)} placeholder="活动主题（例：支教Day5运动会）" className="w-full px-4 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--bg)] text-[13px] text-[var(--text)] outline-none focus:border-[var(--primary)] transition-colors mb-3" style={{fontFamily:'inherit'}}/>
+      <textarea value={highlights} onChange={e=>setHighlights(e.target.value)} rows={3} placeholder="活动亮点（选填）" className="w-full p-4 rounded-xl border border-[var(--border)] bg-[var(--bg)] text-[14px] text-[var(--text)] resize-none outline-none focus:border-[var(--primary)] transition-colors" style={{fontFamily:'inherit'}}/>
+      <div className="mt-3"><button onClick={generate} disabled={!topic.trim()||loading} className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[var(--primary)] text-white border-none cursor-pointer text-[13px] font-medium hover:opacity-90 transition-opacity disabled:opacity-50">
+        {loading?<><Loader2 size={14} className="animate-spin"/>生成中...</>:<><Sparkles size={14}/>✨ 生成文案</>}
+      </button>{error&&<p className="text-[12px] text-red-500 mt-2">{error}</p>}</div>
+    </CardContent></Card>
+    {loading && <Card className="border-[var(--border)] bg-[var(--surface)] mb-4"><CardContent className="p-6"><CastingCircle active={true} label="AI DeepSeek 正在撰写宣传文案…" /></CardContent></Card>}
+    {result && <InkReveal show={!!result}><Card className="border-[var(--border)] bg-[var(--surface)]"><CardContent className="p-6"><div className="flex items-center gap-2 mb-3"><Sparkles size={14} className="text-[var(--primary)]"/><span className="text-[12px] font-semibold text-[var(--primary)] tracking-wider">AI 生成结果</span></div><div className="p-4 rounded-xl bg-[var(--bg)] border border-[var(--border)]"><pre className="text-[13px] text-[var(--text)] leading-relaxed whitespace-pre-wrap" style={{fontFamily:'var(--font-serif)'}}>{result}</pre></div><div className="flex gap-2 mt-3"><button className="px-4 py-2 rounded-xl bg-[var(--primary)] text-white text-[12px] tracking-wider border-none cursor-pointer" onClick={()=>navigator.clipboard.writeText(result)}>复制全部</button><button onClick={generate} className="px-4 py-2 rounded-xl border border-[var(--border)] text-[var(--text-secondary)] text-[12px] tracking-wider bg-transparent cursor-pointer">重新生成</button></div></CardContent></Card></InkReveal>}
     </div></InnerLayout>)
 }

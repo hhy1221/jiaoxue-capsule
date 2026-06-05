@@ -1,21 +1,71 @@
 'use client'
 import InnerLayout from '@/components/layout/InnerLayout'
-import { MOCK_TREEHOLE_MESSAGES } from '@/lib/mock-data'
 import { Card, CardContent } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
 import { useState } from 'react'
+import { Sparkles, Loader2, Send } from 'lucide-react'
 import CastingCircle from '@/components/animations/CastingCircle'
+import InkReveal from '@/components/animations/InkReveal'
 
 export default function TreeholePage() {
-  const [input, setInput] = useState('')
-  const [visibility, setVisibility] = useState<'ai_only'|'whole_team'>('ai_only')
-  const [posts, setPosts] = useState(MOCK_TREEHOLE_MESSAGES)
+  const [message, setMessage] = useState('')
+  const [result, setResult] = useState('')
   const [loading, setLoading] = useState(false)
-  const post = () => { if(!input.trim()) return; setLoading(true); setTimeout(()=>{setPosts(prev=>[{id:'th'+Date.now(),teamId:'t1',anonymousAlias:['小叶子','小山鹰','小星星','小月亮'][Math.floor(Math.random()*4)],anonymousAvatar:['🍃','🦅','⭐','🌙'][Math.floor(Math.random()*4)],content:input,visibility,reply:'听到你的心声了。支教路上，你不是一个人。每一份付出，都在孩子们心里种下了种子。',replyType:'ai',createdAt:new Date().toLocaleDateString()},...prev]); setInput(''); setLoading(false)}, 1500) }
+  const [error, setError] = useState('')
+  const [history, setHistory] = useState<{q:string;a:string}[]>([])
+
+  const submit = async () => {
+    if (!message.trim()) return
+    const q = message.trim()
+    setMessage('')
+    setLoading(true); setResult(''); setError('')
+    try {
+      const res = await fetch('/api/ai/treehole', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: q })
+      })
+      const data = await res.json()
+      if (data.success) {
+        setResult(data.content)
+        setHistory(prev => [...prev, { q, a: data.content }].slice(-10))
+      }
+      else setError(data.error || '回复失败')
+    } catch { setError('网络错误') }
+    finally { setLoading(false) }
+  }
+
   return (<InnerLayout>
-    <div className="max-w-3xl"><div className="mb-8"><h1 className="text-[28px] font-bold text-[var(--text)] tracking-wide" style={{fontFamily:"var(--font-serif)"}}>🌳 树洞信箱</h1><p className="text-[13px] text-[var(--text-muted)] tracking-wider mt-1">在这里，说出心里话。老师也需要被倾听。</p></div>
-    <Card className="border-[var(--border)] bg-[var(--surface)] mb-6"><CardContent className="p-6"><textarea value={input} onChange={e=>setInput(e.target.value)} rows={4} className="w-full p-4 rounded-xl border border-[var(--border)] bg-[var(--bg)] text-[14px] text-[var(--text)] resize-none outline-none focus:border-[var(--primary)] transition-colors" placeholder="今天想说什么？开心的、烦恼的、感动的..."/><div className="flex gap-4 mt-3 mb-4 flex-wrap"><label className="flex items-center gap-2 cursor-pointer text-[12px] text-[var(--text-secondary)]"><input type="radio" name="vis" checked={visibility==='ai_only'} onChange={()=>setVisibility('ai_only')}/>只给树洞（AI回复）</label><label className="flex items-center gap-2 cursor-pointer text-[12px] text-[var(--text-secondary)]"><input type="radio" name="vis" checked={visibility==='whole_team'} onChange={()=>setVisibility('whole_team')}/>匿名发到全队</label></div><button onClick={post} disabled={!input.trim()||loading} className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-[var(--primary)] text-white border-none cursor-pointer text-[13px] font-medium disabled:opacity-50 hover:opacity-90 transition-opacity">🌱 {loading?'投入中...':'投入树洞'}</button>{loading && <CastingCircle active={true} label="树洞正在倾听…" />}</CardContent></Card>
-    <div className="space-y-4"><h3 className="text-[16px] font-semibold text-[var(--text)] tracking-wide">树洞里的回声</h3>
-    {posts.map(m=>(<Card key={m.id} className="border-[var(--border)] bg-[var(--surface)]"><CardContent className="p-5"><div className="flex items-center gap-3 mb-3"><span className="text-2xl">{m.anonymousAvatar}</span><div><p className="text-[13px] font-semibold text-[var(--text)]">{m.anonymousAlias}</p><p className="text-[10px] text-[var(--text-muted)]">{m.createdAt} · {m.visibility==='ai_only'?'仅树洞':'全队可见'}</p></div></div><p className="text-[13px] text-[var(--text-secondary)] leading-relaxed mb-3">{m.content}</p>{m.reply&&<div className="ml-4 p-4 rounded-xl bg-[var(--bg)] border border-[var(--border)]"><div className="flex items-center gap-2 mb-1">{m.replyType==='ai'?<Badge className="text-[9px] px-1.5 py-0 bg-purple-50 text-purple-600 border-purple-200">🤖 AI回复</Badge>:<Badge className="text-[9px] px-1.5 py-0 bg-green-50 text-green-600 border-green-200">👤 队友回复</Badge>}</div><p className="text-[13px] text-[var(--text-secondary)] leading-relaxed">{m.reply}</p></div>}</CardContent></Card>))}</div>
+    <div className="max-w-2xl mx-auto">
+      <div className="text-center mb-8">
+        <div className="text-5xl mb-4">🌳</div>
+        <h1 className="text-[28px] font-bold text-[var(--text)] tracking-wide" style={{fontFamily:"var(--font-serif)"}}>树洞信箱</h1>
+        <p className="text-[13px] text-[var(--text-muted)] tracking-wider mt-1">匿名倾诉 · AI DeepSeek 共情回复 · 这里很安全</p>
+      </div>
+
+      {/* 输入区 */}
+      <Card className="border-[var(--border)] bg-[var(--surface)] mb-6"><CardContent className="p-6">
+        <textarea value={message} onChange={e=>setMessage(e.target.value)} rows={4} placeholder="在这里写下你想说的话…一切都会匿名处理。" className="w-full p-4 rounded-xl border border-[var(--border)] bg-[var(--bg)] text-[14px] text-[var(--text)] resize-none outline-none focus:border-[var(--primary)] transition-colors" style={{fontFamily:'inherit'}}/>
+        <div className="flex justify-end mt-3">
+          <button onClick={submit} disabled={!message.trim()||loading} className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[var(--primary)] text-white border-none cursor-pointer text-[13px] font-medium hover:opacity-90 disabled:opacity-50">
+            {loading?<><Loader2 size={14} className="animate-spin"/>树洞倾听中...</>:<><Send size={14}/>投入树洞</>}
+          </button>
+        </div>
+        {error&&<p className="text-[12px] text-red-500 mt-2">{error}</p>}
+      </CardContent></Card>
+
+      {loading && <Card className="border-[var(--border)] bg-[var(--surface)] mb-4"><CardContent className="p-6"><CastingCircle active={true} label="树洞正在倾听你的声音…" /></CardContent></Card>}
+
+      {/* 当前回复 */}
+      {result && <InkReveal show={!!result}>
+        <Card className="border-[var(--border)] bg-[var(--surface)] mb-4"><CardContent className="p-6">
+          <div className="flex items-center gap-2 mb-3"><Sparkles size={14} className="text-[var(--primary)]"/><span className="text-[12px] font-semibold text-[var(--primary)] tracking-wider">🌳 树洞的回复</span></div>
+          <div className="p-4 rounded-xl bg-[var(--bg)] border border-[var(--border)]"><p className="text-[14px] text-[var(--text)] leading-relaxed whitespace-pre-line" style={{fontFamily:'var(--font-serif)'}}>{result}</p></div>
+        </CardContent></Card>
+      </InkReveal>}
+
+      {/* 历史 */}
+      {history.length > 0 && <div className="space-y-3 mt-6">
+        <h3 className="text-[13px] font-semibold text-[var(--text-muted)] tracking-wider">📝 历史倾诉</h3>
+        {[...history].reverse().map((h,i)=>(<Card key={i} className="border-[var(--border)] bg-[var(--surface)] opacity-70"><CardContent className="p-5"><p className="text-[12px] text-[var(--text-muted)] mb-2 italic">"…{h.q.slice(0,80)}…"</p><p className="text-[13px] text-[var(--text)] leading-relaxed">{h.a.slice(0,120)}…</p></CardContent></Card>))}
+      </div>}
     </div></InnerLayout>)
 }

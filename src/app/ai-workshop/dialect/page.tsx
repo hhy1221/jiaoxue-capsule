@@ -1,34 +1,47 @@
 'use client'
 import InnerLayout from '@/components/layout/InnerLayout'
-import { MOCK_DIALECT_ENTRIES } from '@/lib/mock-data'
 import { Card, CardContent } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useState } from 'react'
-import AddDialectWordForm from '@/components/forms/AddDialectWordForm'
-import { ArrowLeftRight } from 'lucide-react'
+import { Sparkles, Loader2 } from 'lucide-react'
+import CastingCircle from '@/components/animations/CastingCircle'
+import InkReveal from '@/components/animations/InkReveal'
+
+const DIALECTS = ['四川话','河南话','粤语','闽南语','陕西话','云南话','青海话','甘肃话','贵州话','湖北话']
 
 export default function DialectPage() {
-  const [input, setInput] = useState('')
-  const [showAddWord, setShowAddWord] = useState(false)
+  const [text, setText] = useState('')
+  const [dialectType, setDialectType] = useState('四川话')
   const [result, setResult] = useState('')
   const [loading, setLoading] = useState(false)
-  const translate = () => { setLoading(true); setTimeout(()=>{setResult(input+' → 要得！巴适得很！'); setLoading(false)}, 1000) }
+  const [error, setError] = useState('')
+
+  const translate = async () => {
+    if (!text.trim()) return
+    setLoading(true); setResult(''); setError('')
+    try {
+      const res = await fetch('/api/ai/dialect', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: text.trim(), dialectType })
+      })
+      const data = await res.json()
+      if (data.success) setResult(data.content)
+      else setError(data.error || '翻译失败')
+    } catch { setError('网络错误') }
+    finally { setLoading(false) }
+  }
+
   return (<InnerLayout>
-    <div className="max-w-4xl"><div className="mb-8"><h1 className="text-[28px] font-bold text-[var(--text)] tracking-wide" style={{fontFamily:"var(--font-serif)"}}>🗣️ 方言翻译官</h1><p className="text-[13px] text-[var(--text-muted)] tracking-wider mt-1">普通话 ↔ 四川话 · AI实时翻译 · 记录本地方言</p></div>
-    <Tabs defaultValue="translate">
-      <TabsList className="bg-[var(--bg)] border border-[var(--border)] mb-6"><TabsTrigger value="translate" className="text-[12px]">🔤 翻译</TabsTrigger><TabsTrigger value="dictionary" className="text-[12px]">📖 方言词典</TabsTrigger></TabsList>
-      <TabsContent value="translate">
-        <Card className="border-[var(--border)] bg-[var(--surface)] mb-6"><CardContent className="p-6">
-          <div className="flex items-center gap-3 mb-4 flex-wrap"><input value={input} onChange={e=>setInput(e.target.value)} onKeyDown={e=>e.key==='Enter'&&translate()} placeholder="输入要翻译的文字..." className="flex-1 min-w-[200px] px-4 py-3 rounded-xl border border-[var(--border)] bg-[var(--bg)] text-[14px] text-[var(--text)] outline-none focus:border-[var(--primary)]"/><button onClick={translate} disabled={!input.trim()||loading} className="flex items-center gap-2 px-5 py-3 rounded-xl bg-[var(--primary)] text-white border-none cursor-pointer text-[13px] font-medium disabled:opacity-50"><ArrowLeftRight size={14}/>{loading?'翻译中...':'翻译'}</button></div>
-          {result&&<div className="p-4 rounded-xl bg-[var(--bg)] border border-[var(--border)]"><p className="text-[14px] text-[var(--text)]">{result}</p></div>}
-        </CardContent></Card>
-      </TabsContent>
-      <TabsContent value="dictionary">
-        <div className="grid grid-cols-[repeat(auto-fill,minmax(220px,1fr))] gap-3">
-          {MOCK_DIALECT_ENTRIES.map(d=>(<Card key={d.id} className="border-[var(--border)] bg-[var(--surface)] hover:-translate-y-1 hover:shadow-md transition-all"><CardContent className="p-4"><div className="flex items-center justify-between mb-2"><span className="text-[16px] font-semibold text-[var(--text)]">{d.dialect}</span><Badge variant="outline" className="text-[9px]">{d.category}</Badge></div><p className="text-[11px] text-[var(--text-muted)]">{d.mandarin}</p>{d.usage&&<p className="text-[11px] text-[var(--text-secondary)] mt-1 italic">"{d.usage}"</p>}<Badge className="mt-2 text-[9px]" variant="secondary">{d.dialectType}</Badge></CardContent></Card>))}
-        </div>
-        <button className="mt-4 px-4 py-2 rounded-xl border border-dashed border-[var(--border)] text-[var(--text-muted)] text-[12px] tracking-wider bg-transparent cursor-pointer hover:bg-[var(--bg)]" onClick={()=>setShowAddWord(true)}>+ 添加方言词汇</button>
-      </TabsContent>
-    </Tabs></div><AddDialectWordForm open={showAddWord} onClose={()=>setShowAddWord(false)} /></InnerLayout>)
+    <div className="max-w-3xl"><div className="mb-8"><h1 className="text-[28px] font-bold text-[var(--text)] tracking-wide" style={{fontFamily:"var(--font-serif)"}}>🗣️ 方言翻译官</h1><p className="text-[13px] text-[var(--text-muted)] tracking-wider mt-1">普通话↔各地方言实时互译 · AI DeepSeek · 附文化注释</p></div>
+    <Card className="border-[var(--border)] bg-[var(--surface)] mb-6"><CardContent className="p-6">
+      <div className="flex gap-2 mb-3 flex-wrap">
+        {DIALECTS.map(d=>(<button key={d} onClick={()=>setDialectType(d)} className="px-3 py-1.5 rounded-full text-[11px] border cursor-pointer transition-all" style={{background:dialectType===d?'var(--primary)':'transparent',color:dialectType===d?'#fff':'var(--text-secondary)',borderColor:dialectType===d?'var(--primary)':'var(--border)',fontFamily:'inherit'}}>{d}</button>))}
+      </div>
+      <textarea value={text} onChange={e=>setText(e.target.value)} rows={3} placeholder="输入普通话文本…" className="w-full p-4 rounded-xl border border-[var(--border)] bg-[var(--bg)] text-[14px] text-[var(--text)] resize-none outline-none focus:border-[var(--primary)] transition-colors" style={{fontFamily:'inherit'}}/>
+      <div className="mt-3"><button onClick={translate} disabled={!text.trim()||loading} className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[var(--primary)] text-white border-none cursor-pointer text-[13px] font-medium hover:opacity-90 transition-opacity disabled:opacity-50">
+        {loading?<><Loader2 size={14} className="animate-spin"/>翻译中...</>:<><Sparkles size={14}/>翻译成{dialectType}</>}
+      </button>{error&&<p className="text-[12px] text-red-500 mt-2">{error}</p>}</div>
+    </CardContent></Card>
+    {loading && <Card className="border-[var(--border)] bg-[var(--surface)] mb-4"><CardContent className="p-6"><CastingCircle active={true} label="AI 正在翻译成方言…" /></CardContent></Card>}
+    {result && <InkReveal show={!!result}><Card className="border-[var(--border)] bg-[var(--surface)]"><CardContent className="p-6"><div className="flex items-center gap-2 mb-3"><Sparkles size={14} className="text-[var(--primary)]"/><span className="text-[12px] font-semibold text-[var(--primary)] tracking-wider">AI 翻译结果</span></div><div className="p-4 rounded-xl bg-[var(--bg)] border border-[var(--border)]"><pre className="text-[14px] text-[var(--text)] leading-relaxed whitespace-pre-wrap" style={{fontFamily:'var(--font-serif)'}}>{result}</pre></div></CardContent></Card></InkReveal>}
+    </div></InnerLayout>)
 }
