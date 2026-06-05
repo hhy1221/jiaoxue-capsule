@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { useState, useEffect, useRef } from 'react'
 import BackToTop from '../ui/BackToTop'
 import SpotlightSearch from '../search/SpotlightSearch'
@@ -25,6 +25,7 @@ const CURRENT_STUDENT = { id:'sp1', name:'小宇', avatar:'🌟', grade:'三年�
 
 export default function StudentLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
+  const router = useRouter()
   const [scrolled, setScrolled] = useState(false)
   const [notificationDismissed, setNotificationDismissed] = useState(false)
   const [bellOpen, setBellOpen] = useState(false)
@@ -143,17 +144,11 @@ export default function StudentLayout({ children }: { children: React.ReactNode 
               🏠 首页
             </a>
             {/* 切换到教师端 */}
-            <a href="/dashboard" onClick={(e) => {
-              e.preventDefault()
-              sessionStorage.setItem('from-home', '1')
-              sessionStorage.setItem('curtain', '1')
-              sessionStorage.setItem('ribbon-drop', '1')
-              window.location.href = '/dashboard'
-            }}
-              className="no-underline text-[10px] px-3 py-1.5 rounded-full transition-all hover:-translate-y-0.5 max-sm:hidden cursor-pointer"
+            <button onClick={() => router.push('/dashboard')}
+              className="no-underline text-[10px] px-3 py-1.5 rounded-full transition-all hover:-translate-y-0.5 max-sm:hidden cursor-pointer border-none"
               style={{ background: 'rgba(200,160,120,0.08)', color: 'var(--faded)', border: '1px solid rgba(200,160,120,0.15)', fontFamily: 'inherit' }}>
               👨‍🏫 我是老师
-            </a>
+            </button>
           </div>
         </div>
       </nav>
