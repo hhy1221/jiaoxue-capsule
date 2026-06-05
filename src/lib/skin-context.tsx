@@ -32,28 +32,41 @@ export function SkinProvider({ children }: { children: React.ReactNode }) {
     } catch {}
   }, [])
 
-  // 应用 CSS 变量 — 映射到 shadcn 设计 token
+  // ═══ 应用全部 CSS 变量 — 覆盖 :root 默认值，让皮肤切换全面生效 ═══
   useEffect(() => {
     const root = document.documentElement
     const c = skin.colors
+
+    // ─ 绘本设计系统核心变量（全站页面通过这些变量取色）
     root.style.setProperty('--bg', c.background)
+    root.style.setProperty('--cream', c.background)
     root.style.setProperty('--surface', c.surface)
+    root.style.setProperty('--warm-white', c.surface)
     root.style.setProperty('--surface-hover', c.surfaceHover)
+    // ─ 主色调
     root.style.setProperty('--primary-skin', c.primary)
     root.style.setProperty('--primary-hover-skin', c.primaryHover)
-    root.style.setProperty('--text-skin', c.text)
-    root.style.setProperty('--text-secondary-skin', c.textSecondary)
-    root.style.setProperty('--text-muted-skin', c.textMuted)
-    root.style.setProperty('--border-skin', c.border)
-    root.style.setProperty('--accent1', c.accent1)
-    root.style.setProperty('--accent2', c.accent2)
-    // Also set mapped shadcn tokens
     root.style.setProperty('--primary', c.primary)
     root.style.setProperty('--primary-hover', c.primaryHover)
+    // ─ 文本色 — 覆盖 :root 的 ink/faded 硬编码
+    root.style.setProperty('--ink', c.text)
+    root.style.setProperty('--text-skin', c.text)
     root.style.setProperty('--text', c.text)
+    root.style.setProperty('--foreground', c.text)
+    root.style.setProperty('--ink-soft', c.textSecondary)
+    root.style.setProperty('--text-secondary-skin', c.textSecondary)
     root.style.setProperty('--text-secondary', c.textSecondary)
+    root.style.setProperty('--ink-faint', c.textMuted)
+    root.style.setProperty('--text-muted-skin', c.textMuted)
     root.style.setProperty('--text-muted', c.textMuted)
+    root.style.setProperty('--faded', c.textMuted)
+    // ─ 边框
+    root.style.setProperty('--border-skin', c.border)
     root.style.setProperty('--border', c.border)
+    root.style.setProperty('--border-color', c.border)
+    // ─ 强调色（侧边栏背景微调、accent标记等）
+    root.style.setProperty('--accent1', c.accent1)
+    root.style.setProperty('--accent2', c.accent2)
   }, [skin])
 
   const setSkin = useCallback((newSkin: SkinConfig) => {

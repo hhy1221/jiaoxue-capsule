@@ -115,7 +115,7 @@ export default function HeroCurtain() {
       <div className="fixed inset-0 z-0 pointer-events-none" style={{ background: 'linear-gradient(180deg,rgba(0,0,0,0.25) 0%,transparent 18%),linear-gradient(0deg,rgba(0,0,0,0.22) 0%,transparent 12%)' }} />
 
       {/* 顶部导航 */}
-      <nav className="fixed top-0 left-0 right-0 z-50 px-10 py-5 flex items-center justify-between max-sm:px-5 max-sm:py-3">
+      <nav className="fixed top-0 left-0 right-0 z-50 pl-10 pr-[80px] py-5 flex items-center justify-between max-sm:pl-5 max-sm:pr-5 max-sm:py-3">
         <div className="flex items-center gap-2 text-white text-[17px] tracking-wider no-underline" style={{ fontFamily: "var(--font-serif)", textShadow: "0 1px 3px rgba(0,0,0,0.2)" }}>
           <span className="w-[6px] h-[6px] rounded-full bg-[#f0c060] shadow-[0_0_6px_rgba(240,192,96,0.5)]" />
           支教星火

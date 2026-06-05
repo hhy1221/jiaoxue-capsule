@@ -133,6 +133,15 @@ export default function StudentLayout({ children }: { children: React.ReactNode 
                 </div>
               </div>
             )}
+            {/* 返回首页 */}
+            <a href="/" onClick={(e) => {
+              e.preventDefault()
+              window.dispatchEvent(new CustomEvent('return-home'))
+            }}
+              className="no-underline text-[10px] px-3 py-1.5 rounded-full transition-all hover:-translate-y-0.5 cursor-pointer"
+              style={{ background: 'rgba(200,160,120,0.06)', color: 'var(--faded)', border: '1px solid rgba(200,160,120,0.12)', fontFamily: 'inherit' }}>
+              🏠 首页
+            </a>
             {/* 切换到教师端 */}
             <a href="/dashboard" onClick={(e) => {
               e.preventDefault()
