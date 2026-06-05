@@ -4,7 +4,8 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState, useEffect, useRef } from 'react'
 import BackToTop from '../ui/BackToTop'
-import { Bell, Search, Home, BookOpen, PenLine, MessageCircle, Heart, Camera, ChevronDown } from 'lucide-react'
+import SpotlightSearch from '../search/SpotlightSearch'
+import { Bell, Search, Home, BookOpen, PenLine, MessageCircle, Heart, Camera, ChevronDown, X } from 'lucide-react'
 
 /* ═══════════════════════════════
    学生端顶部导航
@@ -26,6 +27,7 @@ export default function StudentLayout({ children }: { children: React.ReactNode 
   const pathname = usePathname()
   const [scrolled, setScrolled] = useState(false)
   const [notificationDismissed, setNotificationDismissed] = useState(false)
+  const [bellOpen, setBellOpen] = useState(false)
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20)
@@ -102,20 +104,47 @@ export default function StudentLayout({ children }: { children: React.ReactNode 
           </div>
 
           {/* 右侧：通知 + 切换端 */}
-          <div className="flex items-center gap-3 max-sm:gap-1">
+          <div className="flex items-center gap-3 max-sm:gap-1 relative">
             {/* 通知铃铛 */}
-            <button className="relative w-9 h-9 rounded-full flex items-center justify-center border-none cursor-pointer bg-transparent hover:bg-[rgba(200,180,160,0.08)] transition-colors">
+            <button onClick={() => { setBellOpen(!bellOpen); setNotificationDismissed(true) }}
+              className="relative w-9 h-9 rounded-full flex items-center justify-center border-none cursor-pointer bg-transparent hover:bg-[rgba(200,180,160,0.08)] transition-colors">
               <Bell size={17} style={{ color: 'var(--faded)' }} />
               {!notificationDismissed && (
                 <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 rounded-full" style={{ background: '#d4855e' }} />
               )}
             </button>
+            {/* 通知下拉 */}
+            {bellOpen && (
+              <div className="absolute top-full right-0 mt-2 w-[300px] picture-book-card p-3 z-50" style={{transform:'rotate(0.02deg)'}}>
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-[12px] font-bold text-[var(--ink)]">🔔 通知</span>
+                  <button onClick={() => setBellOpen(false)} className="bg-transparent border-none cursor-pointer" style={{color:'var(--faded)'}}><X size={14}/></button>
+                </div>
+                <div className="space-y-2">
+                  {[
+                    {t:'黄老师给你的恐龙作品点了赞 👍',time:'10分钟前'},
+                    {t:'周老师布置了新作业：学会一首山歌 🎵',time:'1小时前'},
+                    {t:'小雨在手工群里@了你',time:'2小时前'},
+                  ].map((n,i)=>(
+                    <div key={i} className="p-2 rounded-lg text-[11px]" style={{background:'rgba(245,240,230,0.3)',color:'var(--ink-soft)'}}>
+                      <p>{n.t}</p><p className="text-[9px] mt-0.5" style={{color:'var(--faded)'}}>{n.time}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
             {/* 切换到教师端 */}
-            <Link href="/dashboard"
-              className="no-underline text-[10px] px-3 py-1.5 rounded-full transition-all hover:-translate-y-0.5 max-sm:hidden"
+            <a href="/dashboard" onClick={(e) => {
+              e.preventDefault()
+              sessionStorage.setItem('from-home', '1')
+              sessionStorage.setItem('curtain', '1')
+              sessionStorage.setItem('ribbon-drop', '1')
+              window.location.href = '/dashboard'
+            }}
+              className="no-underline text-[10px] px-3 py-1.5 rounded-full transition-all hover:-translate-y-0.5 max-sm:hidden cursor-pointer"
               style={{ background: 'rgba(200,160,120,0.08)', color: 'var(--faded)', border: '1px solid rgba(200,160,120,0.15)', fontFamily: 'inherit' }}>
               👨‍🏫 我是老师
-            </Link>
+            </a>
           </div>
         </div>
       </nav>
@@ -146,6 +175,7 @@ export default function StudentLayout({ children }: { children: React.ReactNode 
       )}
 
       <BackToTop />
+      <SpotlightSearch />
     </div>
   )
 }

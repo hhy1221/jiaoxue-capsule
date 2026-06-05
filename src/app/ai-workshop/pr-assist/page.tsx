@@ -5,7 +5,7 @@ import { useState } from 'react'
 import { Sparkles } from 'lucide-react'
 import CastingCircle from '@/components/animations/CastingCircle'
 import { useToast } from '@/components/animations/Toast'
-const MOCK_PR = { wechat:'【筠连支教Day5】今天运动会，60个孩子没有一个掉队🏃‍♂️\n\n最感动的瞬间：浩然带着一年级的同学喊口号，嗓子都哑了还在喊——他才10岁，已经像个真正的队长。\n\n配图建议：运动会全景/浩然带队/欣怡跳远\n\n#凡星支教 #筠连夏令营 #乡村教育', pengyouquan:'看到孩子们在操场上奔跑的样子，觉得所有熬夜备课都值了 ❤️ 筠连的夏天，因为有你们而发光 ✨', xiaohongshu:'📸 支教第5天 · 运动会特辑\n\n🌟今日最佳：浩然童鞋的队长首秀\n💪 60个娃没有一个喊累\n😭 欣怡跑了最后一名但笑到模糊\n\n#支教日记 #凡星支教队 #筠连', script:'[0-5秒] 操场全景+孩子们热身\n[5-15秒] 接力赛精彩片段\n[15-25秒] 浩然带队喊口号特写\n[25-30秒] 颁奖+大合影' }
+const MOCK_PR = { wechat:'【支教Day5】今天运动会，60个孩子没有一个掉队🏃‍♂️\n\n最感动的瞬间：浩然带着一年级的同学喊口号，嗓子都哑了还在喊——他才10岁，已经像个真正的队长。\n\n配图建议：运动会全景/浩然带队/欣怡跳远\n\n#凡星支教 #夏令营 #乡村教育', pengyouquan:'看到孩子们在操场上奔跑的样子，觉得所有熬夜备课都值了 ❤️ 这个夏天，因为有你们而发光 ✨', xiaohongshu:'📸 支教第5天 · 运动会特辑\n\n🌟今日最佳：浩然童鞋的队长首秀\n💪 60个娃没有一个喊累\n😭 欣怡跑了最后一名但笑到模糊\n\n#支教日记 #凡星支教队 #本地', script:'[0-5秒] 操场全景+孩子们热身\n[5-15秒] 接力赛精彩片段\n[15-25秒] 浩然带队喊口号特写\n[25-30秒] 颁奖+大合影' }
 export default function PRAssistPage() {
   const [result, setResult] = useState<typeof MOCK_PR|null>(null)
   const [loading, setLoading] = useState(false)

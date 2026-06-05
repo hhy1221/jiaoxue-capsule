@@ -19,7 +19,7 @@ export default function AddDialectWordForm({ open, onClose }: Props) {
   }
 
   return (
-    <Modal open={open} onClose={onClose} title="🗣️ 添加筠连方言词汇" size="sm">
+    <Modal open={open} onClose={onClose} title="🗣️ 添加本地方言词汇" size="sm">
       <div className="space-y-4">
         <div>
           <label className="text-[11px] font-medium tracking-[0.04em] text-[var(--ink-soft)] mb-1.5 block">方言词汇 *</label>
